@@ -22,7 +22,7 @@ CREATOR_ID =1279476207603290197                                 # <--- PASTE YOU
 ANNOUNCEMENT_CHANNEL_ID = 1443473075315413004                   
 MAINFRAME_HUB_URL = "https://cgpmainframe.netlify.app/"
 DEFAULT_SOUNDCLOUD_URL = "https://on.soundcloud.com/Qz1dzzj3Z6fmSGbRG0"
-DATA_FILE = "fighter_records.json"
+DATA_FILE = "stats.json"
 
 # --- GITHUB AUTO-SYNC CONFIG (FOR NETLIFY) ---
 GITHUB_TOKEN = "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" # Paste your generated GitHub token here
