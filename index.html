@@ -556,12 +556,25 @@
                     });
             }
 
-            async function load() {
+async function load() {
                 try {
-                    const res = await fetch('stats.json', { cache: 'no-store' });
+                    let res = await fetch('stats.json', { cache: 'no-store' });
+                    if (!res.ok) res = await fetch('fighter_records.json', { cache: 'no-store' });
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     const data = await res.json();
-                    const fighters = Array.isArray(data) ? data : (data.fighters || []);
+                    let fighters = [];
+                    if (Array.isArray(data)) {
+                        fighters = data;
+                    } else if (data && Array.isArray(data.fighters)) {
+                        fighters = data.fighters;
+                    } else if (data && typeof data === 'object') {
+                        fighters = Object.entries(data).map(([key, val]) => ({
+                            name: val.name || key,
+                            wins: val.wins || val.w || 0,
+                            losses: val.losses || val.l || 0,
+                            kos: val.kos || val.ko || 0
+                        }));
+                    }
                     render(fighters);
                     status.className = 'leaderboard-status live';
                     const updated = data.updated ? new Date(data.updated) : new Date();
@@ -574,9 +587,3 @@
 
             load();
             setInterval(load, REFRESH_MS);
-        })();
-    </script>
-
-</body>
-</html><script async src="/.netlify/scripts/ar" data-netlify-deploy-id="6adfb74ee8329ae6902d95f7" data-netlify-site-id="de35e13a-e203-4cf2-ab01-f1dcc7da7f45" data-agent-runner-id="6adfaa4cdc769b93bd52da0d"></script>
-<script async src="/.netlify/scripts/hud?variant=public" data-nf-variant="public" data-netlify-site-id="de35e13a-e203-4cf2-ab01-f1dcc7da7f45" data-app-host="app.netlify.com" data-account-tier="free"></script>
