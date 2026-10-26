@@ -2,9 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-<!-- This site is hosted on Netlify. Anyone can build and deploy a site
-     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=de35e13a-e203-4cf2-ab01-f1dcc7da7f45
-     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CGP Mainframe | Clone Geek Productions</title>
     <!-- Importing Sci-Fi Fonts from Google -->
@@ -231,7 +228,6 @@
             box-shadow: 0 0 15px var(--neon-blue);
         }
 
-
         /* Sound Vault Release Grid */
         .release-grid {
             display: grid;
@@ -358,9 +354,7 @@
 <body>
 
     <header>
-        <!-- THIS IS YOUR PICTURE: Name your file "image.png" and drag it into Netlify with this code -->
         <img src="image.png" alt="Clone Geek Productions" class="hero-logo">
-        
         <h1>Clone Geek Productions</h1>
         <p>// ACCESSING THE MAINFRAME //</p>
     </header>
@@ -513,7 +507,7 @@
     </footer>
 
     <script>
-        // Kronk Gym leaderboard: polls /fighter_records.json and re-ranks fighters by wins, then KOs.
+        // Kronk Gym leaderboard: polls stats.json or fighter_records.json and re-ranks fighters by wins, then KOs.
         (function () {
             const REFRESH_MS = 30000;
             const body = document.getElementById('lb-body');
@@ -556,28 +550,31 @@
                     });
             }
 
-async function load() {
+            async function load() {
                 try {
                     let res = await fetch('stats.json', { cache: 'no-store' });
                     if (!res.ok) res = await fetch('fighter_records.json', { cache: 'no-store' });
                     if (!res.ok) throw new Error('HTTP ' + res.status);
-                    const data = await res.json();
+                    const text = await res.text();
+                    const data = text.trim() ? JSON.parse(text) : {};
                     let fighters = [];
                     if (Array.isArray(data)) {
                         fighters = data;
                     } else if (data && Array.isArray(data.fighters)) {
                         fighters = data.fighters;
                     } else if (data && typeof data === 'object') {
-                        fighters = Object.entries(data).map(([key, val]) => ({
-                            name: val.name || key,
-                            wins: val.wins || val.w || 0,
-                            losses: val.losses || val.l || 0,
-                            kos: val.kos || val.ko || 0
-                        }));
+                        fighters = Object.entries(data)
+                            .filter(([key, val]) => val && typeof val === 'object')
+                            .map(([key, val]) => ({
+                                name: val.name || key,
+                                wins: val.wins ?? val.w ?? 0,
+                                losses: val.losses ?? val.l ?? 0,
+                                kos: val.kos ?? val.ko ?? 0
+                            }));
                     }
                     render(fighters);
                     status.className = 'leaderboard-status live';
-                    const updated = data.updated ? new Date(data.updated) : new Date();
+                    const updated = data && data.updated ? new Date(data.updated) : new Date();
                     statusText.textContent = 'LIVE // Last updated ' + updated.toLocaleString();
                 } catch (err) {
                     status.className = 'leaderboard-status error';
@@ -587,3 +584,8 @@ async function load() {
 
             load();
             setInterval(load, REFRESH_MS);
+        })();
+    </script>
+
+</body>
+</html>
