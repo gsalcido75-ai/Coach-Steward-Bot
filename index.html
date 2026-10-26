@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=de35e13a-e203-4cf2-ab01-f1dcc7da7f45
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGP Mainframe | Clone Geek Productions</title>
+    <!-- Importing Sci-Fi Fonts from Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #020205;
+            --neon-blue: #00e5ff;
+            --neon-red: #ff2a2a;
+            --panel-bg: rgba(10, 15, 25, 0.85);
+            --text-main: #d1d5db;
+        }
+        
+        /* Outer Space / Starfield Background */
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 160px 120px, #fff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            color: var(--text-main);
+            font-family: 'Share Tech Mono', monospace; /* Terminal font */
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* Sci-Fi Command Header */
+        header {
+            background: linear-gradient(180deg, rgba(255,42,42,0.15) 0%, rgba(0,229,255,0.05) 100%);
+            border-bottom: 2px solid var(--neon-red);
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(255, 42, 42, 0.4);
+        }
+
+        /* Profile/Logo Image Styling */
+        .hero-logo {
+            max-width: 200px;
+            border-radius: 50%;
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+            margin-bottom: 20px;
+        }
+        
+        header h1 {
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+        }
+        
+        header p {
+            color: var(--neon-red);
+            font-size: 1.2rem;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Holographic Data Panels */
+        .card {
+            background-color: var(--panel-bg);
+            border: 1px solid #1a2333;
+            border-left: 4px solid var(--neon-blue);
+            margin-bottom: 30px;
+            padding: 30px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
+            position: relative;
+        }
+        
+        /* Red accents for alternating panels */
+        .card.red-panel {
+            border-left: 4px solid var(--neon-red);
+            box-shadow: 0 0 15px rgba(255, 42, 42, 0.15);
+        }
+
+        .card h2 {
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            margin-top: 0;
+            font-size: 1.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .highlight {
+            color: var(--neon-blue);
+            font-weight: bold;
+        }
+
+        .player-container {
+            background: #000;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid var(--neon-red);
+            margin-top: 20px;
+            box-shadow: 0 0 15px rgba(255, 42, 42, 0.3);
+        }
+
+        /* Command Terminal Social Grid */
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0,0,0,0.6);
+            color: #fff;
+            padding: 15px 10px;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            border: 1px solid #333;
+            border-radius: 4px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .social-btn span.title {
+            font-weight: 900;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .social-btn span.desc {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-top: 5px;
+        }
+        
+        .social-btn:hover {
+            transform: translateY(-2px);
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        /* Specific Button Colors */
+        .btn-discord { border-bottom: 3px solid #5865F2; }
+        .btn-discord:hover { box-shadow: 0 5px 15px rgba(88, 101, 242, 0.4); }
+        
+        .btn-soundcloud { border-bottom: 3px solid #ff5500; }
+        .btn-soundcloud:hover { box-shadow: 0 5px 15px rgba(255, 85, 0, 0.4); }
+        
+        .btn-youtube { border-bottom: 3px solid #FF0000; }
+        .btn-youtube:hover { box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4); }
+        
+        .btn-twitch { border-bottom: 3px solid #9146FF; }
+        .btn-twitch:hover { box-shadow: 0 5px 15px rgba(145, 70, 255, 0.4); }
+        
+        .btn-kick { border-bottom: 3px solid #53FC18; }
+        .btn-kick:hover { box-shadow: 0 5px 15px rgba(83, 252, 24, 0.4); }
+        
+        .btn-tiktok { border-bottom: 3px solid #EE1D52; }
+        .btn-tiktok:hover { box-shadow: 0 5px 15px rgba(238, 29, 82, 0.4); }
+
+        .btn-suno { border-bottom: 3px solid #f9a826; }
+        .btn-suno:hover { box-shadow: 0 5px 15px rgba(249, 168, 38, 0.4); }
+
+        .btn-kofi { border-bottom: 3px solid #29abe0; }
+        .btn-kofi:hover { box-shadow: 0 5px 15px rgba(41, 171, 224, 0.4); }
+
+        /* Ko-fi Support Terminal */
+        .kofi-container {
+            background: #000;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid var(--neon-blue);
+            margin-top: 20px;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+        }
+
+        .kofi-container iframe {
+            display: block;
+            width: 100%;
+            height: 712px;
+            border: none;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+
+        .kofi-cta {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 24px;
+            background-color: rgba(0,0,0,0.6);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            border: 1px solid var(--neon-blue);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .kofi-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+
+        /* Sound Vault Release Grid */
+        .release-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .release {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #333;
+            border-top: 3px solid var(--neon-red);
+            border-radius: 4px;
+            padding: 18px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .release:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 42, 42, 0.35);
+        }
+
+        .release .code {
+            color: var(--neon-red);
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+        }
+
+        .release h3 {
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            margin: 6px 0 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .release p {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin: 0 0 12px;
+        }
+
+        .release a {
+            color: var(--neon-blue);
+            font-size: 0.8rem;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .release a:hover { text-shadow: 0 0 8px var(--neon-blue); }
+
+        /* Kronk Gym Leaderboard */
+        .leaderboard-status {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .leaderboard-status .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #555;
+            margin-right: 6px;
+        }
+
+        .leaderboard-status.live .dot {
+            background: #53FC18;
+            box-shadow: 0 0 8px #53FC18;
+        }
+
+        .leaderboard-status.error .dot { background: var(--neon-red); }
+
+        .table-wrap { overflow-x: auto; }
+
+        .leaderboard {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0,0,0,0.6);
+            font-size: 0.95rem;
+        }
+
+        .leaderboard th {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--neon-blue);
+        }
+
+        .leaderboard td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #1a2333;
+        }
+
+        .leaderboard td.num, .leaderboard th.num {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .leaderboard tr.top-1 td { color: #ffd54a; }
+        .leaderboard tr.top-1 td.fighter { text-shadow: 0 0 8px rgba(255, 213, 74, 0.6); }
+        .leaderboard td.fighter { color: #fff; font-weight: bold; }
+        .leaderboard td.empty { text-align: center; color: #888; padding: 20px; }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            background-color: #000;
+            color: #444;
+            font-size: 0.85rem;
+            border-top: 1px solid var(--neon-red);
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <!-- THIS IS YOUR PICTURE: Name your file "image.png" and drag it into Netlify with this code -->
+        <img src="image.png" alt="Clone Geek Productions" class="hero-logo">
+        
+        <h1>Clone Geek Productions</h1>
+        <p>// ACCESSING THE MAINFRAME //</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- Live Music Stream / Playlist Section -->
+        <div class="card red-panel">
+            <h2>AUDIO UPLINK: CGP SOUND VAULT</h2>
+            <p>Tune into the underground frequency. Stream the official CGP audio catalog directly below.</p>
+            
+            <div class="release-grid">
+                <div class="release">
+                    <span class="code">// RELEASE 001</span>
+                    <h3>Elite Registry Database</h3>
+                    <p>Encrypted beats from the Mainframe's most guarded archive.</p>
+                    <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" rel="noopener">Stream &raquo;</a>
+                </div>
+                <div class="release">
+                    <span class="code">// RELEASE 002</span>
+                    <h3>Concrete Logic</h3>
+                    <p>Industrial rhythm built on cold, unbreaking structure.</p>
+                    <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" rel="noopener">Stream &raquo;</a>
+                </div>
+                <div class="release">
+                    <span class="code">// RELEASE 003</span>
+                    <h3>Strikes Silence</h3>
+                    <p>Every hit lands loud. A soundtrack for the final round.</p>
+                    <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" rel="noopener">Stream &raquo;</a>
+                </div>
+                <div class="release">
+                    <span class="code">// RELEASE 004</span>
+                    <h3>Kryptonite</h3>
+                    <p>The one frequency that brings champions to their knees.</p>
+                    <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" rel="noopener">Stream &raquo;</a>
+                </div>
+            </div>
+
+            <div class="player-container">
+                <!-- Working SoundCloud Player -->
+                <iframe width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist&color=%23ff2a2a&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
+            </div>
+        </div>
+
+        <!-- Individual Social Links Directory -->
+        <div class="card">
+            <h2>COMMUNICATION CHANNELS</h2>
+            <p>Access the official CGP network. Connect across all sectors.</p>
+            
+            <div class="social-grid">
+                <a href="https://discord.gg/fhgByCyKv" class="social-btn btn-discord" target="_blank">
+                    <span class="title">Discord</span>
+                    <span class="desc">The Mainframe Community</span>
+                </a>
+                
+                <a href="https://soundcloud.com/gerardo-salcido-230608914?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" class="social-btn btn-soundcloud" target="_blank">
+                    <span class="title">SoundCloud</span>
+                    <span class="desc">Official Audio Vault</span>
+                </a>
+
+                <a href="https://suno.com/@clone_geek" class="social-btn btn-suno" target="_blank">
+                    <span class="title">Suno AI</span>
+                    <span class="desc">Virtual Studio (50/50 Creation)</span>
+                </a>
+                
+                <a href="https://youtube.com/@clone_geek?si=fUvizmeiTjTVMcwj" class="social-btn btn-youtube" target="_blank">
+                    <span class="title">YouTube</span>
+                    <span class="desc">Video Archives</span>
+                </a>
+
+                <a href="https://www.twitch.tv/clone_geek" class="social-btn btn-twitch" target="_blank">
+                    <span class="title">Twitch</span>
+                    <span class="desc">Live Broadcasts</span>
+                </a>
+
+                <a href="https://kick.com/clone-geek" class="social-btn btn-kick" target="_blank">
+                    <span class="title">Kick</span>
+                    <span class="desc">Unfiltered Streams</span>
+                </a>
+
+                <a href="https://www.tiktok.com/@clone_geek?is_from_webapp=1&sender_device=pc" class="social-btn btn-tiktok" target="_blank">
+                    <span class="title">TikTok</span>
+                    <span class="desc">Shortform Clips</span>
+                </a>
+
+                <a href="https://ko-fi.com/clone_geek" class="social-btn btn-kofi" target="_blank" rel="noopener">
+                    <span class="title">Ko-fi</span>
+                    <span class="desc">Fuel the Mainframe</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Ko-fi Support Section -->
+        <div class="card" id="support">
+            <h2>POWER CORE: SUPPORT CGP</h2>
+            <p>Keep the Mainframe online. Every contribution on <span class="highlight">Ko-fi</span> fuels new tracks, tournaments, and streams.</p>
+
+            <div class="kofi-container">
+                <iframe id="kofiframe" src="https://ko-fi.com/clone_geek/?hidefeed=true&widget=true&embed=true&preview=true" title="Support Clone Geek on Ko-fi" loading="lazy"></iframe>
+            </div>
+
+            <a href="https://ko-fi.com/clone_geek" class="kofi-cta" target="_blank" rel="noopener">Open Ko-fi Page &raquo;</a>
+        </div>
+
+        <!-- Kronk Gym Live Leaderboard -->
+        <div class="card" id="leaderboard">
+            <h2>KRONK GYM: LIVE LEADERBOARD</h2>
+            <p>Real-time standings from the <span class="highlight">Kronk Gym</span> roster. Rankings refresh automatically.</p>
+
+            <div class="leaderboard-status" id="lb-status"><span class="dot"></span><span id="lb-status-text">Connecting to stats feed...</span></div>
+
+            <div class="table-wrap">
+                <table class="leaderboard">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Fighter</th>
+                            <th class="num">W</th>
+                            <th class="num">L</th>
+                            <th class="num">KOs</th>
+                            <th class="num">Win %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lb-body">
+                        <tr><td colspan="6" class="empty">Loading stats...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Article Section: Chronicle -->
+        <div class="card red-panel">
+            <h2>DATA LOG: DISPATCHES FROM THE GRID</h2>
+            <p>In an era where digital noise drowns out true craftsmanship, a singular frequency cuts through the static. Welcome to the <span class="highlight">CGP Mainframe</span>—the epicenter where high-tier virtual combat meets the unrelenting pulse of industrial underground music. If you have been searching for a community that refuses to compromise on quality, discipline, and raw competition, your search ends here.</p>
+        </div>
+
+        <div class="card">
+            <h2>PROTOCOL: TOURNEYS & SUNDAY SPAR WARS</h2>
+            <p>The Mainframe isn't just a Discord server; it is a proving ground. We operate under strict professional standards for <em>Undisputed</em> boxing.</p>
+            <ul>
+                <li><span class="highlight">The Golden Ticket Invitations:</span> Elite fighters battle through qualifier brackets for ultimate championship gold.</li>
+                <li><span class="highlight">Sunday Spar Wars:</span> Sharpen your skills every Sunday against platinum-tier talent on the online platform.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <footer>
+        &copy; 2026 Clone Geek Productions. End of Transmission.
+    </footer>
+
+    <script>
+        // Kronk Gym leaderboard: polls stats.json and re-ranks fighters by wins, then KOs.
+        (function () {
+            const REFRESH_MS = 30000;
+            const body = document.getElementById('lb-body');
+            const status = document.getElementById('lb-status');
+            const statusText = document.getElementById('lb-status-text');
+
+            const num = (v) => Number.isFinite(Number(v)) ? Number(v) : 0;
+
+            function cell(text, cls) {
+                const td = document.createElement('td');
+                td.textContent = text;
+                if (cls) td.className = cls;
+                return td;
+            }
+
+            function render(fighters) {
+                body.replaceChildren();
+                if (!fighters.length) {
+                    const tr = document.createElement('tr');
+                    tr.appendChild(cell('No fighters on the board yet.', 'empty')).colSpan = 6;
+                    body.appendChild(tr);
+                    return;
+                }
+                fighters
+                    .map((f) => ({ name: f.name || 'Unknown', wins: num(f.wins), losses: num(f.losses), kos: num(f.kos) }))
+                    .sort((a, b) => b.wins - a.wins || b.kos - a.kos || a.losses - b.losses)
+                    .forEach((f, i) => {
+                        const total = f.wins + f.losses;
+                        const tr = document.createElement('tr');
+                        if (i === 0) tr.className = 'top-1';
+                        tr.append(
+                            cell('#' + (i + 1)),
+                            cell(f.name, 'fighter'),
+                            cell(f.wins, 'num'),
+                            cell(f.losses, 'num'),
+                            cell(f.kos, 'num'),
+                            cell(total ? Math.round((f.wins / total) * 100) + '%' : '-', 'num')
+                        );
+                        body.appendChild(tr);
+                    });
+            }
+
+            async function load() {
+                try {
+                    const res = await fetch('stats.json', { cache: 'no-store' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    const fighters = Array.isArray(data) ? data : (data.fighters || []);
+                    render(fighters);
+                    status.className = 'leaderboard-status live';
+                    const updated = data.updated ? new Date(data.updated) : new Date();
+                    statusText.textContent = 'LIVE // Last updated ' + updated.toLocaleString();
+                } catch (err) {
+                    status.className = 'leaderboard-status error';
+                    statusText.textContent = 'Stats feed offline. Retrying...';
+                }
+            }
+
+            load();
+            setInterval(load, REFRESH_MS);
+        })();
+    </script>
+
+</body>
+</html><script async src="/.netlify/scripts/ar" data-netlify-deploy-id="6adfb74ee8329ae6902d95f7" data-netlify-site-id="de35e13a-e203-4cf2-ab01-f1dcc7da7f45" data-agent-runner-id="6adfaa4cdc769b93bd52da0d"></script>
+<script async src="/.netlify/scripts/hud?variant=public" data-nf-variant="public" data-netlify-site-id="de35e13a-e203-4cf2-ab01-f1dcc7da7f45" data-app-host="app.netlify.com" data-account-tier="free"></script>
