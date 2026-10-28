@@ -20,9 +20,11 @@ import google.generativeai as genai
 # These pull securely from Render's secret Environment Variables!
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "PASTE_TOKEN_IN_RENDER")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "PASTE_KEY_IN_RENDER")
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+GITHUB_REPO = os.environ.get("GITHUB_REPO", "gsalcido75-ai/Coach-Steward-Bot")
 
 CREATOR_ID = 1279476207603290197
-ANNOUNCEMENT_CHANNEL_ID = 1443473075315413004                   
+ANNOUNCEMENT_CHANNEL_ID = 1443473075315413004                     
 MAINFRAME_HUB_URL = "https://themainframe-blush.vercel.app/"
 DEFAULT_SOUNDCLOUD_URL = "https://on.soundcloud.com/Qz1dzzj3Z6fmSGbRG0"
 DATA_FILE = "stats.json"
@@ -93,6 +95,46 @@ def format_record_nick(base_name: str, wins: int, losses: int) -> str:
     trimmed_base = base_name[:max_base_len].strip()
     return f"{trimmed_base}{tag}"
 
+# --- AUTOMATIC GITHUB SYNC (COACH'S AUTONOMOUS LINK) ---
+async def push_stats_to_github():
+    if not GITHUB_TOKEN or not GITHUB_REPO:
+        print("[!] GitHub token or repo missing. Skipping autonomous push.")
+        return
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{DATA_FILE}"
+    headers = {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github+json"
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers) as resp:
+            sha = None
+            if resp.status == 200:
+                data = await resp.json()
+                sha = data.get("sha")
+        
+        file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
+        if not os.path.exists(file_path):
+            return
+        with open(file_path, "r", encoding="utf-8") as f:
+            content_str = f.read()
+        
+        encoded_content = base64.b64encode(content_str.encode("utf-8")).decode("utf-8")
+        
+        payload = {
+            "message": "Autonomous update: Kronk Gym leaderboard stats.json sync [skip ci]",
+            "content": encoded_content,
+            "sha": sha
+        }
+        if not sha:
+            payload.pop("sha")
+            
+        async with session.put(url, headers=headers, json=payload) as put_resp:
+            if put_resp.status in [200, 201]:
+                print("[✓] Coach autonomously pushed updated stats to GitHub & Vercel!")
+            else:
+                body_text = await put_resp.text()
+                print(f"[!] GitHub sync failed ({put_resp.status}): {body_text}")
+
 # --- LOAD & SAVE PERSISTENT RECORDS ---
 def load_records():
     file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
@@ -111,6 +153,8 @@ def save_records():
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(FIGHTER_RECORDS, f, indent=4)
         print("[✓] Successfully saved records to stats.json!")
+        # Trigger autonomous GitHub commit asynchronously
+        asyncio.create_task(push_stats_to_github())
     except Exception as e:
         print(f"[!] Error saving records: {e}")
 
