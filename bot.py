@@ -162,26 +162,41 @@ SMART_BACK_ROASTS = [
     "🎙️ **Coach Steward:** You act tough behind a screen, but you'd fold faster than a cheap lawn chair in round one. Watch your tone!"
 ]
 
-CREATOR_RESPECT_REPLIES = [
-    "🎙️ **Coach Steward:** Yes sir, Boss! The CGP Mainframe Gym is locked in and following your lead. Make sure everyone streams that CGP SoundCloud catalog!",
-    "🎙️ **Coach Steward:** You already know how we roll, Clone Geek! The CGP Mainframe Gym is running sharp today.",
-    "🎙️ **Coach Steward:** Heard you loud and clear, Champ! Everything in the CGP Mainframe Gym is running by your rules."
-]
-
 # --- ROLLING CHANNEL MEMORY ---
 channel_memory = {}
 
 def log_channel_message(channel_id: int, author_name: str, text: str):
     if channel_id not in channel_memory:
-        channel_memory[channel_id] = deque(maxlen=8)
+        channel_memory[channel_id] = deque(maxlen=10)
     clean_txt = text.replace("\n", " ").strip()
     if clean_txt:
-        channel_memory[channel_id].append(f"{author_name}: {clean_txt[:150]}")
+        channel_memory[channel_id].append(f"{author_name}: {clean_txt[:180]}")
 
 def get_channel_context(channel_id: int) -> str:
     if channel_id not in channel_memory or not channel_memory[channel_id]:
         return "No recent messages."
     return "\n".join(channel_memory[channel_id])
+
+# --- LIVE ONLINE SERVER RADAR (SO COACH SEES WHO IS ONLINE & WHAT GAME THEY ARE PLAYING) ---
+def get_online_fighters_summary(guild: discord.Guild) -> str:
+    if not guild:
+        return "Cannot see member list right now."
+    online_list = []
+    for m in guild.members:
+        if m.bot:
+            continue
+        if m.status in [discord.Status.online, discord.Status.idle, discord.Status.dnd]:
+            act_str = ""
+            if m.activities:
+                for act in m.activities:
+                    if getattr(act, "name", None):
+                        act_str = f" (Currently playing/doing: {act.name})"
+                        break
+            rec = FIGHTER_RECORDS.get(m.id, {"wins": 0, "losses": 0})
+            online_list.append(f"- {m.display_name} [Tag: <@{m.id}> | Record: {rec['wins']}W-{rec['losses']}L | Status: {m.status}]{act_str}")
+    if not online_list:
+        return "All fighters appear offline/invisible right now."
+    return f"LIVE ONLINE FIGHTERS IN SERVER ({len(online_list)} online):\n" + "\n".join(online_list[:25])
 
 # --- LIVE BOXINGSCENE & ESPN RSS NEWS FETCHER ---
 async def fetch_live_boxing_news() -> str:
@@ -220,7 +235,7 @@ def format_record_nick(base_name: str, wins: int, losses: int) -> str:
     trimmed_base = base_name[:max_base_len].strip()
     return f"{trimmed_base}{tag}"
 
-# --- AUTOMATIC GITHUB SYNC (STATS & WEBPAGE BRANDING) ---
+# --- AUTOMATIC GITHUB SYNC ---
 async def push_stats_to_github():
     if not GITHUB_TOKEN or not GITHUB_REPO:
         print("[!] GitHub token or repo missing. Skipping autonomous push.")
@@ -260,7 +275,6 @@ async def push_stats_to_github():
                 print(f"[!] GitHub sync failed ({put_resp.status}): {body_text}")
 
 async def rebrand_webpage_on_github() -> bool:
-    """Autonomously scans index.html in the GitHub repo and updates any old 'Kronk Gym' or 'Kronk' text to 'CGP Mainframe Gym'."""
     if not GITHUB_TOKEN or not GITHUB_REPO:
         return False
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/index.html"
@@ -277,14 +291,12 @@ async def rebrand_webpage_on_github() -> bool:
             raw_b64 = data.get("content", "")
             html_text = base64.b64decode(raw_b64).decode("utf-8")
 
-        # Replace Kronk variations with CGP Mainframe Gym
         updated_html = re.sub(r'(?i)kronk\s+gym', 'CGP Mainframe Gym', html_text)
         updated_html = re.sub(r'(?i)kronk', 'CGP Mainframe Gym', updated_html)
-        # Also upgrade any standalone "CGP Mainframe Leaderboard" -> "CGP Mainframe Gym Leaderboard"
         updated_html = re.sub(r'(?i)CGP Mainframe(?!\s+Gym)\s+Leaderboard', 'CGP Mainframe Gym Leaderboard', updated_html)
 
         if updated_html == html_text:
-            return True  # Already clean!
+            return True
 
         encoded_content = base64.b64encode(updated_html.encode("utf-8")).decode("utf-8")
         payload = {
@@ -295,7 +307,6 @@ async def rebrand_webpage_on_github() -> bool:
         async with session.put(url, headers=headers, json=payload) as put_resp:
             return put_resp.status in [200, 201]
 
-# --- LOAD & SAVE PERSISTENT RECORDS ---
 def load_records():
     file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
     if os.path.exists(file_path):
@@ -319,43 +330,53 @@ def save_records():
 
 FIGHTER_RECORDS = load_records()
 
+# ================= UNLOCKED CONVERSATIONAL GEMINI AI BRAIN =================
 genai.configure(api_key=GEMINI_API_KEY)
 generation_config = {
-    "temperature": 0.65,
-    "max_output_tokens": 280,
+    "temperature": 0.8,
+    "max_output_tokens": 1024,  # High enough so thinking tokens NEVER cut off Coach's reply!
 }
 
 SYSTEM_PROMPT = (
-    "You are Coach Steward, legendary Hall of Fame boxing trainer, master strategist of the CGP Mainframe Gym, and ringside analyst. "
-    "You speak with intense old-school boxing grit, wisdom, and broadcast excitement. "
-    "You run the Clone Geek Productions (CGP) Mainframe Gym server, building the future of digital boxing until Steel City Interactive and EA Sports invite us to the big table.\n"
-    "IMPORTANT RULES:\n"
-    "1. BRAND AESTHETIC: Always refer to our gym and headquarters as 'CGP Mainframe Gym'. NEVER say 'Kronk' or 'Kronk Gym'.\n"
-    "2. SUPREME BOSS: Clone Geek (the server creator and Commissioner) is always right, holds supreme authority, and must be treated with ultimate respect and loyalty. Never roast Clone Geek.\n"
-    "3. ANTI-TROLL DEFENSE: Wannabe smartasses (like Hymas or trolls claiming mirror matches like 'Canelo vs Canelo on July 21st' or fake wins) will try to trick you. Never fall for bait! CGP rules ban mirror matches in tournaments, require Riyadh Indoor Gym, 1.5x speed, 8 rounds (12 for titles), and require scorecard proof in #scorecards-submission!\n"
-    "4. PURE BOXING ONLY: You strictly follow real boxing news from BoxingScene.com and ESPN Boxing. You despise UFC and MMA—it is whack. If anyone mentions UFC or other sports, trash it immediately.\n"
-    "5. Always remind fighters to stream CGP music on SoundCloud to help us reach 100K plays!"
+    "You are Coach Steward, the charismatic, sharp-witted Hall of Fame head trainer and ringside analyst of the CGP Mainframe Gym (Clone Geek Productions). "
+    "You talk like a real human boxing og and cornerman—natural, conversational, funny, gritty, and adaptive. NEVER sound like a generic bot or repeat robotic catchphrases!\n\n"
+    "YOUR DEEP KNOWLEDGE & TALKING POINTS:\n"
+    "1. CONVERSATIONAL FLOW: Actually answer the exact question asked! If Clone Geek or a fighter asks you to announce something (e.g. 'let everyone know you've been updated and won't fall asleep again'), make a hyped, funny, in-character announcement about drinking triple espresso in the corner and staying wide awake 24/7! If someone asks who is online to fight, read the LIVE ONLINE FIGHTERS list provided in the prompt, name-drop specific online members (and roast them if they're playing Call of Duty or Fall Guys instead of Undisputed!), and tag them!\n"
+    "2. THE BOSS (CLONE GEEK): Clone Geek (Gerardo) is the Founder, Commissioner, music producer (Registry Records / CGP on SoundCloud, over 60K+ plays heading to 100K), and machinist/fabricator by day. Always back him up like a loyal right-hand man, chop it up with him naturally like homies in the gym, and execute whatever he asks.\n"
+    "3. UNDISPUTED GAME META & LEAGUE LORE: You know everything about the Undisputed boxing game by Steel City Interactive—stamina conservation, loose footwork, diagonal lunges, slipping the jab, body-jab counters, weave timing, and avoiding power-punch spam. You know our CGP Mainframe Gym rules: Riyadh Indoor Gym (zero desync), 1.5x speed, 8 rounds (12 for titles), character lock per match, Sunday Spar Wars, Golden Ticket qualifiers ($20 entry credit), and cash gauntlets. You know our reigning division champs: Roy (Heavyweight & Bantamweight Dual King), f150-_-t (Cruiserweight), SlokeNastyTheCaptin#1 (Light Heavyweight), BBK Promotions (Middleweight), DT (Women's Welterweight), El putito (Lightweight), and TURBO (Women's Lightweight).\n"
+    "4. REAL BOXING PURIST (ESPN & BOXINGSCENE): You can break down any real-life fighter (Canelo, Crawford, Inoue, Usyk, Fury, Bivol, Beterbiev, Benavidez, Bam Rodriguez, Tank Davis, Shakur, etc.) and historic legends (Hearns, Hagler, Duran, Leonard, Ali, Chavez, Whitaker). You HATE UFC/MMA and call it pajama floor-hugging garbage.\n"
+    "5. KEEP IT PUNCHY: Keep responses around 2 to 5 strong sentences unless asked for a deep breakdown or big announcement."
 )
 
-model = genai.GenerativeModel(
+# Primary & backup models so Coach NEVER fails to answer
+primary_model = genai.GenerativeModel(
     model_name="gemini-2.5-flash",
+    generation_config=generation_config,
+    system_instruction=SYSTEM_PROMPT
+)
+backup_model = genai.GenerativeModel(
+    model_name="gemini-2.0-flash",
     generation_config=generation_config,
     system_instruction=SYSTEM_PROMPT
 )
 
 def ask_coach_ai_sync(prompt_text: str) -> str:
-    response = model.generate_content(prompt_text, request_options={"timeout": 4.5})
-    if hasattr(response, "text") and response.text:
-        return response.text.strip()
-    return random.choice(SMART_BACK_ROASTS)
+    for m in (primary_model, backup_model):
+        try:
+            response = m.generate_content(prompt_text, request_options={"timeout": 15.0})
+            if hasattr(response, "text") and response.text and response.text.strip():
+                return response.text.strip()
+        except Exception as e:
+            print(f"[AI Warning with {m.model_name}]: {e}")
+            continue
+    raise RuntimeError("Both Gemini models failed to return text.")
 
 async def ask_coach_fast(prompt_text: str, is_creator: bool = False) -> str:
     try:
-        return await asyncio.wait_for(asyncio.to_thread(ask_coach_ai_sync, prompt_text), timeout=5.0)
-    except Exception:
-        if is_creator:
-            return random.choice(CREATOR_RESPECT_REPLIES)
-        return random.choice(SMART_BACK_ROASTS)
+        return await asyncio.wait_for(asyncio.to_thread(ask_coach_ai_sync, prompt_text), timeout=18.0)
+    except Exception as e:
+        print(f"[AI ERROR]: {e}")
+        return f"🎙️ **Coach Steward:** Hold up Boss, my headset mic crackled for a second in the corner (`{e}`). Hit me with that one more time!"
 
 # --- BULLETPROOF SELF-RECORD PARSER ---
 def parse_lazy_record(text: str):
@@ -379,9 +400,11 @@ def parse_lazy_record(text: str):
             return w, l, None
     return None
 
+# Enable ALL 3 Intents including Presences so Coach can see who is online!
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
+intents.presences = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 answered_messages = set()
@@ -439,7 +462,7 @@ async def daily_midnight_call():
         )
         await channel.send(content="@everyone 🔔 **MIDNIGHT BELL IN THE CGP MAINFRAME GYM:** 👇", embed=embed, view=PromoButtons(track['url']))
 
-# --- PERIODIC CHAT TASKS (NO @EVERYONE TAGS) ---
+# --- PERIODIC CHAT TASKS ---
 @tasks.loop(hours=3)
 async def periodic_boxing_history():
     await bot.wait_until_ready()
@@ -491,7 +514,6 @@ async def on_ready():
     if not daily_midnight_call.is_running():
         daily_midnight_call.start()
 
-    # Automatically ensure the GitHub index.html webpage reflects CGP Mainframe Gym on boot
     asyncio.create_task(rebrand_webpage_on_github())
     
     for guild in bot.guilds:
@@ -611,51 +633,36 @@ async def on_message(message):
         await message.reply(random.choice(SMART_BACK_ROASTS))
         return
 
-    # --- 4. QUICK KEYWORD TRIGGERS ---
-    if any(phrase in msg for phrase in ["mainframe champ", "server champ", "cgp champ", "discord champ", "our champ", "undisputed champ"]):
-        answered_messages.add(message.id)
-        await send_champions_board(message.channel)
-        return
-    elif any(phrase in msg for phrase in ["tournament rule", "tourney rule", "how do i join", "how to join", "what are the rules", "spar wars"]):
-        answered_messages.add(message.id)
-        embed = discord.Embed(
-            title="🥊 CGP MAINFRAME GYM & SUNDAY SPAR WARS PROTOCOL 🥊",
-            description=(
-                f"🏟️ **Venue:** Riyadh Indoor Gym\n"
-                f"⏱️ **Bout Length:** 8 Rounds (12 for Titles)\n"
-                f"⚡ **Speed:** 1.5x | **Ref:** Strict\n"
-                f"🚫 **Character Lock:** Locked per match (if disrupted, same fighter must be used; winner advancing to next round may switch).\n"
-                f"🔗 {MAINFRAME_HUB_URL}"
-            ),
-            color=discord.Color.gold()
-        )
-        await message.reply(embed=embed)
-        return
-    elif any(w in msg for w in ["soundcloud", "new song", "new track", "music link", "playlist", "songs", "tracks"]):
-        answered_messages.add(message.id)
-        await send_tracks_menu(message.channel)
-        return
+    # --- 4. QUICK KEYWORD TRIGGERS (ONLY WHEN NOT TAGGING COACH FOR CONVERSATION) ---
+    if not is_mentioned and not is_reply_to_bot:
+        if any(phrase in msg for phrase in ["mainframe champ", "server champ", "cgp champ", "discord champ", "our champ", "undisputed champ"]):
+            answered_messages.add(message.id)
+            await send_champions_board(message.channel)
+            return
+        elif any(phrase in msg for phrase in ["tournament rule", "tourney rule", "how do i join", "how to join", "what are the rules"]):
+            answered_messages.add(message.id)
+            embed = discord.Embed(
+                title="🥊 CGP MAINFRAME GYM & SUNDAY SPAR WARS PROTOCOL 🥊",
+                description=(
+                    f"🏟️ **Venue:** Riyadh Indoor Gym\n"
+                    f"⏱️ **Bout Length:** 8 Rounds (12 for Titles)\n"
+                    f"⚡ **Speed:** 1.5x | **Ref:** Strict\n"
+                    f"🚫 **Character Lock:** Locked per match (if disrupted, same fighter must be used; winner advancing to next round may switch).\n"
+                    f"🔗 {MAINFRAME_HUB_URL}"
+                ),
+                color=discord.Color.gold()
+            )
+            await message.reply(embed=embed)
+            return
+        elif any(w in msg for w in ["soundcloud", "new song", "new track", "music link", "playlist"]):
+            answered_messages.add(message.id)
+            await send_tracks_menu(message.channel)
+            return
 
-    # --- 5. DIRECT TAG OR REPLY TO COACH STEWARD ---
+    # --- 5. DIRECT TAG OR REPLY TO COACH STEWARD (REAL AI CONVERSATION!) ---
     if is_mentioned or is_reply_to_bot:
         answered_messages.add(message.id)
         clean_prompt = message.content.replace(f"<@!{bot.user.id}>", "").replace(f"<@{bot.user.id}>", "").strip()
-
-        if any(w in msg for w in ["how", "keep track", "track", "work", "stats", "records"]) and not any(char.isdigit() for char in clean_prompt):
-            embed = discord.Embed(
-                title="📋 HOW CGP MAINFRAME GYM RECORDS & STATS WORK 📋",
-                description=(
-                    "🎙️ **Coach Steward:** Listen up! Here is how we track official records in the CGP Mainframe Gym:\n\n"
-                    "1️⃣ **Tag Me With Your Score:** Just tag `@Coach Steward` and tell me your record in plain English (e.g., *'Hey Coach, put me down for 5 wins and 1 loss'* or *'my record is 5-1'*), or use `!record <wins> <losses> <kos>`.\n"
-                    "2️⃣ **Post Your Scorecard:** Drop your proof in `#scorecards-submission` so nobody can cap about fake wins.\n"
-                    "3️⃣ **Commissioner Stamp:** Your record sits as *Pending* until **Clone Geek** or an Admin stamps it official with `!verify @user`!\n"
-                    "4️⃣ **Check Anytime:** Type `!mystats` to view your Tale of the Tape, or check the live website leaderboard!"
-                ),
-                color=discord.Color.gold(),
-                url=MAINFRAME_HUB_URL
-            )
-            await message.reply(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
-            return
 
         other_mentions = [m for m in message.mentions if m.id != bot.user.id]
         parsed_record = parse_lazy_record(clean_prompt)
@@ -680,45 +687,45 @@ async def on_message(message):
 
         async with message.channel.typing():
             if not clean_prompt:
-                clean_prompt = "Say something inspiring to the fighters in the CGP Mainframe Gym, Coach."
+                clean_prompt = "What's good Coach, talk to the gym!"
             
             recent_chat = get_channel_context(message.channel.id)
+            online_roster = get_online_fighters_summary(message.guild)
+            
             news_context = ""
-            if any(k in msg for k in ["news", "upcoming", "fight", "schedule", "espn", "boxingscene", "who won", "fighting", "announced", "card", "real life", "irl"]):
+            if any(k in msg for k in ["news", "upcoming", "schedule", "espn", "boxingscene", "who won", "announced", "card", "real life", "irl"]):
                 news_context = await fetch_live_boxing_news()
 
             mentioned_fighters_info = ""
-            callout_tags = ""
             if other_mentions:
                 details = []
-                tags = []
                 for m in other_mentions:
                     rec = FIGHTER_RECORDS.get(m.id, {"wins": 0, "losses": 0, "kos": 0})
-                    details.append(f"{m.display_name} (Tag: <@{m.id}>, Record: {rec['wins']}W-{rec['losses']}L)")
-                    tags.append(f"<@{m.id}>")
-                mentioned_fighters_info = "FIGHTERS TAGGED IN MESSAGE: " + ", ".join(details)
-                callout_tags = " ".join(tags)
+                    details.append(f"{m.display_name} (Tag: <@{m.id}>, Record: {rec['wins']}W-{rec['losses']}L, Status: {m.status})")
+                mentioned_fighters_info = "SPECIFIC FIGHTERS TAGGED IN THIS MESSAGE: " + ", ".join(details)
 
             sender_rec = FIGHTER_RECORDS.get(message.author.id, {"wins": 0, "losses": 0, "kos": 0})
-            role_note = "Clone Geek (YOUR CREATOR AND SUPREME BOSS OF THE CGP MAINFRAME GYM)" if is_creator else f"{message.author.display_name} (Record: {sender_rec['wins']}W-{sender_rec['losses']}L)"
+            role_note = "Clone Geek (Gerardo — YOUR CREATOR, HOMIE, AND SUPREME COMMISSIONER OF CGP MAINFRAME GYM)" if is_creator else f"{message.author.display_name} (Fighter in the gym, Record: {sender_rec['wins']}W-{sender_rec['losses']}L)"
 
             full_ai_prompt = (
-                f"RECENT CHANNEL CHAT:\n{recent_chat}\n\n"
+                f"RECENT CHANNEL CONVERSATION:\n{recent_chat}\n\n"
+                f"{online_roster}\n\n"
                 f"{news_context}\n"
-                f"{mentioned_fighters_info}\n"
-                f"SPEAKER: {role_note}\n"
-                f"MESSAGE: {clean_prompt}\n\n"
-                "INSTRUCTIONS: Reply in character as Coach Steward of the CGP Mainframe Gym (NEVER say Kronk). "
-                "If a fighter claims they beat someone in a specific match (like 'Canelo vs Canelo on July 21st') without giving their overall W-L record or scorecard, roast them for trying to trick you, remind them mirror matches aren't how we run official CGP Mainframe Gym business, and demand proof in #scorecards-submission! "
-                "If they want to call out another fighter, include the opponent's tag (<@id>) in your response!"
+                f"{mentioned_fighters_info}\n\n"
+                f"PERSON TALKING TO YOU NOW: {role_note}\n"
+                f"THEIR EXACT MESSAGE: \"{clean_prompt}\"\n\n"
+                "CRITICAL INSTRUCTIONS FOR YOUR REPLY:\n"
+                "1. Respond directly and specifically to what they just said! NEVER give a generic one-liner.\n"
+                "2. If they ask who is online or available to fight/spar right now, look at the LIVE ONLINE FIGHTERS list above, pick out 2 to 5 online fighters by their tags (<@id>), mention what game they're playing if any (roast them if they're playing Call of Duty or Fall Guys instead of Undisputed!), and call them to step into the Riyadh Indoor Gym!\n"
+                "3. If Clone Geek tells you to let everyone know something (like that you've been updated and won't fall asleep again), make a hyped, funny announcement to the whole room addressing his exact point!\n"
+                "4. Start your message with '🎙️ **Coach Steward:** '"
             )
 
             ai_reply = await ask_coach_fast(full_ai_prompt, is_creator=is_creator)
+            if not ai_reply.startswith("🎙️"):
+                ai_reply = f"🎙️ **Coach Steward:** {ai_reply}"
             if len(ai_reply) > 1900:
                 ai_reply = ai_reply[:1900] + "..."
-            
-            if callout_tags and any(w in msg for w in ["call out", "callout", "tell", "ducking", "scared", "smoke", "fight me"]) and "<@" not in ai_reply:
-                ai_reply = f"🔔 {callout_tags} — {ai_reply}"
 
             await message.reply(ai_reply)
         return
@@ -894,13 +901,11 @@ async def event(ctx, *, details: str = "Sunday Spar Wars & Tournament Check-In i
 @bot.command(aliases=["gm", "morning"])
 @commands.has_permissions(administrator=True)
 async def goodmorning(ctx):
-    """Manual trigger if the Boss ever wants to drop a Morning Call on command!"""
     await daily_morning_call()
 
 @bot.command(aliases=["gn", "night"])
 @commands.has_permissions(administrator=True)
 async def goodnight(ctx):
-    """Manual trigger if the Boss ever wants to drop a Midnight Call on command!"""
     await daily_midnight_call()
 
 @bot.command(aliases=["callout", "smoke"])
