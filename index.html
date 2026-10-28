@@ -281,7 +281,7 @@
 
         .release a:hover { text-shadow: 0 0 8px var(--neon-blue); }
 
-        /* Kronk Gym Leaderboard */
+        /* CGP Mainframe Gym Leaderboard */
         .leaderboard-status {
             font-size: 0.8rem;
             color: #888;
@@ -459,10 +459,10 @@
             <a href="https://ko-fi.com/clone_geek" class="kofi-cta" target="_blank" rel="noopener">Open Ko-fi Page &raquo;</a>
         </div>
 
-        <!-- Kronk Gym Live Leaderboard -->
+        <!-- CGP Mainframe Gym Live Leaderboard -->
         <div class="card" id="leaderboard">
-            <h2>KRONK GYM: LIVE LEADERBOARD</h2>
-            <p>Real-time standings from the <span class="highlight">Kronk Gym</span> roster. Rankings refresh automatically.</p>
+            <h2>CGP Mainframe Gym: LIVE LEADERBOARD</h2>
+            <p>Real-time standings from the <span class="highlight">CGP Mainframe Gym</span> roster. Rankings refresh automatically.</p>
 
             <div class="leaderboard-status" id="lb-status"><span class="dot"></span><span id="lb-status-text">Connecting to stats feed...</span></div>
 
@@ -507,7 +507,7 @@
     </footer>
 
     <script>
-        // Kronk Gym leaderboard: polls stats.json or fighter_records.json and re-ranks fighters by wins, then KOs.
+        // CGP Mainframe Gym leaderboard: polls stats.json or fighter_records.json and re-ranks fighters by wins, then KOs.
         (function () {
             const REFRESH_MS = 30000;
             const body = document.getElementById('lb-body');
