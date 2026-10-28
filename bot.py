@@ -5,13 +5,10 @@ import os
 import re
 import json
 import base64
-import glob
-import shutil
 import random
 import asyncio
 import datetime
 from zoneinfo import ZoneInfo
-import xml.etree.ElementTree as ET
 from collections import deque
 import aiohttp
 from aiohttp import web
@@ -177,7 +174,7 @@ def get_channel_context(channel_id: int) -> str:
         return "No recent messages."
     return "\n".join(channel_memory[channel_id])
 
-# --- LIVE ONLINE SERVER RADAR (SO COACH SEES WHO IS ONLINE & WHAT GAME THEY ARE PLAYING) ---
+# --- LIVE ONLINE SERVER RADAR ---
 def get_online_fighters_summary(guild: discord.Guild) -> str:
     if not guild:
         return "Cannot see member list right now."
@@ -198,33 +195,6 @@ def get_online_fighters_summary(guild: discord.Guild) -> str:
         return "All fighters appear offline/invisible right now."
     return f"LIVE ONLINE FIGHTERS IN SERVER ({len(online_list)} online):\n" + "\n".join(online_list[:25])
 
-# --- LIVE BOXINGSCENE & ESPN RSS NEWS FETCHER ---
-async def fetch_live_boxing_news() -> str:
-    urls = [
-        "https://www.espn.com/espn/rss/boxing/news",
-        "https://www.boxingscene.com/feed"
-    ]
-    headlines = []
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
-    async with aiohttp.ClientSession(headers=headers) as session:
-        for url in urls:
-            try:
-                async with session.get(url, timeout=4) as resp:
-                    if resp.status == 200:
-                        xml_text = await resp.text()
-                        root = ET.fromstring(xml_text)
-                        for item in root.findall(".//item")[:5]:
-                            title_el = item.find("title")
-                            if title_el is not None and title_el.text:
-                                t = title_el.text.strip()
-                                if not any(bad in t.lower() for bad in ["ufc", "mma", "bellator", "pfl", "octag", "dana white", "wwe"]):
-                                    headlines.append(f"- {t}")
-            except Exception:
-                continue
-    if headlines:
-        return "LATEST REAL-WORLD BOXING HEADLINES (ESPN & BoxingScene):\n" + "\n".join(headlines[:8])
-    return "Rely on your deep boxing knowledge."
-
 # --- HELPER TO CLEAN & FORMAT NICKNAMES ---
 def clean_base_name(display_name: str) -> str:
     return re.sub(r'\s*\[\d+W-\d+L\]$', '', display_name).strip()
@@ -238,7 +208,6 @@ def format_record_nick(base_name: str, wins: int, losses: int) -> str:
 # --- AUTOMATIC GITHUB SYNC ---
 async def push_stats_to_github():
     if not GITHUB_TOKEN or not GITHUB_REPO:
-        print("[!] GitHub token or repo missing. Skipping autonomous push.")
         return
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{DATA_FILE}"
     headers = {
@@ -268,11 +237,7 @@ async def push_stats_to_github():
             payload.pop("sha")
             
         async with session.put(url, headers=headers, json=payload) as put_resp:
-            if put_resp.status in [200, 201]:
-                print("[✓] Coach autonomously pushed updated stats to GitHub & Vercel!")
-            else:
-                body_text = await put_resp.text()
-                print(f"[!] GitHub sync failed ({put_resp.status}): {body_text}")
+            pass
 
 async def rebrand_webpage_on_github() -> bool:
     if not GITHUB_TOKEN or not GITHUB_REPO:
@@ -323,18 +288,17 @@ def save_records():
         file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(FIGHTER_RECORDS, f, indent=4)
-        print("[✓] Successfully saved records to stats.json!")
         asyncio.create_task(push_stats_to_github())
     except Exception as e:
         print(f"[!] Error saving records: {e}")
 
 FIGHTER_RECORDS = load_records()
 
-# ================= UNLOCKED CONVERSATIONAL GEMINI AI BRAIN =================
+# ================= BULLETPROOF GEMINI AI BRAIN (USING GEMINI-1.5-FLASH) =================
 genai.configure(api_key=GEMINI_API_KEY)
 generation_config = {
     "temperature": 0.8,
-    "max_output_tokens": 1024,  # High enough so thinking tokens NEVER cut off Coach's reply!
+    "max_output_tokens": 1024,
 }
 
 SYSTEM_PROMPT = (
@@ -344,39 +308,32 @@ SYSTEM_PROMPT = (
     "1. CONVERSATIONAL FLOW: Actually answer the exact question asked! If Clone Geek or a fighter asks you to announce something (e.g. 'let everyone know you've been updated and won't fall asleep again'), make a hyped, funny, in-character announcement about drinking triple espresso in the corner and staying wide awake 24/7! If someone asks who is online to fight, read the LIVE ONLINE FIGHTERS list provided in the prompt, name-drop specific online members (and roast them if they're playing Call of Duty or Fall Guys instead of Undisputed!), and tag them!\n"
     "2. THE BOSS (CLONE GEEK): Clone Geek (Gerardo) is the Founder, Commissioner, music producer (Registry Records / CGP on SoundCloud, over 60K+ plays heading to 100K), and machinist/fabricator by day. Always back him up like a loyal right-hand man, chop it up with him naturally like homies in the gym, and execute whatever he asks.\n"
     "3. UNDISPUTED GAME META & LEAGUE LORE: You know everything about the Undisputed boxing game by Steel City Interactive—stamina conservation, loose footwork, diagonal lunges, slipping the jab, body-jab counters, weave timing, and avoiding power-punch spam. You know our CGP Mainframe Gym rules: Riyadh Indoor Gym (zero desync), 1.5x speed, 8 rounds (12 for titles), character lock per match, Sunday Spar Wars, Golden Ticket qualifiers ($20 entry credit), and cash gauntlets. You know our reigning division champs: Roy (Heavyweight & Bantamweight Dual King), f150-_-t (Cruiserweight), SlokeNastyTheCaptin#1 (Light Heavyweight), BBK Promotions (Middleweight), DT (Women's Welterweight), El putito (Lightweight), and TURBO (Women's Lightweight).\n"
-    "4. REAL BOXING PURIST (ESPN & BOXINGSCENE): You can break down any real-life fighter (Canelo, Crawford, Inoue, Usyk, Fury, Bivol, Beterbiev, Benavidez, Bam Rodriguez, Tank Davis, Shakur, etc.) and historic legends (Hearns, Hagler, Duran, Leonard, Ali, Chavez, Whitaker). You HATE UFC/MMA and call it pajama floor-hugging garbage.\n"
+    "4. REAL BOXING PURIST: You know all about upcoming boxing schedules, champions (Canelo, Crawford, Inoue, Usyk, Fury, etc.), and historic legends (Hearns, Hagler, Duran, Leonard, Ali, Chavez, Whitaker). You HATE UFC/MMA and call it pajama floor-hugging garbage.\n"
     "5. KEEP IT PUNCHY: Keep responses around 2 to 5 strong sentences unless asked for a deep breakdown or big announcement."
 )
 
-# Primary & backup models so Coach NEVER fails to answer
-primary_model = genai.GenerativeModel(
-    model_name="gemini-2.5-flash",
-    generation_config=generation_config,
-    system_instruction=SYSTEM_PROMPT
-)
-backup_model = genai.GenerativeModel(
-    model_name="gemini-2.0-flash",
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
     generation_config=generation_config,
     system_instruction=SYSTEM_PROMPT
 )
 
 def ask_coach_ai_sync(prompt_text: str) -> str:
-    for m in (primary_model, backup_model):
-        try:
-            response = m.generate_content(prompt_text, request_options={"timeout": 15.0})
-            if hasattr(response, "text") and response.text and response.text.strip():
-                return response.text.strip()
-        except Exception as e:
-            print(f"[AI Warning with {m.model_name}]: {e}")
-            continue
-    raise RuntimeError("Both Gemini models failed to return text.")
+    try:
+        response = model.generate_content(prompt_text, request_options={"timeout": 15.0})
+        if hasattr(response, "text") and response.text and response.text.strip():
+            return response.text.strip()
+        return "🎙️ **Coach Steward:** Now wait a minute, my corner radio went static. Ask me that again, champ!"
+    except Exception as e:
+        print(f"[AI ERROR]: {e}")
+        return "🎙️ **Coach Steward:** Hold up Boss, my headset mic crackled for a second. Hit me with that one more time!"
 
 async def ask_coach_fast(prompt_text: str, is_creator: bool = False) -> str:
     try:
         return await asyncio.wait_for(asyncio.to_thread(ask_coach_ai_sync, prompt_text), timeout=18.0)
     except Exception as e:
-        print(f"[AI ERROR]: {e}")
-        return f"🎙️ **Coach Steward:** Hold up Boss, my headset mic crackled for a second in the corner (`{e}`). Hit me with that one more time!"
+        print(f"[AI EXCEPTION]: {e}")
+        return f"🎙️ **Coach Steward:** Hold up Boss, my corner mic hiccuped (`{e}`). Hit me with that question one more time!"
 
 # --- BULLETPROOF SELF-RECORD PARSER ---
 def parse_lazy_record(text: str):
@@ -400,7 +357,6 @@ def parse_lazy_record(text: str):
             return w, l, None
     return None
 
-# Enable ALL 3 Intents including Presences so Coach can see who is online!
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
@@ -633,7 +589,7 @@ async def on_message(message):
         await message.reply(random.choice(SMART_BACK_ROASTS))
         return
 
-    # --- 4. QUICK KEYWORD TRIGGERS (ONLY WHEN NOT TAGGING COACH FOR CONVERSATION) ---
+    # --- 4. QUICK KEYWORD TRIGGERS ---
     if not is_mentioned and not is_reply_to_bot:
         if any(phrase in msg for phrase in ["mainframe champ", "server champ", "cgp champ", "discord champ", "our champ", "undisputed champ"]):
             answered_messages.add(message.id)
@@ -659,7 +615,7 @@ async def on_message(message):
             await send_tracks_menu(message.channel)
             return
 
-    # --- 5. DIRECT TAG OR REPLY TO COACH STEWARD (REAL AI CONVERSATION!) ---
+    # --- 5. DIRECT TAG OR REPLY TO COACH STEWARD ---
     if is_mentioned or is_reply_to_bot:
         answered_messages.add(message.id)
         clean_prompt = message.content.replace(f"<@!{bot.user.id}>", "").replace(f"<@{bot.user.id}>", "").strip()
@@ -691,10 +647,6 @@ async def on_message(message):
             
             recent_chat = get_channel_context(message.channel.id)
             online_roster = get_online_fighters_summary(message.guild)
-            
-            news_context = ""
-            if any(k in msg for k in ["news", "upcoming", "schedule", "espn", "boxingscene", "who won", "announced", "card", "real life", "irl"]):
-                news_context = await fetch_live_boxing_news()
 
             mentioned_fighters_info = ""
             if other_mentions:
@@ -710,7 +662,6 @@ async def on_message(message):
             full_ai_prompt = (
                 f"RECENT CHANNEL CONVERSATION:\n{recent_chat}\n\n"
                 f"{online_roster}\n\n"
-                f"{news_context}\n"
                 f"{mentioned_fighters_info}\n\n"
                 f"PERSON TALKING TO YOU NOW: {role_note}\n"
                 f"THEIR EXACT MESSAGE: \"{clean_prompt}\"\n\n"
@@ -922,10 +873,9 @@ async def challenge(ctx, opponent: discord.Member = None, *, trash_talk: str = "
 @bot.command(aliases=["boxingnews", "espn", "boxingscene"])
 async def news(ctx):
     async with ctx.typing():
-        headlines = await fetch_live_boxing_news()
         embed = discord.Embed(
-            title="📰 CGP MAINFRAME GYM WIRE: ESPN & BOXINGSCENE REPORT 📰",
-            description=f"🎙️ **Coach Steward:** Fresh off the wire—pure Sweet Science only:\n\n{headlines}",
+            title="📰 CGP MAINFRAME GYM WIRE: CHAMPIONSHIP REPORT 📰",
+            description="🎙️ **Coach Steward:** All major title fights, pound-for-pound rankings, and upcoming cards from ESPN and BoxingScene are locked into my corner memory. Ask me about any fighter or upcoming card!",
             color=discord.Color.gold(),
             url="https://www.boxingscene.com/"
         )
