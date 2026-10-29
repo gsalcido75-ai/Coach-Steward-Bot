@@ -305,9 +305,16 @@ async def ask_coach_fast(prompt_text: str, is_creator: bool = False) -> str:
             return response.text.strip()
         return "🎙️ **Coach Steward:** Mainframe corner is quiet, Boss! Say that again?"
     except Exception as e:
+        err_str = str(e)
+        if "429" in err_str or "quota" in err_str.lower():
+            # Graceful fallback: If Google throttles the API, Coach drops a promoter line instead of an error!
+            return (
+                "🎙️ **Coach Steward:** Whoa, the Mainframe traffic is too heavy for the corner mic right now! "
+                "While the system catches its breath, go run up those streams on the **Clone Geek Productions** "
+                "SoundCloud catalog so we can smash past 100K plays! 🎧🔥 [Check the Hub](https://themainframe-blush.vercel.app/)"
+            )
         print(f"[AI ERROR]: {e}")
-        return f"🎙️ **Coach Steward:** Hold up, champ—my corner mic caught a delay (`{str(e)[:40]}`). Hit me with that question again!"
-
+        return f"🎙️ **Coach Steward:** Hold up, champ—my corner mic caught a delay (`{err_str[:40]}`). Hit me with that question again!"
 # --- BULLETPROOF SELF-RECORD PARSER ---
 def parse_lazy_record(text: str):
     clean = re.sub(r'<@!?\d+>', '', text).lower()
