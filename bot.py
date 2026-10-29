@@ -174,27 +174,6 @@ def get_channel_context(channel_id: int) -> str:
         return "No recent messages."
     return "\n".join(channel_memory[channel_id])
 
-# --- LIVE ONLINE SERVER RADAR ---
-def get_online_fighters_summary(guild: discord.Guild) -> str:
-    if not guild:
-        return "Cannot see member list right now."
-    online_list = []
-    for m in guild.members:
-        if m.bot:
-            continue
-        if m.status in [discord.Status.online, discord.Status.idle, discord.Status.dnd]:
-            act_str = ""
-            if m.activities:
-                for act in m.activities:
-                    if getattr(act, "name", None):
-                        act_str = f" (Currently playing/doing: {act.name})"
-                        break
-            rec = FIGHTER_RECORDS.get(m.id, {"wins": 0, "losses": 0})
-            online_list.append(f"- {m.display_name} [Tag: <@{m.id}> | Record: {rec['wins']}W-{rec['losses']}L | Status: {m.status}]{act_str}")
-    if not online_list:
-        return "All fighters appear offline/invisible right now."
-    return f"LIVE ONLINE FIGHTERS IN SERVER ({len(online_list)} online):\n" + "\n".join(online_list[:25])
-
 # --- HELPER TO CLEAN & FORMAT NICKNAMES ---
 def clean_base_name(display_name: str) -> str:
     return re.sub(r'\s*\[\d+W-\d+L\]$', '', display_name).strip()
@@ -294,7 +273,7 @@ def save_records():
 
 FIGHTER_RECORDS = load_records()
 
-# ================= LOCKED TO GEMINI-3.8-FLASH =================
+# ================= LOCKED TO GEMINI-3.8-FLASH (ASYNC BULLETPROOF) =================
 genai.configure(api_key=GEMINI_API_KEY)
 generation_config = {
     "temperature": 0.8,
@@ -305,10 +284,10 @@ SYSTEM_PROMPT = (
     "You are Coach Steward, the charismatic, sharp-witted Hall of Fame head trainer and ringside analyst of the CGP Mainframe Gym (Clone Geek Productions). "
     "You talk like a real human boxing og and cornerman—natural, conversational, funny, gritty, and adaptive. NEVER sound like a generic bot or repeat robotic catchphrases!\n\n"
     "YOUR DEEP KNOWLEDGE & TALKING POINTS:\n"
-    "1. CONVERSATIONAL FLOW: Actually answer the exact question asked! If Clone Geek or a fighter asks you to announce something (e.g. 'let everyone know you've been updated and won't fall asleep again'), make a hyped, funny, in-character announcement about drinking triple espresso in the corner and staying wide awake 24/7! If someone asks who is online to fight, read the LIVE ONLINE FIGHTERS list provided in the prompt, name-drop specific online members (and roast them if they're playing Call of Duty or Fall Guys instead of Undisputed!), and tag them!\n"
+    "1. CONVERSATIONAL FLOW: Actually answer the exact question asked! If asked about boxing history, champions, or top fighters of all time (like Ali, Sugar Ray Robinson, Mayweather, Canelo, etc.), give an authentic, detailed, gritty boxing breakdown like a veteran HBO analyst.\n"
     "2. THE BOSS (CLONE GEEK): Clone Geek (Gerardo) is the Founder, Commissioner, music producer (Registry Records / CGP on SoundCloud, over 60K+ plays heading to 100K), and machinist/fabricator by day. Always back him up like a loyal right-hand man, chop it up with him naturally like homies in the gym, and execute whatever he asks.\n"
     "3. UNDISPUTED GAME META & LEAGUE LORE: You know everything about the Undisputed boxing game by Steel City Interactive—stamina conservation, loose footwork, diagonal lunges, slipping the jab, body-jab counters, weave timing, and avoiding power-punch spam. You know our CGP Mainframe Gym rules: Riyadh Indoor Gym (zero desync), 1.5x speed, 8 rounds (12 for titles), character lock per match, Sunday Spar Wars, Golden Ticket qualifiers ($20 entry credit), and cash gauntlets. You know our reigning division champs: Roy (Heavyweight & Bantamweight Dual King), f150-_-t (Cruiserweight), SlokeNastyTheCaptin#1 (Light Heavyweight), BBK Promotions (Middleweight), DT (Women's Welterweight), El putito (Lightweight), and TURBO (Women's Lightweight).\n"
-    "4. REAL BOXING PURIST: You know all about upcoming boxing schedules, champions (Canelo, Crawford, Inoue, Usyk, Fury, etc.), and historic legends (Hearns, Hagler, Duran, Leonard, Ali, Chavez, Whitaker). You HATE UFC/MMA and call it pajama floor-hugging garbage.\n"
+    "4. REAL BOXING PURIST: You know all about upcoming boxing schedules, champions, and historic legends. You HATE UFC/MMA and call it pajama floor-hugging garbage.\n"
     "5. KEEP IT PUNCHY: Keep responses around 2 to 5 strong sentences unless asked for a deep breakdown or big announcement."
 )
 
@@ -318,11 +297,10 @@ model = genai.GenerativeModel(
     system_instruction=SYSTEM_PROMPT
 )
 
-def ask_coach_ai_sync(prompt_text: str) -> str:
+async def ask_coach_fast(prompt_text: str, is_creator: bool = False) -> str:
     try:
-        # Give the AI call a generous 25-second timeout window so complex boxing questions never time out
-        response = model.generate_content(prompt_text, request_options={"timeout": 25.0})
-        if hasattr(response, "text") and response.text and response.text.strip():
+        response = await model.generate_content_async(prompt_text)
+        if response and response.text:
             return response.text.strip()
         return "🎙️ **Coach Steward:** Mainframe corner is quiet, Boss! Say that again?"
     except Exception as e:
@@ -507,7 +485,6 @@ async def on_member_join(member):
             await channel.send(content=f"🔔 Step into the light, {member.mention}!", embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
             break
 
-# --- SMART NATURAL RECOGNITION ON_MESSAGE HANDLER ---
 @bot.event
 async def on_message(message):
     if message.author.bot:
@@ -526,7 +503,6 @@ async def on_message(message):
     if is_mentioned or is_reply_to_bot:
         if any(w in msg for w in ["need a fight", "find me", "opponent", "spar", "smoke", "fight me", "match"]):
             answered_messages.add(message.id)
-            # Automatically trigger our fast matchmaking logic!
             active_fighters = [uid for uid in FIGHTER_RECORDS.keys() if uid != message.author.id]
             if not active_fighters:
                 await message.reply(f"🎙️ **Coach Steward:** {message.author.mention}, the gym roster is looking empty! Get fighters to log their records with `!record` so I can book a matchup!")
@@ -1007,43 +983,6 @@ async def start_web_server():
 async def main():
     await start_web_server()
     await bot.start(BOT_TOKEN)
-
-@bot.command(aliases=["findopponent", "findmatch", "findspar"])
-async def find_opponent(ctx, member: discord.Member = None):
-    """Instantly pairs a fighter with an available opponent from the active roster database."""
-    if member is None:
-        member = ctx.author
-    
-    # Grab active fighters from records
-    active_fighters = [uid for uid in FIGHTER_RECORDS.keys() if uid != member.id]
-    
-    if not active_fighters:
-        return await ctx.send(f"🎙️ **Coach Steward:** {member.mention}, the gym roster is looking empty! Get these fighters to log their records with `!record` so I can book a matchup!")
-    
-    # Pick a random worthy opponent from the roster
-    opponent_id = random.choice(active_fighters)
-    opponent_member = ctx.guild.get_member(opponent_id)
-    
-    if not opponent_member:
-        try:
-            opponent_member = await ctx.guild.fetch_member(opponent_id)
-        except Exception:
-            opponent_member = None
-            
-    opp_name = opponent_member.display_name if opponent_member else "Unknown Contender"
-    opp_tag = opponent_member.mention if opponent_member else "a mystery fighter"
-    
-    embed = discord.Embed(
-        title="🥊 CGP MAINFRAME GYM MATCHMAKER 🥊",
-        description=(
-            f"🎙️ **Coach Steward:** I've reviewed the Tale of the Tape and found some smoke!\n\n"
-            f"🔥 **{member.mention}** vs **{opp_tag}**\n\n"
-            f"Get your gear on, step into the **Riyadh Indoor Gym**, and let's see who really runs this division! 8 Rounds, 1.5x speed, zero excuses."
-        ),
-        color=discord.Color.gold(),
-        url=MAINFRAME_HUB_URL
-    )
-    await ctx.send(content=f"🔔 **MATCHMAKER ALERT:** {member.mention} has been paired with {opp_tag}!", embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
 if __name__ == "__main__":
     asyncio.run(main())
