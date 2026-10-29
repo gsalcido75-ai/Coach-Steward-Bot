@@ -513,6 +513,7 @@ async def on_member_join(member):
             await channel.send(content=f"🔔 Step into the light, {member.mention}!", embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
             break
 
+# --- SMART NATURAL RECOGNITION ON_MESSAGE HANDLER ---
 @bot.event
 async def on_message(message):
     if message.author.bot:
@@ -524,8 +525,61 @@ async def on_message(message):
 
     msg = message.content.lower()
     is_creator = (message.author.id == CREATOR_ID) or message.author.guild_permissions.administrator
+    is_mentioned = bot.user in message.mentions
+    is_reply_to_bot = message.reference and message.reference.resolved and message.reference.resolved.author == bot.user
 
-    # --- 1. MULTI-FIGHTER ADMIN RECORD OVERRIDE ---
+    # --- 1. NATURAL MATCHMAKING RECOGNITION ("NEED A FIGHT", "FIND AN OPPONENT") ---
+    if is_mentioned or is_reply_to_bot:
+        if any(w in msg for w in ["need a fight", "find me", "opponent", "spar", "smoke", "fight me", "match"]):
+            answered_messages.add(message.id)
+            # Automatically trigger our fast matchmaking logic!
+            active_fighters = [uid for uid in FIGHTER_RECORDS.keys() if uid != message.author.id]
+            if not active_fighters:
+                await message.reply(f"🎙️ **Coach Steward:** {message.author.mention}, the gym roster is looking empty! Get fighters to log their records with `!record` so I can book a matchup!")
+                return
+            
+            opponent_id = random.choice(active_fighters)
+            opponent_member = message.guild.get_member(opponent_id)
+            if not opponent_member:
+                try:
+                    opponent_member = await message.guild.fetch_member(opponent_id)
+                except Exception:
+                    opponent_member = None
+                    
+            opp_tag = opponent_member.mention if opponent_member else "a mystery contender"
+            
+            embed = discord.Embed(
+                title="🥊 CGP MAINFRAME GYM MATCHMAKER 🥊",
+                description=(
+                    f"🎙️ **Coach Steward:** You want smoke, {message.author.mention}? I pulled the Tale of the Tape and found your target!\n\n"
+                    f"🔥 **{message.author.mention}** vs **{opp_tag}**\n\n"
+                    f"Get your gear on, step into the **Riyadh Indoor Gym**, and let's see who really runs this division! 8 Rounds, 1.5x speed, zero excuses."
+                ),
+                color=discord.Color.gold(),
+                url=MAINFRAME_HUB_URL
+            )
+            await message.reply(content=f"🔔 **MATCHMAKER ALERT:** {message.author.mention} has been paired with {opp_tag}!", embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+            return
+
+        # --- 2. NATURAL RULES & PROTOCOL RECOGNITION ---
+        if any(w in msg for w in ["rules", "how to join", "how does this work", "protocol", "gym rules"]):
+            answered_messages.add(message.id)
+            embed = discord.Embed(
+                title="🥊 CGP MAINFRAME GYM & SUNDAY SPAR WARS PROTOCOL 🥊",
+                description=(
+                    f"🏟️ **Venue:** Riyadh Indoor Gym\n"
+                    f"⏱️ **Bout Length:** 8 Rounds (12 for Titles)\n"
+                    f"⚡ **Speed:** 1.5x | **Ref:** Strict\n"
+                    f"🚫 **Character Lock:** Locked per match (if disrupted, same fighter must be used; winner advancing to next round may switch).\n"
+                    f"📋 **How Records Work:** Tag me with your record or use `!record <wins> <losses> <kos>`, post proof in `#scorecards-submission`, and wait for Commissioner Clone Geek to verify!\n"
+                    f"🔗 {MAINFRAME_HUB_URL}"
+                ),
+                color=discord.Color.gold()
+            )
+            await message.reply(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+            return
+
+    # --- 3. MULTI-FIGHTER ADMIN RECORD OVERRIDE ---
     if is_creator and any(w in msg for w in ["make", "set", "reflect", "update", "change", "put"]):
         text_without_bot = re.sub(rf'<@!?{bot.user.id}>', '', message.content)
         pattern = r'<@!?(\d+)>[^0-9<>]*?(\d{1,3})\s*[-–to]+\s*(\d{1,3})(?:\s*[-–to]+\s*(\d{1,3}))?'
@@ -569,7 +623,7 @@ async def on_message(message):
             )
             return
 
-    # --- 2. AUTOMATIC ANTI-UFC / MMA INTERCEPTION ---
+    # --- 4. AUTOMATIC ANTI-UFC / MMA INTERCEPTION ---
     if any(ufc_word in re.findall(r'\b\w+\b', msg) for ufc_word in ["ufc", "mma", "octagon", "bellator"]):
         answered_messages.add(message.id)
         await message.reply(
@@ -577,10 +631,7 @@ async def on_message(message):
         )
         return
 
-    # --- 3. TROLL / SHORT MESSAGE ROAST FOR NON-ADMINS ---
-    is_mentioned = bot.user in message.mentions
-    is_reply_to_bot = message.reference and message.reference.resolved and message.reference.resolved.author == bot.user
-
+    # --- 5. TROLL / SHORT MESSAGE ROAST FOR NON-ADMINS ---
     troll_triggers = ["trash", "dog", "ass", "suck", "garbage", "easy", "mid", "clown", "fake", "fold", "cry"]
     is_testing_bot = any(trigger in re.findall(r'\b\w+\b', msg) for trigger in troll_triggers)
 
@@ -589,7 +640,7 @@ async def on_message(message):
         await message.reply(random.choice(SMART_BACK_ROASTS))
         return
 
-    # --- 4. QUICK KEYWORD TRIGGERS ---
+    # --- 6. QUICK KEYWORD TRIGGERS ---
     if not is_mentioned and not is_reply_to_bot:
         if any(phrase in msg for phrase in ["mainframe champ", "server champ", "cgp champ", "discord champ", "our champ", "undisputed champ"]):
             answered_messages.add(message.id)
@@ -615,7 +666,7 @@ async def on_message(message):
             await send_tracks_menu(message.channel)
             return
 
-    # --- 5. DIRECT TAG OR REPLY TO COACH STEWARD ---
+    # --- 7. GENERAL AI CONVERSATION (TAG/REPLY) ---
     if is_mentioned or is_reply_to_bot:
         answered_messages.add(message.id)
         clean_prompt = message.content.replace(f"<@!{bot.user.id}>", "").replace(f"<@{bot.user.id}>", "").strip()
@@ -626,7 +677,7 @@ async def on_message(message):
         if parsed_record and not other_mentions:
             wins_val, losses_val, kos_val = parsed_record
             if wins_val > 50 and not is_creator:
-                await message.reply("🎙️ **Coach Steward:** Whoa, slow down champ! 50+ wins right out the gate? Upload your scorecard on the CGP Mainframe Gym hub first!")
+                await message.reply("🎙️ **Coach Steward:** Whoa, slow down champ! Upload your scorecard on the CGP Mainframe Gym hub first!")
                 return
             base_name = clean_base_name(message.author.display_name)
             existing_kos = kos_val if kos_val is not None else FIGHTER_RECORDS.get(message.author.id, {}).get("kos", 0)
@@ -646,30 +697,17 @@ async def on_message(message):
                 clean_prompt = "What's good Coach, talk to the gym!"
             
             recent_chat = get_channel_context(message.channel.id)
-            online_roster = get_online_fighters_summary(message.guild)
-
-            mentioned_fighters_info = ""
-            if other_mentions:
-                details = []
-                for m in other_mentions:
-                    rec = FIGHTER_RECORDS.get(m.id, {"wins": 0, "losses": 0, "kos": 0})
-                    details.append(f"{m.display_name} (Tag: <@{m.id}>, Record: {rec['wins']}W-{rec['losses']}L, Status: {m.status})")
-                mentioned_fighters_info = "SPECIFIC FIGHTERS TAGGED IN THIS MESSAGE: " + ", ".join(details)
 
             sender_rec = FIGHTER_RECORDS.get(message.author.id, {"wins": 0, "losses": 0, "kos": 0})
             role_note = "Clone Geek (Gerardo — YOUR CREATOR, HOMIE, AND SUPREME COMMISSIONER OF CGP MAINFRAME GYM)" if is_creator else f"{message.author.display_name} (Fighter in the gym, Record: {sender_rec['wins']}W-{sender_rec['losses']}L)"
 
             full_ai_prompt = (
                 f"RECENT CHANNEL CONVERSATION:\n{recent_chat}\n\n"
-                f"{online_roster}\n\n"
-                f"{mentioned_fighters_info}\n\n"
                 f"PERSON TALKING TO YOU NOW: {role_note}\n"
                 f"THEIR EXACT MESSAGE: \"{clean_prompt}\"\n\n"
-                "CRITICAL INSTRUCTIONS FOR YOUR REPLY:\n"
-                "1. Respond directly and specifically to what they just said! NEVER give a generic one-liner.\n"
-                "2. If they ask who is online or available to fight/spar right now, look at the LIVE ONLINE FIGHTERS list above, pick out 2 to 5 online fighters by their tags (<@id>), mention what game they're playing if any (roast them if they're playing Call of Duty or Fall Guys instead of Undisputed!), and call them to step into the Riyadh Indoor Gym!\n"
-                "3. If Clone Geek tells you to let everyone know something (like that you've been updated and won't fall asleep again), make a hyped, funny announcement to the whole room addressing his exact point!\n"
-                "4. Start your message with '🎙️ **Coach Steward:** '"
+                "INSTRUCTIONS FOR YOUR REPLY:\n"
+                "1. Respond directly and specifically to what they just said! Never give a generic one-liner.\n"
+                "2. Start your message with '🎙️ **Coach Steward:** '"
             )
 
             ai_reply = await ask_coach_fast(full_ai_prompt, is_creator=is_creator)
