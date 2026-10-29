@@ -951,7 +951,7 @@ async def handle_ping(request):
 
 async def self_ping_loop():
     await bot.wait_until_ready()
-    async asyncio.sleep(120)
+    await asyncio.sleep(120)
     ping_url = os.environ.get("RENDER_EXTERNAL_URL", MAINFRAME_HUB_URL)
     async with aiohttp.ClientSession() as session:
         while not bot.is_closed():
