@@ -976,5 +976,42 @@ async def main():
     await start_web_server()
     await bot.start(BOT_TOKEN)
 
+@bot.command(aliases=["findopponent", "findmatch", "findspar"])
+async def find_opponent(ctx, member: discord.Member = None):
+    """Instantly pairs a fighter with an available opponent from the active roster database."""
+    if member is None:
+        member = ctx.author
+    
+    # Grab active fighters from records
+    active_fighters = [uid for uid in FIGHTER_RECORDS.keys() if uid != member.id]
+    
+    if not active_fighters:
+        return await ctx.send(f"🎙️ **Coach Steward:** {member.mention}, the gym roster is looking empty! Get these fighters to log their records with `!record` so I can book a matchup!")
+    
+    # Pick a random worthy opponent from the roster
+    opponent_id = random.choice(active_fighters)
+    opponent_member = ctx.guild.get_member(opponent_id)
+    
+    if not opponent_member:
+        try:
+            opponent_member = await ctx.guild.fetch_member(opponent_id)
+        except Exception:
+            opponent_member = None
+            
+    opp_name = opponent_member.display_name if opponent_member else "Unknown Contender"
+    opp_tag = opponent_member.mention if opponent_member else "a mystery fighter"
+    
+    embed = discord.Embed(
+        title="🥊 CGP MAINFRAME GYM MATCHMAKER 🥊",
+        description=(
+            f"🎙️ **Coach Steward:** I've reviewed the Tale of the Tape and found some smoke!\n\n"
+            f"🔥 **{member.mention}** vs **{opp_tag}**\n\n"
+            f"Get your gear on, step into the **Riyadh Indoor Gym**, and let's see who really runs this division! 8 Rounds, 1.5x speed, zero excuses."
+        ),
+        color=discord.Color.gold(),
+        url=MAINFRAME_HUB_URL
+    )
+    await ctx.send(content=f"🔔 **MATCHMAKER ALERT:** {member.mention} has been paired with {opp_tag}!", embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+
 if __name__ == "__main__":
     asyncio.run(main())
