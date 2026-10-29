@@ -320,13 +320,15 @@ model = genai.GenerativeModel(
 
 def ask_coach_ai_sync(prompt_text: str) -> str:
     try:
-        response = model.generate_content(prompt_text, request_options={"timeout": 15.0})
-        if hasattr(response, "text") and response.text and response.text.strip():
+        # Direct, clean call using the Gemini model
+        response = model.generate_content(prompt_text)
+        if response and response.text:
             return response.text.strip()
-        return "🎙️ **Coach Steward:** Now wait a minute, my corner radio went static. Ask me that again, champ!"
+        return "🎙️ **Coach Steward:** Mainframe corner is quiet, Boss! Say that again?"
     except Exception as e:
-        print(f"[AI ERROR]: {e}")
-        return "🎙️ **Coach Steward:** Hold up Boss, my headset mic crackled for a second. Hit me with that one more time!"
+        # This will print the exact Python error to your Render logs so we can see it instantly!
+        print(f"🔥 [EXACT AI ERROR CRASH]: {repr(e)}")
+        return f"🎙️ **Coach Steward:** Hold up Boss, my mic caught an error (`{str(e)[:50]}`). Hit me again!"
 
 async def ask_coach_fast(prompt_text: str, is_creator: bool = False) -> str:
     try:
