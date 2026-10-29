@@ -277,7 +277,7 @@ FIGHTER_RECORDS = load_records()
 genai.configure(api_key=GEMINI_API_KEY)
 generation_config = {
     "temperature": 0.8,
-    "max_output_tokens": 1024,
+    "max_output_tokens": 2048,
 }
 
 SYSTEM_PROMPT = (
