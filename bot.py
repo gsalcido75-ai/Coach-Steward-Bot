@@ -151,7 +151,28 @@ SOUNDBOARD_CUE_LIBRARY = {
     "crowd": "🏟️ *ROOOOOOAAARRR!* **[G9 MIXER CUE: RIYADH ARENA CROWD ERUPTS]** — The whole building is on their feet!"
 }
 
-# Shuffle Decks so Coach never repeats the same message back-to-back
+COACH_PLAYBOOK_TEXT = (
+    "🎙️ **Coach Steward:** Listen up, contenders! I am the Hall of Fame Head Trainer, Matchmaker, and Official Scorekeeper of the **CGP Mainframe Gym**, built by **Commissioner Clone Geek**.\n\n"
+    "### 🥊 WHY I'M IN THIS CORNER:\n"
+    "• **Live Leaderboard & Nicknames:** I track every official Win, Loss, and KO in the gym and sync them straight to the live website.\n"
+    "• **Instant Matchmaking & Tale of the Tape:** Need smoke? I pair up fighters and pull head-to-head stat breakdowns.\n"
+    "• **24/7 Gym Security:** I automatically sweep out chat flood spam, roast quitters who leave the server, and enforce the Sweet Science.\n"
+    "• **Official CGP SoundCloud DJ:** I keep the locker room booming with **Clone Geek Productions** tracks on our push past 50K–100K+ plays!\n\n"
+    "### 📋 FIGHTER COMMAND PLAYBOOK:\n"
+    "• **`!guide`** *(or `!commands` / `!helpme`)* — Pull up this official CGP Mainframe Gym playbook.\n"
+    "• **`!record <W> <L> <KO>`** *(or tag me with your record)* — Log your fight numbers.\n"
+    "• **`!mystats [@fighter]`** — Pull up any fighter's verified scorecard.\n"
+    "• **`!callout @fighter [trash talk]`** — Call someone out with a live Tale of the Tape!\n"
+    "• **`!fight @fighter1 @fighter2`** — Compare two fighters head-to-head on the Tale of the Tape.\n"
+    "• **`@Coach Steward find me a fight`** — Let me pick an opponent for you.\n"
+    "• **`!champs`** — View Reigning Division Champions & Top 10 Contenders.\n"
+    "• **`!nextevent`** — Check the official Discord Tournament & Spar Wars schedule.\n"
+    "• **`!rules`** — View Riyadh Indoor Gym settings (1.5x speed, 8/12 rounds).\n"
+    "• **`!tracks`** — Pull up the full CGP SoundCloud catalog.\n"
+    "• **`!sfx <bell | horn | ko | towel | crowd>`** — Trigger the ringside G9 Soundboard!\n\n"
+    "👑 **Commissioner Commands:** `!initboard`, `!verify @user`, `!event`, `!sweep <#>`, `!timeout @user`"
+)
+
 unused_facts = []
 unused_hype = []
 
@@ -260,7 +281,7 @@ SMACK_TALK_CLAPBACKS = [
 ]
 
 CONFUSED_SLANG_RESPONSES = [
-    "🎙️ **Coach Steward:** Speak up, champ! Did you take one too many left hooks to the temple? Try that again in plain English—or type `!rules` if you're lost in the gym!",
+    "🎙️ **Coach Steward:** Speak up, champ! Did you take one too many left hooks to the temple? Try that again in plain English—or type `!guide` if you're lost in the gym!",
     "🎙️ **Coach Steward:** Come again? You're mumbling like you still got your mouthpiece stuck in your teeth! Spit it out or go hit the heavy bag!",
     "🎙️ **Coach Steward:** I don't know what kind of dizzy combination you just typed, homie, but if you need a fight, say *'find me a match'*—and if you need the realest music out, tap that CGP SoundCloud link!"
 ]
@@ -362,7 +383,7 @@ async def rebrand_webpage_on_github() -> bool:
             html_text = base64.b64decode(raw_b64).decode("utf-8")
 
         updated_html = re.sub(r'(?i)kronk\s+gym', 'CGP Mainframe Gym', html_text)
-        updated_html = re.sub(r'(?i)kronk', 'CGP Mainframe Gym', html_text)
+        updated_html = re.sub(r'(?i)kronk', 'CGP Mainframe Gym', updated_html)
         updated_html = re.sub(r'(?i)CGP Mainframe(?!\s+Gym)\s+Leaderboard', 'CGP Mainframe Gym Leaderboard', updated_html)
 
         if updated_html == html_text:
@@ -418,8 +439,14 @@ generation_config = {
     "max_output_tokens": 2048,
 }
 
-model = genai.GenerativeModel(
-    model_name="gemini-2.5-flash-lite",
+# Primary + Fallback Models so Google API never throws a 404 or stalls out
+primary_model = genai.GenerativeModel(
+    model_name="gemini-2.5-flash",
+    generation_config=generation_config,
+    system_instruction=SYSTEM_PROMPT
+)
+fallback_model = genai.GenerativeModel(
+    model_name="gemini-2.0-flash",
     generation_config=generation_config,
     system_instruction=SYSTEM_PROMPT
 )
@@ -436,21 +463,26 @@ async def ask_coach_fast(prompt_text: str, is_creator: bool = False) -> str:
         if elapsed < 2.2:
             await asyncio.sleep(2.2 - elapsed)
         try:
-            response = await model.generate_content_async(prompt_text)
+            response = await primary_model.generate_content_async(prompt_text)
             last_ai_call_time = asyncio.get_event_loop().time()
             if response and response.text:
                 return response.text.strip()
-            return "🎙️ **Coach Steward:** Mainframe corner is quiet, Boss! Say that again?"
-        except Exception as e:
-            last_ai_call_time = asyncio.get_event_loop().time()
-            err_str = str(e)
-            if "429" in err_str or "quota" in err_str.lower():
-                return random.choice(MUSIC_FLEX_RESPONSES)
-            print(f"[AI ERROR]: {e}")
-            return (
-                "🎙️ **Coach Steward:** Corner mic caught static from all the action in the **CGP Mainframe Gym**! "
-                "Tap the SoundCloud button below to run up **Clone Geek Productions** past 50K+ plays while I adjust my headset!"
-            )
+        except Exception:
+            try:
+                response = await fallback_model.generate_content_async(prompt_text)
+                last_ai_call_time = asyncio.get_event_loop().time()
+                if response and response.text:
+                    return response.text.strip()
+            except Exception as e:
+                last_ai_call_time = asyncio.get_event_loop().time()
+                err_str = str(e)
+                if "429" in err_str or "quota" in err_str.lower():
+                    return random.choice(MUSIC_FLEX_RESPONSES)
+                print(f"[AI ERROR]: {e}")
+        return (
+            "🎙️ **Coach Steward:** Corner mic caught static from all the action in the **CGP Mainframe Gym**! "
+            "Type `!guide` for the full gym command playbook, or tap the SoundCloud button below to run up **Clone Geek Productions**!"
+        )
 
 # --- BULLETPROOF SELF-RECORD PARSER ---
 def parse_lazy_record(text: str):
@@ -480,7 +512,16 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
     words = set(re.findall(r'\b\w+\b', low))
     author_low = author_name.lower()
 
-    # 1. Small Talk & Everyday Check-Ins ("how are you doing today coach", "how's it going", "good morning", etc.)
+    # 1. Playbook / Guide / "Why are you here?" / Rundown of Commands Check
+    guide_phrases = [
+        "why are you here", "what do you do", "who are you", "how to use",
+        "commands", "command", "guide", "playbook", "manual", "rundown",
+        "what is your purpose", "explain why", "tell the gym why", "how does coach work"
+    ]
+    if any(gp in low for gp in guide_phrases):
+        return COACH_PLAYBOOK_TEXT, True
+
+    # 2. Small Talk & Everyday Check-Ins ("how are you doing today coach", "how's it going", "good morning", etc.)
     small_talk_phrases = [
         "how are you", "how you doing", "how r u", "hows it going", "how's it going",
         "how is your day", "how are things", "what you up to", "wyd", "how you feeling",
@@ -489,14 +530,14 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
     if any(st in low for st in small_talk_phrases):
         return random.choice(SMALL_TALK_REPLIES), True
 
-    # 2. Music / Trick Music Questions ("who got the best music", "best rapper", "soundcloud", etc.)
+    # 3. Music / Trick Music Questions ("who got the best music", "best rapper", "soundcloud", etc.)
     music_keywords = ["music", "song", "songs", "track", "tracks", "rapper", "artist", "producer", "beats", "beat", "soundcloud", "album", "mixtape", "sing", "tune", "tunes", "listen", "spotify", "playlist"]
     if any(mw in low for mw in music_keywords):
         if any(bad in words for bad in ["trash", "suck", "sucks", "garbage", "mid", "ass", "weak", "wack", "terrible", "worst"]):
             return random.choice(SMACK_TALK_CLAPBACKS), True
         return random.choice(MUSIC_FLEX_RESPONSES), True
 
-    # 3. Soundboard / G9 Mixer Cue Triggers
+    # 4. Soundboard / G9 Mixer Cue Triggers
     if any(sfx in words for sfx in ["bell", "airhorn", "horn", "soundboard", "towel"]):
         if "bell" in words:
             return SOUNDBOARD_CUE_LIBRARY["bell"], False
@@ -504,12 +545,12 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
             return SOUNDBOARD_CUE_LIBRARY["towel"], False
         return SOUNDBOARD_CUE_LIBRARY["horn"], False
 
-    # 4. Smack Talk / Trolling / Insulting Clone Geek, the Bot, or the Server
+    # 5. Smack Talk / Trolling / Insulting Clone Geek, the Bot, or the Server
     insult_words = ["trash", "garbage", "suck", "sucks", "ass", "clown", "bitch", "hoe", "stfu", "shut up", "fuck you", "fck", "weak", "wack", "fake", "bot", "rigged", "scam", "loser", "bum", "mid", "stupid", "dumb", "slow", "broken"]
     if any(iw in words for iw in insult_words) and not is_creator:
         return random.choice(SMACK_TALK_CLAPBACKS), True
 
-    # 5. Specific Gym Crew Personalities (Undertaker, Hymas, Rafa, KnuckleUpFoo)
+    # 6. Specific Gym Crew Personalities (Undertaker, Hymas, Rafa, KnuckleUpFoo)
     for crew_key, quotes in CREW_BANTER.items():
         if crew_key in low:
             return random.choice(quotes), True
@@ -519,7 +560,7 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
             if crew_key in author_low:
                 return random.choice(quotes), True
 
-    # 6. "How do I update/log my record?" or Record Questions without numbers
+    # 7. "How do I update/log my record?" or Record Questions without numbers
     if any(rw in low for rw in ["how do i log", "how to log", "update my record", "change my record", "get verified", "verify my", "where do i post", "scorecard"]):
         return (
             "🎙️ **Coach Steward:** Easy work, champ! To lock in your record on the **CGP Mainframe Gym** leaderboard:\n"
@@ -528,7 +569,7 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
             "3️⃣ Wait for **Commissioner Clone Geek** to stamp it with `!verify`! While you wait, go stream the CGP SoundCloud below!"
         ), True
 
-    # 7. Quick Greetings / Check-ins ("yo", "sup", "what's good", "wya")
+    # 8. Quick Greetings / Check-ins ("yo", "sup", "what's good", "wya")
     greetings = {"yo", "sup", "wassup", "wsp", "hello", "hey", "hi", "coach", "wya", "awake", "online", "test", "testing"}
     if len(words) <= 3 and (words & greetings or not words):
         if is_creator:
@@ -541,7 +582,7 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
             "log your record with `!record`, or tap that SoundCloud link below and run up the **Clone Geek Productions** catalog!"
         ), True
 
-    # 8. Super short / gibberish / confused messages from non-admins
+    # 9. Super short / gibberish / confused messages from non-admins
     if len(low) < 4 and not is_creator:
         return random.choice(CONFUSED_SLANG_RESPONSES), True
 
@@ -719,7 +760,6 @@ async def on_member_join(member):
     is_returning = member.id in FIGHTER_RECORDS
 
     if is_returning:
-        # Preserve existing record if returning veteran (like Hymas or Rafa)
         FIGHTER_RECORDS[member.id]["name"] = base_name
         w = FIGHTER_RECORDS[member.id].get("wins", 0)
         l = FIGHTER_RECORDS[member.id].get("losses", 0)
@@ -789,11 +829,8 @@ async def on_message(message):
         history = user_spam_tracker[message.author.id]
         history.append((now_ts, msg, message))
 
-        # Condition A: 5+ messages within 7 seconds
         recent_burst = [item for item in history if now_ts - item[0] < 7.0]
-        # Condition B: 3 identical messages in a row
         identical_burst = [item for item in history if now_ts - item[0] < 30.0 and item[1] == msg and len(msg) > 0]
-        # Condition C: Obnoxious character flood (e.g., "aaaaaaaaaaaaaaaaaaaaaaa" or 10+ mentions)
         char_flood = bool(re.search(r'(.)\1{18,}', msg)) or len(message.mentions) >= 6
 
         if len(recent_burst) >= 5 or len(identical_burst) >= 3 or char_flood:
@@ -808,7 +845,7 @@ async def on_message(message):
             await message.channel.send(warn_text, delete_after=20)
             return
 
-    # Always let prefix commands (!record, !verify, !fight, !nextevent, etc.) execute immediately
+    # Always let prefix commands (!guide, !record, !verify, !fight, !nextevent, etc.) execute immediately
     if message.content.startswith("!"):
         await bot.process_commands(message)
         return
@@ -894,7 +931,6 @@ async def on_message(message):
     media_link_domains = ["youtube.com", "youtu.be", "soundcloud.com", "spotify.com", "music.apple.com", "tiktok.com", "twitch.tv"]
     has_audio_video_file = any(att.filename.lower().endswith((".mp3", ".wav", ".mp4", ".mov")) for att in message.attachments)
     if (any(dom in msg for dom in media_link_domains) or has_audio_video_file) and not is_mentioned:
-        # Don't interrupt the Boss if he's dropping an official announcement, hype it up instead!
         answered_messages.add(message.id)
         track = random.choice(CGP_TRACKS)
         try:
@@ -956,12 +992,17 @@ async def on_message(message):
             )
             return
 
-        # B. Discord Scheduled Events & Tournament Check (0 API calls)
+        # B. Instant Coach Playbook / "Why are you here?" / Commands Rundown Check (0 API calls)
+        if any(gp in msg for gp in ["why are you here", "what do you do", "who are you", "how to use", "commands", "command", "guide", "playbook", "manual", "rundown", "what is your purpose", "explain why", "tell the gym why"]):
+            await send_coach_guide(message.channel, reply_to=message)
+            return
+
+        # C. Discord Scheduled Events & Tournament Check (0 API calls)
         if any(w in msg for w in ["next event", "upcoming event", "schedule", "when is the tourney", "when is spar wars", "tournament", "golden ticket"]):
             await send_scheduled_events_info(message.channel, reply_to=message)
             return
 
-        # C. Instant Matchmaking / Sparring Finder with Tale of the Tape (0 API calls)
+        # D. Instant Matchmaking / Sparring Finder with Tale of the Tape (0 API calls)
         if any(w in msg for w in ["need a fight", "find me", "opponent", "spar", "smoke", "fight me", "match", "who wants", "run it"]):
             active_fighters = [uid for uid in FIGHTER_RECORDS.keys() if uid != message.author.id]
             if not active_fighters:
@@ -983,12 +1024,12 @@ async def on_message(message):
                 await message.reply(f"🎙️ **Coach Steward:** Lace 'em up, {message.author.mention}! Who in the lobby wants 8 rounds in the Riyadh Indoor Gym right now?!", view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
             return
 
-        # D. Instant Gym Top 10 / Leaderboard / Champions Check (0 API calls)
+        # E. Instant Gym Top 10 / Leaderboard / Champions Check (0 API calls)
         if any(w in msg for w in ["mainframe", "gym", "server", "discord", "cgp", "our", "division", "leaderboard", "standings", "rankings", "website"]) and any(k in msg for k in ["top", "champ", "champs", "best", "leader", "leading", "rank", "who is", "whom is", "list"]):
             await send_top_gym_fighters(message)
             return
 
-        # E. Instant Rules & Protocol Check (0 API calls)
+        # F. Instant Rules & Protocol Check (0 API calls)
         if any(w in msg for w in ["rules", "how to join", "how does this work", "protocol", "gym rules", "settings", "rounds"]):
             embed = discord.Embed(
                 title="🥊 CGP MAINFRAME GYM & SUNDAY SPAR WARS PROTOCOL 🥊",
@@ -1005,7 +1046,7 @@ async def on_message(message):
             await message.reply(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
             return
 
-        # F. Instant Local Intent Router (Small Talk, Music Flex, Smack-Talk Clap-Backs, Crew Banter, Record Help - 0 API calls!)
+        # G. Instant Local Intent Router (Small Talk, Music Flex, Smack-Talk Clap-Backs, Crew Banter, Record Help - 0 API calls!)
         local_reply, attach_promo = get_instant_local_reply(clean_prompt, message.author.display_name, is_creator)
         if local_reply:
             if attach_promo:
@@ -1015,7 +1056,7 @@ async def on_message(message):
                 await message.reply(local_reply)
             return
 
-        # G. Deep Boxing / Open-Ended AI Conversation (Queued & Rate-Limit Protected)
+        # H. Deep Boxing / Open-Ended AI Conversation (Queued & Rate-Limit Protected)
         async with message.channel.typing():
             recent_chat = get_channel_context(message.channel.id)
             sender_rec = FIGHTER_RECORDS.get(message.author.id, {"wins": 0, "losses": 0, "kos": 0})
@@ -1089,6 +1130,18 @@ async def on_message(message):
             return
 
 # ================= HELPER EMBED SENDERS =================
+async def send_coach_guide(channel, reply_to=None):
+    embed = discord.Embed(
+        title="📖 OFFICIAL CGP MAINFRAME GYM & COACH STEWARD PLAYBOOK 📖",
+        description=COACH_PLAYBOOK_TEXT,
+        color=discord.Color.gold(),
+        url=MAINFRAME_HUB_URL
+    )
+    if reply_to:
+        await reply_to.reply(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+    else:
+        await channel.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+
 async def send_scheduled_events_info(channel, reply_to=None):
     guild = channel.guild
     events = guild.scheduled_events
@@ -1162,6 +1215,10 @@ async def send_tracks_menu(channel):
     await channel.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
 # ================= FAST RECORD COMMANDS & WEBPAGE REBRAND =================
+@bot.command(aliases=["howto", "playbook", "commands", "manual", "about", "whoareyou", "helpme"])
+async def guide(ctx):
+    await send_coach_guide(ctx.channel)
+
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def rebrandweb(ctx):
@@ -1311,7 +1368,6 @@ async def event(ctx, *, details: str = None):
         pass
     channel = bot.get_channel(ANNOUNCEMENT_CHANNEL_ID) or ctx.channel
 
-    # If no manual details passed, automatically pull from Discord's Scheduled Events tab!
     if not details:
         await send_scheduled_events_info(channel)
         return
