@@ -294,7 +294,7 @@ def save_records():
 
 FIGHTER_RECORDS = load_records()
 
-# ================= BULLETPROOF GEMINI AI BRAIN (USING GEMINI-1.5-FLASH) =================
+# ================= LOCKED TO GEMINI-3.8-FLASH =================
 genai.configure(api_key=GEMINI_API_KEY)
 generation_config = {
     "temperature": 0.8,
@@ -313,21 +313,19 @@ SYSTEM_PROMPT = (
 )
 
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
+    model_name="gemini-3.8-flash",
     generation_config=generation_config,
     system_instruction=SYSTEM_PROMPT
 )
 
 def ask_coach_ai_sync(prompt_text: str) -> str:
     try:
-        # Direct, clean call using the Gemini model
-        response = model.generate_content(prompt_text)
-        if response and response.text:
+        response = model.generate_content(prompt_text, request_options={"timeout": 15.0})
+        if hasattr(response, "text") and response.text and response.text.strip():
             return response.text.strip()
-        return "🎙️ **Coach Steward:** Mainframe corner is quiet, Boss! Say that again?"
+        return "🎙️ **Coach Steward:** Now wait a minute, my corner radio went static. Ask me that again, champ!"
     except Exception as e:
-        # This will print the exact Python error to your Render logs so we can see it instantly!
-        print(f"🔥 [EXACT AI ERROR CRASH]: {repr(e)}")
+        print(f"[AI ERROR]: {e}")
         return f"🎙️ **Coach Steward:** Hold up Boss, my mic caught an error (`{str(e)[:50]}`). Hit me again!"
 
 async def ask_coach_fast(prompt_text: str, is_creator: bool = False) -> str:
@@ -820,7 +818,7 @@ async def mystats(ctx, member: discord.Member = None):
         data = FIGHTER_RECORDS[target.id]
         status = "✅ Official & Verified" if data.get("verified") else "⏳ Pending Verification"
         embed = discord.Embed(
-            title=f"🥊 TALE OF THE TAPE: {data['name']} 🥊",
+            title=f"🏆 OFFICIAL CGP MAINFRAME GYM CHAMPIONSHIP BOARD 🏆",
             description=f"**Record:** {data['wins']}W - {data['losses']}L ({data.get('kos', 0)} KOs)\n**Status:** {status}",
             color=discord.Color.gold(),
             url=MAINFRAME_HUB_URL
@@ -953,7 +951,7 @@ async def handle_ping(request):
 
 async def self_ping_loop():
     await bot.wait_until_ready()
-    await asyncio.sleep(120)
+    async asyncio.sleep(120)
     ping_url = os.environ.get("RENDER_EXTERNAL_URL", MAINFRAME_HUB_URL)
     async with aiohttp.ClientSession() as session:
         while not bot.is_closed():
