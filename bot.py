@@ -321,9 +321,10 @@ def get_channel_context(channel_id: int) -> str:
         return "No recent messages."
     return "\n".join(channel_memory[channel_id])
 
-# --- HELPER TO CLEAN & FORMAT NICKNAMES (4-PART W-L-D-KO FORMAT) ---
+# --- HELPER TO CLEAN & FORMAT NICKNAMES (BULLETPROOF NO-DUPLICATE REGEX) ---
 def clean_base_name(display_name: str) -> str:
-    return re.sub(r'\s*\[\d+W-\d+L-\d+D-\d+K\]$', '', display_name).strip()
+    # Strips out any existing bracketed record suffix (1, 2, 3, or 4 parts)
+    return re.sub(r'\s*\[\d+W-\d+L(?:-\d+D)?(?:-\d+K)?\]$', '', display_name).strip()
 
 def format_record_nick(base_name: str, wins: int, losses: int, draws: int = 0, kos: int = 0) -> str:
     tag = f" [{wins}W-{losses}L-{draws}D-{kos}K]"
