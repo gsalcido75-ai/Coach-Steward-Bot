@@ -321,12 +321,12 @@ def get_channel_context(channel_id: int) -> str:
         return "No recent messages."
     return "\n".join(channel_memory[channel_id])
 
-# --- HELPER TO CLEAN & FORMAT NICKNAMES (SUPPORTS DRAWS!) ---
+# --- HELPER TO CLEAN & FORMAT NICKNAMES (4-PART W-L-D-KO FORMAT) ---
 def clean_base_name(display_name: str) -> str:
-    return re.sub(r'\s*\[\d+W-\d+L(?:-\d+D)?\]$', '', display_name).strip()
+    return re.sub(r'\s*\[\d+W-\d+L-\d+D-\d+K\]$', '', display_name).strip()
 
-def format_record_nick(base_name: str, wins: int, losses: int, draws: int = 0) -> str:
-    tag = f" [{wins}W-{losses}L-{draws}D]" if draws > 0 else f" [{wins}W-{losses}L]"
+def format_record_nick(base_name: str, wins: int, losses: int, draws: int = 0, kos: int = 0) -> str:
+    tag = f" [{wins}W-{losses}L-{draws}D-{kos}K]"
     max_base_len = 32 - len(tag)
     trimmed_base = base_name[:max_base_len].strip()
     return f"{trimmed_base}{tag}"
