@@ -362,7 +362,7 @@
     "1213785736180924497": {
         "name": "DT",
         "wins": 0,
-        "losses": 0,
+        "losses": 1,
         "kos": 0,
         "verified": true,
         "draws": 0
@@ -625,7 +625,7 @@
     },
     "1279476207603290197": {
         "name": "Clone_Geek",
-        "wins": 1,
+        "wins": 2,
         "losses": 0,
         "draws": 0,
         "kos": 1,
