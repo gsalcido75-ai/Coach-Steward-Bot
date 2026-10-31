@@ -52,7 +52,6 @@ CHAMPIONS_DATA = {
     "Women's Lightweight": {"fighter": "TURBO", "record": "7W - 2L - 0D - 0K"}
 }
 
-# ================= 25 DEEP BOXING & CGP MAINFRAME GYM HISTORY FACTS =================
 BOXING_HISTORY_FACTS = [
     "🥊 **Ancient Origins (688 BC):** Boxing ('Pygmachia') was first introduced into the Ancient Greek Olympic Games in 688 BC.",
     "🥊 **Marquess of Queensberry (1867):** Modern boxing was born in 1867 with 3-minute rounds and padded gloves.",
@@ -81,7 +80,6 @@ BOXING_HISTORY_FACTS = [
     "🥊 **Canelo's Undisputed Run (2021):** Saúl 'Canelo' Álvarez unified all four belts at 168 lbs in under 11 months, stopping Caleb Plant to become the first undisputed super middleweight king."
 ]
 
-# ================= EXPANDED FRESH HYPE & ACTIVE LISTENER VAULTS =================
 RANDOM_HYPE_QUOTES = [
     "🎙️ **Coach Steward:** Hey! I see you quiet in the back. Stop shadowboxing your demons and drop some weight on the heavy bag in the CGP Mainframe Gym!",
     "🎙️ **Coach Steward:** A reminder from the CGP Mainframe Gym corner: talent wins fights, but conditioning wins titles. Put in those reps!",
@@ -161,19 +159,16 @@ COACH_PLAYBOOK_TEXT = (
     "### 📋 FIGHTER COMMAND PLAYBOOK:\n"
     "• **`!guide`** *(or `!commands` / `!helpme`)* — Pull up this official CGP Mainframe Gym playbook.\n"
     "• **`!record <W> <L> [D] [KO]`** *(or tag me with your record)* — Log your Wins, Losses, Draws, and KOs.\n"
+    "• **`!verify @fighter <W> <L> [D] [KO]`** — Commissioner stamp & update any fighter's record instantly.\n"
     "• **`!analyze`** *(attach or reply to a screenshot)* — Have me scan a scorecard/stat screen and post an HBO CompuBox Report.\n"
-    "• **`!mystats [@fighter]`** — Pull up any fighter's verified scorecard (Wins, Losses, Draws, KOs).\n"
-    "• **`!findfight [@fighter]`** *(or `@Coach Steward find an opponent for @fighter`)* — Scan online players & book a live matchup.\n"
-    "• **`!whoson`** *(or `@Coach Steward who is online playing Undisputed?`)* — Scan the server for live active fighters.\n"
+    "• **`!mystats [@fighter]`** — Pull up any fighter's verified scorecard.\n"
+    "• **`!findfight [@fighter]`** — Scan online players & book a live matchup.\n"
+    "• **`!whoson`** — Scan the server for live active fighters.\n"
     "• **`!callout @fighter [trash talk]`** — Call someone out with a live Tale of the Tape!\n"
-    "• **`!fight @fighter1 @fighter2`** — Compare two fighters head-to-head on the Tale of the Tape.\n"
-    "• **`!bracketstatus`** — Check the current interactive tournament sign-up sheet.\n"
-    "• **`!champs`** — View Reigning Division Champions & Top 10 Contenders.\n"
-    "• **`!nextevent`** — Check the official Discord Tournament & Spar Wars schedule.\n"
-    "• **`!rules`** — View Riyadh Indoor Gym settings & Scorecard Verification rules.\n"
+    "• **`!fight @fighter1 @fighter2`** — Compare two fighters head-to-head.\n"
     "• **`!tracks`** — Pull up the full CGP SoundCloud catalog.\n"
     "• **`!sfx <bell | horn | ko | towel | crowd>`** — Trigger the ringside G9 Soundboard!\n\n"
-    "👑 **Commissioner Commands:** `!initboard`, `!resetall`, `!verify @user`, `!fightrecap @W @L <notes>`, `!openbracket <size> <name>`, `!closebracket`, `!event`, `!sweep <#>`, `!timeout @user`"
+    "👑 **Commissioner Commands:** `!initboard`, `!resetall`, `!verify @user <W> <L> <D> <KO>`, `!fightrecap @W @L <notes>`, `!openbracket <size> <name>`, `!closebracket`, `!sweep <#>`, `!timeout @user`"
 )
 
 unused_facts = []
@@ -193,7 +188,6 @@ def get_next_hype_quote() -> str:
         random.shuffle(unused_hype)
     return unused_hype.pop()
 
-# ================= CGP MAINFRAME GYM MORNING & MIDNIGHT CREEDS =================
 MORNING_MESSAGES = [
     (
         "☀️ **GOOD MORNING, CGP MAINFRAME GYM!** ☀️\n"
@@ -247,7 +241,6 @@ BOOT_MESSAGES = [
     "🎙️ **Coach Steward:** Fresh coffee poured, pads are mitts-up in the CGP Mainframe Gym. Let's see who's online and training in here today!"
 ]
 
-# --- INSTANT LOCAL PROMO & ROAST VAULTS (ZERO API CALLS) ---
 MUSIC_FLEX_RESPONSES = [
     (
         "🎙️ **Coach Steward:** You really asking who got the best music on the scene right now?! Look at the top of the pound-for-pound charts, champ—it's **Clone Geek Productions (Registry Records)** all day! "
@@ -307,7 +300,6 @@ CREW_BANTER = {
     ]
 }
 
-# --- ROLLING CHANNEL MEMORY & SPAM TRACKER ---
 channel_memory = {}
 user_spam_tracker = defaultdict(lambda: deque(maxlen=6))
 last_organic_chime = 0.0
@@ -324,7 +316,6 @@ def get_channel_context(channel_id: int) -> str:
         return "No recent messages."
     return "\n".join(channel_memory[channel_id])
 
-# --- NUCLEAR BRACKET SCRUBBER & 4-PART [W-L-D-K] NICKNAME FORMATTER ---
 def clean_base_name(display_name: str) -> str:
     cleaned = re.sub(r'\s*\[\d+W[^\]]*\]', '', display_name, flags=re.IGNORECASE)
     cleaned = re.sub(r'\s*\[\d+W.*$', '', cleaned, flags=re.IGNORECASE)
@@ -337,7 +328,6 @@ def format_record_nick(base_name: str, wins: int, losses: int, draws: int = 0, k
     trimmed_base = clean_base[:max_base_len].strip()
     return f"{trimmed_base}{tag}"
 
-# --- SMART CHANNEL ROUTER HELPERS ---
 def get_coaches_corner_channel(guild):
     for ch in guild.text_channels:
         if any(k in ch.name.lower() for k in ["coaches-corner", "coach-corner", "coaches_corner", "bot-feed"]):
@@ -362,7 +352,6 @@ def get_music_channel(guild):
             return ch
     return get_coaches_corner_channel(guild)
 
-# --- AUTOMATIC GITHUB SYNC ---
 async def push_stats_to_github():
     if not GITHUB_TOKEN or not GITHUB_REPO:
         return
@@ -461,7 +450,6 @@ def save_records():
 
 FIGHTER_RECORDS = load_records()
 
-# ================= LIVE ONLINE & UNDISPUTED PRESENCE SCANNER =================
 def is_playing_undisputed(member: discord.Member) -> bool:
     for act in getattr(member, "activities", []):
         act_name = getattr(act, "name", "") or ""
@@ -524,7 +512,6 @@ def resolve_fighter_from_text(guild: discord.Guild, text: str, exclude_ids: set 
                 return m
     return None
 
-# ================= 1-CLICK INTERACTIVE TOURNAMENT BRACKET ENGINE =================
 ACTIVE_TOURNAMENT = {
     "active": False,
     "title": "SUNDAY SPAR WARS TOURNAMENT",
@@ -656,7 +643,6 @@ class TournamentBracketView(discord.ui.View):
             f"🏳️ **SLOT OPENED!** {interaction.user.mention} stepped out of the bracket—**`{spots_left}`** slot(s) now open for **{ACTIVE_TOURNAMENT['title']}**!"
         )
 
-# ================= SYSTEM PROMPT & GEMINI CONFIGURATION =================
 SYSTEM_PROMPT = (
     "You are Coach Steward, the charismatic, sharp-witted Hall of Fame head trainer and ringside analyst of the CGP Mainframe Gym (Clone Geek Productions). "
     "You talk like a real human boxing OG and cornerman—natural, conversational, funny, gritty, and adaptive. NEVER sound like a generic bot or repeat robotic catchphrases!\n\n"
@@ -686,7 +672,6 @@ fallback_model = genai.GenerativeModel(
     system_instruction=SYSTEM_PROMPT
 )
 
-# --- CONCURRENCY GATEKEEPER FOR FREE API TIER ---
 ai_lock = asyncio.Lock()
 last_ai_call_time = 0.0
 
@@ -719,7 +704,6 @@ async def ask_coach_fast(prompt_text: str, is_creator: bool = False) -> str:
             "Type `!guide` for the full gym command playbook, or tap the SoundCloud button below to run up **Clone Geek Productions**!"
         )
 
-# --- BULLETPROOF SELF-RECORD PARSER (SUPPORTS WINS, LOSSES, DRAWS & KOS) ---
 def parse_lazy_record(text: str):
     clean = re.sub(r'<@!?\d+>', '', text).lower()
     clean = re.sub(r'\b\d{1,2}(?:st|nd|rd|th)?\s*(?:of\s+)?(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\b', '', clean)
@@ -747,7 +731,6 @@ def parse_lazy_record(text: str):
             return w, l, d, k
     return None
 
-# --- INSTANT LOCAL INTENT ROUTER ---
 def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool):
     low = clean_text.lower().strip()
     words = set(re.findall(r'\b\w+\b', low))
@@ -800,7 +783,7 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
             "🎙️ **Coach Steward:** Easy work, champ! To lock in your official 4-part `[W-L-D-K]` stats on the **CGP Mainframe Gym** leaderboard:\n"
             "1️⃣ **Upload Proof First:** Drop your match scorecard screenshot inside `#scorecards-submission` — I will automatically scan every punch stat and broadcast an HBO CompuBox Report in `#coaches-corner`!\n"
             "2️⃣ **Log Your Numbers:** Tag me with your record (like `@Coach Steward my record is 4-1-1-2`) or type **`!record <wins> <losses> <draws> <kos>`**.\n"
-            "3️⃣ **Commissioner Stamp:** **Clone Geek** will verify your proof with `!verify @user` and lock your `[W-L-D-K]` nickname onto the live board!"
+            "3️⃣ **Commissioner Stamp:** **Commissioner Clone Geek** will verify your proof with `!verify @user` and lock your `[W-L-D-K]` nickname onto the live board!"
         ), True
 
     greetings = {"yo", "sup", "wassup", "wsp", "hello", "hey", "hi", "coach", "wya", "awake", "online", "test", "testing"}
@@ -820,7 +803,6 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
 
     return None, False
 
-# --- TALE OF THE TAPE BUILDER (4-PART W-L-D-K FORMAT + LIVE PRESENCE BADGES) ---
 def build_tale_of_the_tape_embed(f1: discord.Member, f2: discord.Member, subtitle: str = "Riyadh Indoor Gym | 8 Rounds | 1.5x Speed"):
     r1 = FIGHTER_RECORDS.get(f1.id, {"wins": 0, "losses": 0, "draws": 0, "kos": 0, "verified": False})
     r2 = FIGHTER_RECORDS.get(f2.id, {"wins": 0, "losses": 0, "draws": 0, "kos": 0, "verified": False})
@@ -878,7 +860,6 @@ class PromoButtons(discord.ui.View):
         self.add_item(discord.ui.Button(label="🔥 1-Click Stream, Like & Comment", url=track_url, style=discord.ButtonStyle.link))
         self.add_item(discord.ui.Button(label="⚡ CGP Mainframe Gym Hub", url=MAINFRAME_HUB_URL, style=discord.ButtonStyle.link))
 
-# ================= SMART MATCHMAKER & ONLINE SCANNER HANDLER =================
 async def handle_online_matchmaking(channel: discord.abc.Messageable, fighter_seeking: discord.Member, reply_to: discord.Message = None, scan_only: bool = False):
     guild = channel.guild
     exclude = {fighter_seeking.id} if not scan_only else set()
@@ -958,7 +939,6 @@ async def handle_online_matchmaking(channel: discord.abc.Messageable, fighter_se
         else:
             await channel.send(msg_txt, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
-# ================= MASTER ROSTER SYNC & RESET ENGINE =================
 async def execute_roster_sync_and_announce(guild: discord.Guild, origin_channel: discord.abc.Messageable, force_zero: bool = False):
     status_Text = (
         "⏳ **Coach Steward:** Scrubbing all duplicate brackets across the CGP Mainframe Gym roster, "
@@ -1015,8 +995,8 @@ async def execute_roster_sync_and_announce(guild: discord.Guild, origin_channel:
             f"✅ **{count} Fighters Registered:** Every member in the server is locked into the live database tracking **Wins, Losses, Draws, and KOs (`[0W-0L-0D-0K]`)**!\n\n"
             "### 🥊 HOW TO GET YOUR STATS VERIFIED ON THE BOARD:\n"
             "1️⃣ **Upload Your Scorecard:** Drop your post-fight screenshot inside `#scorecards-submission` — I will automatically scan every punch stat and broadcast an HBO CompuBox Report in `#coaches-corner`!\n"
-            "2️⃣ **Report Your Numbers:** Type **`!record <wins> <losses> [draws] [kos]`** (example: `!record 3 0 1 2`) or tag `@Coach Steward` with your record.\n"
-            "3️⃣ **Get Stamped:** **Commissioner Clone Geek** will verify your scorecard with **`!verify @user`**, which locks your stats onto the board and updates your server nickname to `[W-L-D-K]`!\n"
+            "2️⃣ **Report Your Numbers:** Type **`!record <wins> <losses> [draws] [kos]`** or use **`!verify @fighter <W> <L> <D> <KO>`**.\n"
+            "3️⃣ **Get Stamped:** **Commissioner Clone Geek** verifies scorecards to lock stats onto the board and update server nicknames!\n"
             "4️⃣ **Check Your File:** Type **`!mystats`** anytime or click the Mainframe Gym Hub button below!"
         ),
         color=discord.Color.gold(),
@@ -1028,10 +1008,6 @@ async def execute_roster_sync_and_announce(guild: discord.Guild, origin_channel:
         view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
     )
 
-    if announce_channel.id != origin_channel.id:
-        await origin_channel.send(f"✅ **Roster Synced!** Updated **{count}** fighters (`{nick_updated}` nicknames cleaned to `[W-L-D-K]`) and posted the announcement in {announce_channel.mention}!")
-
-# ================= AI VISION SCORECARD & PUNCH STAT ANALYZER =================
 async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str, uploader_name: str, caption: str = "") -> str:
     global last_ai_call_time
     vision_prompt = (
@@ -1046,7 +1022,7 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
         "• **Knockdowns & Stamina / Health:** (List knockdowns, dazed states, and remaining stamina %)\n\n"
         "🎙️ **COACH STEWARD'S RINGSIDE VERDICT:**\n"
         "Write 3 to 4 gritty sentences of HBO ringside commentary explaining WHY the winner took this fight based on the numbers "
-        "(e.g., body-shot investment draining stamina, counter-punching accuracy, or punishing power-spam) and tell the loser that the numbers don't lie—zero excuses in the CGP Mainframe Gym!"
+        "and tell the loser that the numbers don't lie—zero excuses in the CGP Mainframe Gym!"
     )
 
     image_part = {"mime_type": mime_type or "image/jpeg", "data": image_bytes}
@@ -1095,7 +1071,7 @@ async def process_and_broadcast_scorecard(message: discord.Message):
         f"🎙️ **Coach Steward:** 📸 **OFFICIAL SCORECARD & COMPUBOX STATS RECEIVED!**\n"
         f"Scanning every jab, uppercut, power shot, body connect, and knockdown on this screenshot right now and broadcasting the full HBO Ringside Report to `#🥊-coaches-corner-🦾`!\n"
         f"• **Your Current File:** `{rec.get('wins', 0)}W - {rec.get('losses', 0)}L - {rec.get('draws', 0)}D - {rec.get('kos', 0)}K`\n"
-        f"• **Next Step:** Type **`!record <Wins> <Losses> <Draws> <KOs>`** so **Commissioner Clone Geek** can stamp it with `!verify {message.author.mention}`!"
+        f"• **To Update Records:** Use **`!verify @fighter <W> <L> <D> <KO>`** or tag me: `@Coach Steward make @Fighter <W>-<L>-<D>-<KO>`!"
     )
 
     report_text = await analyze_scorecard_image_with_vision(
@@ -1132,7 +1108,7 @@ async def process_and_broadcast_scorecard(message: discord.Message):
             content=(
                 f"🎙️ **Coach Steward:** ✅ **HBO RINGSIDE REPORT POSTED IN {corner_ch.mention}!**\n"
                 f"• **Your Current File:** `{rec.get('wins', 0)}W - {rec.get('losses', 0)}L - {rec.get('draws', 0)}D - {rec.get('kos', 0)}K`\n"
-                f"• **Next Step:** Type **`!record <Wins> <Losses> <Draws> <KOs>`** so **Commissioner Clone Geek** can stamp it official with `!verify {message.author.mention}`!"
+                f"• **To Update Records:** Use **`!verify @fighter <W> <L> <D> <KO>`**!"
             ),
             view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
         )
@@ -1140,7 +1116,6 @@ async def process_and_broadcast_scorecard(message: discord.Message):
         pass
     return True
 
-# ================= TARGETED 3-CHANNEL BACKGROUND LOOPS =================
 @tasks.loop(time=datetime.time(hour=8, minute=0, tzinfo=CENTRAL_TZ))
 async def daily_morning_call():
     await bot.wait_until_ready()
@@ -1243,7 +1218,6 @@ async def on_ready():
 
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Clone Geek on SoundCloud | CGP Mainframe Gym"))
 
-# ================= JOIN / LEAVE / KICK REACTIONS (4-PART W-L-D-K FORMAT) =================
 @bot.event
 async def on_member_join(member):
     if member.bot:
@@ -1307,7 +1281,6 @@ async def on_member_remove(member):
     if target_ch:
         await target_ch.send(roast_msg, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
-# ================= MASTER ON_MESSAGE ROUTER =================
 @bot.event
 async def on_message(message):
     global last_organic_chime
@@ -1319,6 +1292,53 @@ async def on_message(message):
     msg = message.content.lower()
     words_list = re.findall(r'\b\w+\b', msg)
     is_creator = (message.author.id == CREATOR_ID) or message.author.guild_permissions.administrator
+
+    # ================= TOP PRIORITY: ADMIN NATURAL LANGUAGE RECORD UPDATER =================
+    if is_creator and any(w in msg for w in ["make", "set", "reflect", "update", "change", "put", "give"]):
+        text_without_bot = re.sub(rf'<@!?{bot.user.id}>', '', message.content)
+        pattern = r'<@!?(\d+)>[^0-9<>]*?(\d{1,3})\s*[-–to/]\s*(\d{1,3})(?:\s*[-–to/]\s*(\d{1,3}))?(?:\s*[-–to/]\s*(\d{1,3}))?'
+        matches = list(re.finditer(pattern, text_without_bot, re.IGNORECASE))
+        
+        if matches:
+            answered_messages.add(message.id)
+            updated_summaries = []
+            for m in matches:
+                target_id = int(m.group(1))
+                w = int(m.group(2))
+                l = int(m.group(3))
+                d = int(m.group(4)) if m.group(4) is not None else FIGHTER_RECORDS.get(target_id, {}).get("draws", 0)
+                k = int(m.group(5)) if m.group(5) is not None else FIGHTER_RECORDS.get(target_id, {}).get("kos", 0)
+                
+                member_obj = message.guild.get_member(target_id)
+                if not member_obj:
+                    try:
+                        member_obj = await message.guild.fetch_member(target_id)
+                    except Exception:
+                        member_obj = None
+                
+                base_name = clean_base_name(member_obj.display_name) if member_obj else FIGHTER_RECORDS.get(target_id, {}).get("name", f"Fighter {target_id}")
+                FIGHTER_RECORDS[target_id] = {
+                    "name": base_name,
+                    "wins": w,
+                    "losses": l,
+                    "draws": d,
+                    "kos": k,
+                    "verified": True
+                }
+                if member_obj:
+                    try:
+                        await member_obj.edit(nick=format_record_nick(base_name, w, l, d, k))
+                    except Exception:
+                        pass
+                updated_summaries.append(f"✅ **{base_name}** ➔ **`[{w}W-{l}L-{d}D-{k}K]`**")
+            
+            save_records()
+            summary_str = "\n".join(updated_summaries)
+            await message.reply(
+                f"🎙️ **Coach Steward:** Locked in the official Commissioner updates and updated their nicknames & leaderboard:\n\n{summary_str}",
+                view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
+            )
+            return
 
     # --- 0. AUTONOMOUS SPAM-WIPING & FLOOD RECOGNITION (NON-ADMINS) ---
     if not is_creator:
@@ -1393,53 +1413,7 @@ async def on_message(message):
                 await message.reply(f"🎙️ **Coach Steward:** Done, Boss! Opened the **{slots}-Man Interactive Bracket** inside {target_ch.mention}!")
             return
 
-    # --- 1C. MULTI-FIGHTER ADMIN RECORD OVERRIDE (SUPPORTS WINS-LOSSES-DRAWS-KOS) ---
-    if is_creator and any(w in msg for w in ["make", "set", "reflect", "update", "change", "put", "give"]):
-        text_without_bot = re.sub(rf'<@!?{bot.user.id}>', '', message.content)
-        pattern = r'<@!?(\d+)>[^0-9<>]*?(\d{1,3})\s*[-–to]+\s*(\d{1,3})(?:\s*[-–to]+\s*(\d{1,3}))?(?:\s*[-–to]+\s*(\d{1,3}))?'
-        matches = list(re.finditer(pattern, text_without_bot, re.IGNORECASE))
-        
-        if matches:
-            answered_messages.add(message.id)
-            updated_summaries = []
-            for m in matches:
-                target_id = int(m.group(1))
-                w = int(m.group(2))
-                l = int(m.group(3))
-                d = int(m.group(4)) if m.group(4) is not None else FIGHTER_RECORDS.get(target_id, {}).get("draws", 0)
-                k = int(m.group(5)) if m.group(5) is not None else FIGHTER_RECORDS.get(target_id, {}).get("kos", 0)
-                
-                member_obj = message.guild.get_member(target_id)
-                if not member_obj:
-                    try:
-                        member_obj = await message.guild.fetch_member(target_id)
-                    except Exception:
-                        member_obj = None
-                
-                base_name = clean_base_name(member_obj.display_name) if member_obj else FIGHTER_RECORDS.get(target_id, {}).get("name", f"Fighter {target_id}")
-                FIGHTER_RECORDS[target_id] = {
-                    "name": base_name,
-                    "wins": w,
-                    "losses": l,
-                    "draws": d,
-                    "kos": k,
-                    "verified": True
-                }
-                if member_obj:
-                    try:
-                        await member_obj.edit(nick=format_record_nick(base_name, w, l, d, k))
-                    except Exception:
-                        pass
-                updated_summaries.append(f"✅ **{base_name}** ➔ **`[{w}W-{l}L-{d}D-{k}K]`**")
-            
-            save_records()
-            summary_str = "\n".join(updated_summaries)
-            await message.reply(
-                f"🎙️ **Coach Steward:** Heard you loud and clear, Boss! Locked in the official 4-part Commissioner adjustments and updated their nicknames & leaderboard:\n\n{summary_str}"
-            )
-            return
-
-    # --- 2. AUTOMATIC ANTI-UFC / MMA INTERCEPTION (ANYWHERE IN CHAT) ---
+    # --- 2. AUTOMATIC ANTI-UFC / MMA INTERCEPTION ---
     if any(ufc_word in words_list for ufc_word in ["ufc", "mma", "octagon", "bellator"]):
         answered_messages.add(message.id)
         await message.reply(
@@ -1448,7 +1422,7 @@ async def on_message(message):
         )
         return
 
-    # --- 3. SMART EMOJI REACTIONS TO FUNNY/POSITIVE GIFS & MEDIA ---
+    # --- 3. SMART EMOJI REACTIONS ---
     toxic_check = {"trash", "garbage", "suck", "sucks", "ass", "bitch", "hoe", "stfu", "fuck", "fck", "rigged", "scam", "loser", "bum", "ugly", "hate", "nasty", "gross", "die"}
     has_toxic = any(tw in words_list for tw in toxic_check)
     has_gif_or_img = (
@@ -1467,7 +1441,7 @@ async def on_message(message):
             except Exception:
                 pass
 
-    # --- 4. MUSIC VIDEO / YOUTUBE / AUDIO LINK INTERCEPTION ---
+    # --- 4. MUSIC VIDEO / AUDIO LINK INTERCEPTION ---
     media_link_domains = ["youtube.com", "youtu.be", "soundcloud.com", "spotify.com", "music.apple.com", "tiktok.com", "twitch.tv"]
     has_audio_video_file = any(att.filename.lower().endswith((".mp3", ".wav", ".mp4", ".mov")) for att in message.attachments)
     if (any(dom in msg for dom in media_link_domains) or has_audio_video_file) and not is_mentioned:
@@ -1487,7 +1461,7 @@ async def on_message(message):
             await message.reply(random.choice(MUSIC_LINK_INTERCEPTIONS), view=PromoButtons(track["url"]))
         return
 
-    # --- 5. AUTOMATIC MATCH RESULT, DRAW & KO TRACKER IN CHAT ---
+    # --- 5. AUTOMATIC MATCH RESULT, DRAW & KO TRACKER ---
     ko_keywords = ["knocked out", "ko'd", "kod", "stopped", "slept", "beat", "defeated", "won against", "fought to a draw", "split draw", "majority draw"]
     other_mentions = [m for m in message.mentions if m.id != bot.user.id and not m.bot]
     if any(kw in msg for kw in ko_keywords) and other_mentions and not is_mentioned:
@@ -1504,7 +1478,7 @@ async def on_message(message):
                 outcome_str = f"a victory for {message.author.mention} over {target_other.mention} on the scorecards 📋"
             await message.reply(
                 f"🎙️ **Coach Steward:** Ring the bell! Hearing reports of {outcome_str}!\n"
-                f"📸 **Remember the Golden Rule:** Upload the match scorecard inside `#scorecards-submission` so I can scan the CompuBox numbers and broadcast the full HBO Ringside Report in `#coaches-corner`!",
+                f"📸 **Remember:** Upload your match scorecard in `#scorecards-submission` so I can scan the CompuBox numbers and broadcast the full HBO Ringside Report!",
                 view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
             )
             return
@@ -1514,13 +1488,11 @@ async def on_message(message):
         answered_messages.add(message.id)
         clean_prompt = message.content.replace(f"<@!{bot.user.id}>", "").replace(f"<@{bot.user.id}>", "").strip()
 
-        # If a screenshot is attached when tagging Coach (in any channel), analyze it with Vision!
         if message.attachments:
             handled = await process_and_broadcast_scorecard(message)
             if handled:
                 return
 
-        # A. Check if Fighter is Claiming/Updating Their Own Record (Supports 4-Part W-L-D-K)
         parsed_record = parse_lazy_record(clean_prompt)
         if parsed_record and not other_mentions:
             wins_val, losses_val, draws_val, kos_val = parsed_record
@@ -1555,12 +1527,10 @@ async def on_message(message):
                 )
             return
 
-        # B. Instant Coach Playbook / "Why are you here?" / Commands Rundown Check
         if any(gp in msg for gp in ["why are you here", "what do you do", "who are you", "how to use", "commands", "command", "guide", "playbook", "manual", "rundown", "what is your purpose", "explain why", "tell the gym why"]):
             await send_coach_guide(message.channel, reply_to=message)
             return
 
-        # C. Live Online Radar & Tagged Opponent Matchmaker
         scan_triggers = ["scan for online", "who is online", "whos online", "who's online", "playing undisputed", "online players", "who is active", "who is on right now"]
         match_triggers = ["need a fight", "find me", "find an opponent", "find a fight", "find opponent", "opponent for", "match for", "spar", "smoke", "fight me", "who wants", "run it", "pair up", "book a fight"]
 
@@ -1591,7 +1561,6 @@ async def on_message(message):
             await handle_online_matchmaking(message.channel, target_fighter, reply_to=message, scan_only=False)
             return
 
-        # D. Discord Scheduled Events & Tournament Check
         if any(w in msg for w in ["next event", "upcoming event", "schedule", "when is the tourney", "when is spar wars", "tournament", "golden ticket", "bracket"]):
             if ACTIVE_TOURNAMENT["active"]:
                 embed = build_tournament_bracket_embed()
@@ -1600,12 +1569,10 @@ async def on_message(message):
                 await send_scheduled_events_info(message.channel, reply_to=message)
             return
 
-        # E. Instant Gym Top 10 / Leaderboard / Champions Check
         if any(w in msg for w in ["mainframe", "gym", "server", "discord", "cgp", "our", "division", "leaderboard", "standings", "rankings", "website"]) and any(k in msg for k in ["top", "champ", "champs", "best", "leader", "leading", "rank", "who is", "whom is", "list"]):
             await send_top_gym_fighters(message)
             return
 
-        # F. Instant Rules & Protocol Check
         if any(w in msg for w in ["rules", "how to join", "how does this work", "protocol", "gym rules", "settings", "rounds"]):
             embed = discord.Embed(
                 title="🥊 CGP MAINFRAME GYM & SCORECARD VERIFICATION PROTOCOL 🥊",
@@ -1613,8 +1580,7 @@ async def on_message(message):
                     f"🏟️ **Venue:** Riyadh Indoor Gym\n"
                     f"⏱️ **Bout Length:** 8 Rounds (12 for Titles)\n"
                     f"⚡ **Speed:** 1.5x | **Ref:** Strict\n"
-                    f"🚫 **Character Lock:** Locked per match (if disrupted, same fighter must be used; winner advancing to next round may switch).\n"
-                    f"📸 **Scorecard Verification Rule:** Upload your post-fight scorecard in `#scorecards-submission` — Coach Steward will scan every punch stat and broadcast an HBO CompuBox Report in `#coaches-corner`, and your `[W-L-D-K]` record will be locked in!\n"
+                    f"📸 **Scorecard Verification Rule:** Upload your post-fight scorecard in `#scorecards-submission` — Coach Steward will scan every punch stat and broadcast an HBO CompuBox Report in `#coaches-corner`, and your record will be verified!\n"
                     f"🔗 {MAINFRAME_HUB_URL}"
                 ),
                 color=discord.Color.gold()
@@ -1622,7 +1588,6 @@ async def on_message(message):
             await message.reply(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
             return
 
-        # G. Instant Local Intent Router
         local_reply, attach_promo = get_instant_local_reply(clean_prompt, message.author.display_name, is_creator)
         if local_reply:
             if attach_promo:
@@ -1632,7 +1597,6 @@ async def on_message(message):
                 await message.reply(local_reply)
             return
 
-        # H. Deep Boxing / Open-Ended AI Conversation
         async with message.channel.typing():
             recent_chat = get_channel_context(message.channel.id)
             sender_rec = FIGHTER_RECORDS.get(message.author.id, {"wins": 0, "losses": 0, "draws": 0, "kos": 0})
@@ -1657,7 +1621,6 @@ async def on_message(message):
             await message.reply(ai_reply, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
         return
 
-    # --- 7. UNTAGGED TROLL / SMACK-TALK INTERCEPTION FOR NON-ADMINS ---
     troll_triggers = ["trash", "dog", "ass", "suck", "garbage", "easy", "mid", "clown", "fake", "fold", "cry", "wack"]
     if not is_creator and any(trigger in words_list for trigger in troll_triggers):
         answered_messages.add(message.id)
@@ -1665,7 +1628,6 @@ async def on_message(message):
         await message.reply(random.choice(SMACK_TALK_CLAPBACKS), view=PromoButtons(track["url"]))
         return
 
-    # --- 8. UNTAGGED KEYWORD TRIGGERS IN GENERAL CHAT ---
     if any(phrase in msg for phrase in ["how are you coach", "what's up coach", "whats up coach", "yo coach", "gm coach", "good morning coach"]):
         answered_messages.add(message.id)
         track = random.choice(CGP_TRACKS)
@@ -1683,8 +1645,7 @@ async def on_message(message):
                 f"🏟️ **Venue:** Riyadh Indoor Gym\n"
                 f"⏱️ **Bout Length:** 8 Rounds (12 for Titles)\n"
                 f"⚡ **Speed:** 1.5x | **Ref:** Strict\n"
-                f"🚫 **Character Lock:** Locked per match (if disrupted, same fighter must be used; winner advancing to next round may switch).\n"
-                f"📸 **Scorecards:** Must upload match proof in `#scorecards-submission` to get your CompuBox report and `[W-L-D-K]` verified on the board!\n"
+                f"📸 **Scorecards:** Must upload match proof in `#scorecards-submission` to get your CompuBox report and verified record!\n"
                 f"🔗 {MAINFRAME_HUB_URL}"
             ),
             color=discord.Color.gold()
@@ -1696,7 +1657,6 @@ async def on_message(message):
         await send_tracks_menu(message.channel)
         return
 
-    # --- 9. ORGANIC "ACTIVE LISTENER" MODE IN SPARRING & CHAT ---
     boxing_chat_triggers = {"mindset", "stamina", "footwork", "jab", "counter", "hook", "uppercut", "undisputed", "round", "rounds", "combo", "ring", "training", "belt", "champion", "heavyweight", "welterweight", "spar", "scorecard"}
     now_t = asyncio.get_event_loop().time()
     if (set(words_list) & boxing_chat_triggers) and len(words_list) >= 5 and (now_t - last_organic_chime > 180):
@@ -1706,7 +1666,6 @@ async def on_message(message):
             await message.reply(random.choice(ORGANIC_CHAT_INTERJECTIONS))
             return
 
-# ================= HELPER EMBED SENDERS =================
 async def send_coach_guide(channel, reply_to=None):
     embed = discord.Embed(
         title="📖 OFFICIAL CGP MAINFRAME GYM & COACH STEWARD PLAYBOOK 📖",
@@ -1792,7 +1751,6 @@ async def send_tracks_menu(channel):
     embed = discord.Embed(title="🎧 CGP MAINFRAME GYM SOUNDCLOUD CATALOG 🎧", description=track_desc, color=discord.Color.red(), url=DEFAULT_SOUNDCLOUD_URL)
     await channel.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
-# ================= FAST RECORD COMMANDS, MATCHMAKING & TOURNAMENT BRACKETS =================
 @bot.command(aliases=["howto", "playbook", "commands", "manual", "about", "whoareyou", "helpme"])
 async def guide(ctx):
     await send_coach_guide(ctx.channel)
@@ -2012,7 +1970,6 @@ async def mystats(ctx, member: discord.Member = None):
     else:
         await ctx.send(f"❌ No record found for {target.display_name}. Upload a scorecard in `#scorecards-submission` and type `!record <W> <L> <D> <KO>`!")
 
-# ================= SPECIAL ANNOUNCEMENTS, EVENTS, TALE OF THE TAPE & SOUNDBOARD =================
 @bot.command(aliases=["nextevent", "schedule", "upcoming", "events"])
 async def tourneyinfo(ctx):
     await send_scheduled_events_info(ctx.channel)
@@ -2153,7 +2110,6 @@ async def drop(ctx, track_url: str, *, track_title: str):
     embed = discord.Embed(title=f"🚨 NEW CGP MAINFRAME GYM TRANSMISSION: {track_title.upper()} 🚨", description=f"**{track_title}** is LIVE on SoundCloud!\n\n*Stream full track to beat the algorithm!*", color=discord.Color.red(), url=track_url)
     await channel.send(content="@everyone Tap in! 👇", embed=embed, view=PromoButtons(track_url))
 
-# --- FREE CLOUD HOSTING HEARTBEAT & SILENT 10-MIN SELF-PING ---
 async def handle_ping(request):
     return web.Response(text="Coach Steward is awake and running the CGP Mainframe Gym!")
 
