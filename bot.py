@@ -1372,6 +1372,12 @@ async def on_message(message):
     if message.id in answered_messages:
         return
 
+    # ================= TOP PRIORITY: PROCESS COMMANDS FIRST =================
+    # This guarantees !rollcall, !audit, !bracketstatus, and all commands fire instantly!
+    if message.content.startswith("!"):
+        await bot.process_commands(message)
+        return
+
     msg = message.content.lower()
     words_list = re.findall(r'\b\w+\b', msg)
     is_creator = (message.author.id == CREATOR_ID) or message.author.guild_permissions.administrator
@@ -1451,10 +1457,6 @@ async def on_message(message):
                 custom_warning_line=warn_text
             )
             return
-
-    if message.content.startswith("!"):
-        await bot.process_commands(message)
-        return
 
     log_channel_message(message.channel.id, message.author.display_name, message.content)
 
@@ -1654,7 +1656,7 @@ async def on_message(message):
             await message.reply(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
             return
 
-        # If a non-admin insults Coach or the gym directly while tagging him, count it toward the 3-Strike Timeout system
+    # If a non-admin insults Coach or the gym directly while tagging him, count it toward the 3-Strike Timeout system
     insult_words_set = {"trash", "garbage", "suck", "sucks", "ass", "clown", "bitch", "hoe", "stfu", "fuck", "fck", "weak", "wack", "fake", "rigged", "scam", "loser", "bum"}
     
     if not is_creator and (set(words_list) & insult_words_set):
@@ -1667,58 +1669,6 @@ async def on_message(message):
             reply_to=message,
             view=PromoButtons(track["url"])
         )
-        return
-
-        local_reply, attach_promo = get_instant_local_reply(clean_prompt, message.author.display_name, is_creator)
-        if local_reply:
-            if attach_promo:
-                track = random.choice(CGP_TRACKS)
-                await message.reply(local_reply, view=PromoButtons(track["url"]))
-            else:
-                await message.reply(local_reply)
-            return
-
-        async with message.channel.typing():
-            recent_chat = get_channel_context(message.channel.id)
-            sender_rec = FIGHTER_RECORDS.get(message.author.id, {"wins": 0, "losses": 0, "draws": 0, "kos": 0})
-            role_note = "Clone Geek (Gerardo — YOUR CREATOR, HOMIE, AND SUPREME COMMISSIONER OF CGP MAINFRAME GYM)" if is_creator else f"{message.author.display_name} (Fighter in the gym, Record: {sender_rec['wins']}W-{sender_rec['losses']}L-{sender_rec.get('draws', 0)}D-{sender_rec.get('kos', 0)}K)"
-
-            full_ai_prompt = (
-                f"RECENT CHANNEL CONVERSATION:\n{recent_chat}\n\n"
-                f"PERSON TALKING TO YOU NOW: {role_note}\n"
-                f"THEIR EXACT MESSAGE: \"{clean_prompt}\"\n\n"
-                "INSTRUCTIONS FOR YOUR REPLY:\n"
-                "1. Respond directly and specifically to what they just said! Never give a generic one-liner.\n"
-                "2. If they mention music or try to test you, flex Clone Geek Productions on SoundCloud and the CGP Mainframe Gym!\n"
-                "3. Start your message with '🎙️ **Coach Steward:** '"
-            )
-
-            ai_reply = await ask_coach_fast(full_ai_prompt, is_creator=is_creator)
-            if not ai_reply.startswith("🎙️"):
-                ai_reply = f"🎙️ **Coach Steward:** {ai_reply}"
-            if len(ai_reply) > 1900:
-                ai_reply = ai_reply[:1900] + "..."
-
-            await message.reply(ai_reply, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
-        return
-
-    # --- 7. TROLL & TOXICITY 3-STRIKE INTERCEPTION ---
-    severe_troll_triggers = {"bitch", "hoe", "stfu", "scam", "rigged"}
-    mild_troll_triggers = ["trash", "dog", "ass", "suck", "garbage", "easy", "mid", "clown", "fake", "fold", "cry", "wack"]
-    if not is_creator and any(trigger in words_list for trigger in mild_troll_triggers + list(severe_troll_triggers)):
-        answered_messages.add(message.id)
-        track = random.choice(CGP_TRACKS)
-        if any(st in words_list for st in severe_troll_triggers):
-            await issue_corner_strike(
-                member=message.author,
-                channel=message.channel,
-                reason="Toxic conduct / disrespect in the locker room",
-                custom_warning_line=random.choice(SMACK_TALK_CLAPBACKS),
-                reply_to=message,
-                view=PromoButtons(track["url"])
-            )
-        else:
-            await message.reply(random.choice(SMACK_TALK_CLAPBACKS), view=PromoButtons(track["url"]))
         return
 
     if any(phrase in msg for phrase in ["how are you coach", "what's up coach", "whats up coach", "yo coach", "gm coach", "good morning coach"]):
