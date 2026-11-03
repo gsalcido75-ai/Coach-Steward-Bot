@@ -706,9 +706,9 @@
         "wins": 3,
         "losses": 0,
         "draws": 0,
-        "kos": 2,
-        "verified": true,
-        "golden_tickets": 0
+        "kos": 3,
+        "golden_tickets": 0,
+        "verified": true
     },
     "1438237941628538971": {
         "name": "jordan",
