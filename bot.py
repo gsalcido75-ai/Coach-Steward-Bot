@@ -1655,18 +1655,19 @@ async def on_message(message):
             return
 
         # If a non-admin insults Coach or the gym directly while tagging him, count it toward the 3-Strike Timeout system
-        insult_words_ set = {"trash", "garbage", "suck", "sucks", "ass", "clown", "bitch", "hoe", "stfu", "fuck", "fck", "weak", "wack", "fake", "rigged", "scam", "loser", "bum"}
-        if not is_creator and (set(words_list) & insult_words_set):
-            track = random.choice(CGP_TRACKS)
-            await issue_corner_strike(
-                member=message.author,
-                channel=message.channel,
-                reason="Disrespecting the CGP Mainframe Gym / Acting out in chat",
-                custom_warning_line=random.choice(SMACK_TALK_CLAPBACKS),
-                reply_to=message,
-                view=PromoButtons(track["url"])
-            )
-            return
+    insult_words_set = {"trash", "garbage", "suck", "sucks", "ass", "clown", "bitch", "hoe", "stfu", "fuck", "fck", "weak", "wack", "fake", "rigged", "scam", "loser", "bum"}
+    
+    if not is_creator and (set(words_list) & insult_words_set):
+        track = random.choice(CGP_TRACKS)
+        await issue_corner_strike(
+            member=message.author,
+            channel=message.channel,
+            reason="Disrespecting the CGP Mainframe Gym / Acting out in chat",
+            custom_warning_line=random.choice(SMACK_TALK_CLAPBACKS),
+            reply_to=message,
+            view=PromoButtons(track["url"])
+        )
+        return
 
         local_reply, attach_promo = get_instant_local_reply(clean_prompt, message.author.display_name, is_creator)
         if local_reply:
