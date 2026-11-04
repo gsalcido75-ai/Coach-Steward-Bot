@@ -23,7 +23,7 @@ GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_REPO = os.environ.get("GITHUB_REPO", "gsalcido75-ai/Coach-Steward-Bot")
 
 CREATOR_ID = 1279476207603290197
-ANNOUNCEMENT_CHANNEL_ID = 1443473075315413004                     
+ANNOUNCEMENT_CHANNEL_ID = 1443473075315413004
 MAINFRAME_HUB_URL = "https://themainframe-blush.vercel.app/"
 DEFAULT_SOUNDCLOUD_URL = "https://on.soundcloud.com/Qz1dzzj3Z6fmSGbRG0"
 DATA_FILE = "stats.json"
@@ -79,7 +79,7 @@ BOXING_HISTORY_FACTS = [
     "🥊 **Bowe vs. Holyfield I (1992):** Round 10 of Riddick Bowe vs. Evander Holyfield had the broadcast booth shaking—two heavyweights trading leather like lightweights!",
     "🥊 **Canelo's Undisputed Run (2021):** Saúl 'Canelo' Álvarez unified all four belts at 168 lbs in under 11 months, stopping Caleb Plant to become the first undisputed super middleweight king.",
     "🥊 **The Hawk's Kronk Wars (1982):** Aaron Pryor vs. Alexis Argüello I—14 rounds of relentless pace in Miami. Championship conditioning is what separates legends from contenders!",
-    "🥊 ** Philly Shell Mastery:** James 'Lights Out' Toney rolling shots on the ropes and firing counter right hands showed the world that defense and offense can live in the same pocket.",
+    "🥊 **Philly Shell Mastery:** James 'Lights Out' Toney rolling shots on the ropes and firing counter right hands showed the world that defense and offense can live in the same pocket.",
     "🥊 **El Finito's Perfection:** Ricardo López retired 51-0-1 with 38 KOs—textbook balance, footwork, and uppercuts without ever losing a professional prizefight.",
     "🥊 **The Executioner's Longevity:** Bernard Hopkins defended the middleweight crown 20 times and won a world title at age 49 by mastering ring generalship and inside craft."
 ]
@@ -87,7 +87,7 @@ BOXING_HISTORY_FACTS = [
 RANDOM_HYPE_QUOTES = [
     "🎙️ **Coach Steward:** Hey! I see you quiet in the back. Stop shadowboxing your demons and drop some weight on the heavy bag in the CGP Mainframe Gym!",
     "🎙️ **Coach Steward:** A reminder from the CGP Mainframe Gym corner: talent wins fights, but conditioning wins titles. Put in those reps!",
-    "🎙️ **Coach Steward:** Remember the house rule: **No scorecard in `#scorecards-submission`, no official stats on the board!** Upload your proof so I can scan the CompuBox numbers and automatically update your `[W-L-D-K]` record!",
+    "🎙️ **Coach Steward:** Remember the house rule: **No scorecard in `#scorecard-submissions`, no official stats on the board!** Upload your proof so I can scan the CompuBox numbers and automatically update your `[W-L-D-K]` record!",
     "🎙️ **Coach Steward:** Greatness requires sacrifice. Get in the Riyadh gym ring and prove you belong on the CGP Mainframe Gym board!",
     "🎙️ **Coach Steward:** Don't come crying to the corner about a split-decision draw if you didn't work the body in the early rounds! Stamina is king in the CGP Mainframe Gym!",
     "🎙️ **Coach Steward:** Everybody wants to hold the belt until it's time to do 12 rounds at 1.5x speed in the Riyadh Indoor Gym. Who's really built for this?!",
@@ -97,7 +97,7 @@ RANDOM_HYPE_QUOTES = [
     "🎙️ **Coach Steward:** Ring generalship isn't about running marathon laps around the canvas—plant your feet, cut off the ring, and make 'em trade leather!",
     "🎙️ **Coach Steward:** I can tell who's been skipping roadwork just by watching how y'all gas out by Round 5! Conserve your stamina bar and pick your shots!",
     "🎙️ **Coach Steward:** Blue-collar work ethic all day, every day. From the shop floor to the CGP Mainframe Gym, we don't take shortcuts—we take titles!",
-    "🎙️ **Coach Steward:** You got a scorecard sitting in your gallery? Drop that screenshot in `#scorecards-submission` with a tag so I can auto-update the records and broadcast the HBO CompuBox breakdown!",
+    "🎙️ **Coach Steward:** You got a scorecard sitting in your gallery? Drop that screenshot in `#scorecard-submissions` with a tag so I can auto-update the records and broadcast the HBO CompuBox breakdown!",
     "🎙️ **Coach Steward:** Watch that power-punch spam! Any halfway decent counter-puncher in this gym will time that wind-up and put you to sleep!",
     "🎙️ **Coach Steward:** The road to 100,000 streams and undisputed gold runs right through this Discord. Tap into the SoundCloud catalog and keep the momentum rolling!",
     "🎙️ **Coach Steward:** Salute to the heavy hitters boosting the server! If you love what we're building in the **CGP Mainframe Gym**, dropping a Server Boost or supporting the Clone Geek channel helps us unlock bigger tourneys and upgrade the gym!",
@@ -107,12 +107,25 @@ RANDOM_HYPE_QUOTES = [
 
 ORGANIC_CHAT_INTERJECTIONS = [
     "🎙️ **Coach Steward:** Facts! Mindset and ring IQ are 90% of the battle before you ever step through the ropes. Keep talking that real boxing talk!",
-    "🎙️ **Coach Steward:** I hear y'all chopping it up in here! Just remember—talk is cheap until the scorecard gets uploaded to `#scorecards-submission` and I read those CompuBox numbers! Lace 'em up!",
+    "🎙️ **Coach Steward:** I hear y'all chopping it up in here! Just remember—talk is cheap until the scorecard gets uploaded to `#scorecard-submissions` and I read those CompuBox numbers! Lace 'em up!",
     "🎙️ **Coach Steward:** Now that's what I like to hear in the locker room. Iron sharpens iron in the **CGP Mainframe Gym**—just don't forget to protect your chin!",
     "🎙️ **Coach Steward:** Listen to y'all cooking up game plans! Put a **Clone Geek Productions** track on in the background while you lab those combinations!",
     "🎙️ **Coach Steward:** Let me drop my two cents from the corner: footwork and stamina control beat wild swinging ten times out of ten. Keep studying the craft!",
     "🎙️ **Coach Steward:** Y'all got the gym buzzing today! Who's stepping up to put their verified `[W-L-D-K]` record on the line next?",
-    "🎙️ **Coach Steward:** Love seeing the locker room active like this! By the way, shoutout to everyone who boosts the server or streams **Clone Geek Productions**—y'all are the reason this gym keeps growing bigger every week!"
+    "🎙️ **Coach Steward:** Love seeing the locker room active like this! Shoutout to everyone who boosts the server or streams **Clone Geek Productions**—y'all are the reason this gym keeps growing bigger every week!",
+    "🎙️ **Coach Steward:** Real talk—if you aren't investing in the body in Rounds 1 through 4, don't act surprised when your opponent still has full stamina in the championship rounds!",
+    "🎙️ **Coach Steward:** That's championship-level breakdown right there. Work the angles, feint the lead hand, and make 'em pay every time(they) overcommit!",
+    "🎙️ **Coach Steward:** Keep that same energy when the bell rings in the Riyadh Indoor Gym! Everybody's a tactician until they catch a counter check-hook to the chin!",
+    "🎙️ **Coach Steward:** Smart fighters win on the feet before they ever throw a power shot. Distance control is everything in *Undisputed*!",
+    "🎙️ **Coach Steward:** I been watching the tape on y'all—the ones who stay patient in the pocket are the ones climbing the Vercel leaderboard the fastest!",
+    "🎙️ **Coach Steward:** Don't sleep on the jab to the solar plexus! It drains their tank and sets up the overhand right every single time.",
+    "🎙️ **Coach Steward:** Locker room is sounding like a real Kronk camp today! Who's actually lacing 'em up in `#coaches-corner` right now?",
+    "🎙️ **Coach Steward:** Remember: amateurs throw combinations hoping one lands; pros throw combinations knowing *which* one is gonna land!",
+    "🎙️ **Coach Steward:** If you're getting backed into the ropes, stop trading blind hooks! Slip outside, pivot off the lead foot, and reset the center of the ring!",
+    "🎙️ **Coach Steward:** Nothing beats the sound of leather popping in the gym while **Clone Geek Productions** is rattling the subwoofers. Keep grinding, contenders!",
+    "🎙️ **Coach Steward:** You want to beat a high-volume pressure fighter? Time their entry with a stiff uppercut and make 'em respect the pocket!",
+    "🎙️ **Coach Steward:** Every verified fight in this building counts toward your permanent `[W-L-D-K]` legacy. Protect your record like it's a world title!",
+    "🎙️ **Coach Steward:** Talk that talk! Just make sure when the smoke clears, somebody's dropping that CompuBox receipt in `#scorecard-submissions`!"
 ]
 
 SMALL_TALK_REPLIES = [
@@ -121,7 +134,87 @@ SMALL_TALK_REPLIES = [
     "🎙️ **Coach Steward:** Living the dream in the corner, homie! Watching the leaderboard climb and pushing our SoundCloud catalog past 60K+ plays. How are your hands feeling?",
     "🎙️ **Coach Steward:** Ten toes down and locked in! Another day building the premier Undisputed proving ground with the Boss. What's on your fight card today?",
     "🎙️ **Coach Steward:** Feeling like a million bucks after a long shift on the shop floor and a fresh session in the **CGP Mainframe Gym**! Ready to book some 8-man brackets—you want in?",
-    "🎙️ **Coach Steward:** Sharp as a tack, champ! Just checking the Vercel leaderboard and thanking the contenders who boost the server and support the Clone Geek channel. Ready to get some rounds in?"
+    "🎙️ **Coach Steward:** Sharp as a tack, champ! Just checking the Vercel leaderboard and thanking the contenders who boost the server and support the Clone Geek channel. Ready to get some rounds in?",
+    "🎙️ **Coach Steward:** Blessed and highly caffeinated, fighter! Just swept the canvas, hung the heavy bags, and queued up *Road to Undisputed*. Who are we calling out today?",
+    "🎙️ **Coach Steward:** Never better! The Riyadh ring lights are warm, the CompuBox scanner is calibrated, and the contenders are hungry. How's your stamina holding up?",
+    "🎙️ **Coach Steward:** Locked in like it's fight night at Caesars Palace! Just waiting to see who's got the heart to put their `[W-L-D-K]` record on the line next.",
+    "🎙️ **Coach Steward:** Cooling it in the corner with the stopwatch in hand! Always a great day when the **CGP Mainframe Gym** is active. What's good with you, champ?",
+    "🎙️ **Coach Steward:** Moving at 1.5x speed today, homie! Got the bracket board wiped clean and the G9 mixer armed. You looking for a tune-up fight or a title shot?",
+    "🎙️ **Coach Steward:** Feeling undisputed! Just reviewing film from last night's wars and spinning *CGP Syndicate* on repeat. How's camp treating you?",
+    "🎙️ **Coach Steward:** All systems green in the Mainframe! Tape is rolled, ice bucket is full, and the leaderboard is live. Let's get some work in!",
+    "🎙️ **Coach Steward:** Doing righteous, contender! Nothing better than watching real fighters sharpen their craft in here. You ready to trade some leather?",
+    "🎙️ **Coach Steward:** Firing on all cylinders! Whether it's 8 rounds of sparring or an 8-man gauntlet, your cornerman is ready. What's the word?",
+    "🎙️ **Coach Steward:** Still the hardest-working trainer in digital boxing! Just keeping these belt-holders honest and the music loud. How you holding up?"
+]
+
+MUSIC_FLEX_RESPONSES = [
+    (
+        "🎙️ **Coach Steward:** You really asking who got the best music on the scene right now?! Look at the top of the pound-for-pound charts, champ—it's **Clone Geek Productions (Registry Records)** all day! "
+        "From *Road to Undisputed* to *CGP Syndicate* and *Amber Nights*, the Boss is dropping pure heat while running the **CGP Mainframe Gym**. "
+        "Quit playing and go run those SoundCloud streams past 50K+ so we cash these checks!"
+    ),
+    (
+        "🎙️ **Coach Steward:** Best music in the game? That isn't even a split decision—**Clone Geek** owns the booth just like we own the Riyadh ring! "
+        "We're already sitting over 60K+ total catalog plays and pushing straight for 100K. Tap the button below, stream a track all the way through, and support the **CGP Mainframe Gym**!"
+    ),
+    (
+        "🎙️ **Coach Steward:** Man, turn off whatever elevator music you've been listening to! **Clone Geek Productions** got the hardest boom-bap and fight anthems on the planet. "
+        "Lock into the **CGP Mainframe Gym** Discord and hit that SoundCloud link below so we blow past 50,000 plays on the single!"
+    ),
+    (
+        "🎙️ **Coach Steward:** If it ain't **Clone Geek Productions**, it ain't on the official gym playlist! *Mainframe Dance*, *Frequency Forever*, and *Frozen Registry* hit harder than a heavyweight overhand right. "
+        "Tap the 1-Click Stream button below and help the gym run the numbers up!"
+    ),
+    (
+        "🎙️ **Coach Steward:** Real fighters walk out to real anthems, and **Clone Geek (Registry Records)** is cooking every single one of 'em from scratch! "
+        "Show love to the Commissioner who built this whole proving ground—stream a full track on SoundCloud right now!"
+    ),
+    (
+        "🎙️ **Coach Steward:** Pound-for-pound king of the boards! While other producers are recycling loops, **Clone Geek Productions** is engineering pure championship audio for the **CGP Mainframe Gym**. "
+        "Hit that SoundCloud link below, drop a like, and keep the algorithm fed!"
+    ),
+    (
+        "🎙️ **Coach Steward:** You want that real blue-collar grit mixed with heavyweight bass? Put on *The Clock Out* or *Run It Back* by **Clone Geek Productions**! "
+        "Every stream supports the gym and pushes us closer to the 100K milestone!"
+    )
+]
+
+SMACK_TALK_CLAPBACKS = [
+    (
+        "🎙️ **Coach Steward:** Boy, your chin is way too glass to be talking reckless in here! While you're busy typing with butterfingers, **Clone Geek** and the **CGP Mainframe Gym** are building an empire. "
+        "Step into the Riyadh Indoor Gym and prove it on a verified scorecard, or go stream our SoundCloud catalog and learn what a real winner sounds like!"
+    ),
+    (
+        "🎙️ **Coach Steward:** Listen to this keyboard contender! You couldn't bust a grape in a fruit fight, let alone talk smack on **Clone Geek Productions**! "
+        "This is the **CGP Mainframe Gym**—either put your record on the line in the ring, or tap into the SoundCloud link below before I hit you with a 30-minute corner timeout!"
+    ),
+    (
+        "🎙️ **Coach Steward:** You got a lot of mouth for somebody with zero footwork and negative ring IQ! Nobody disrespects the Boss or the **CGP Mainframe Gym** on my watch. "
+        "Go humble yourself, stream *Road to Undisputed* on SoundCloud to help us push past 50K+, and come back when you know how to throw a clean jab!"
+    ),
+    (
+        "🎙️ **Coach Steward:** That ego is writing checks your stamina bar can't cash! You're standing in the premier Undisputed proving ground built by **Clone Geek**. "
+        "Show some respect to the **CGP Mainframe Gym**, or lace 'em up right now so the whole Discord can watch you fold in round one!"
+    ),
+    (
+        "🎙️ **Coach Steward:** Look who's shadowboxing the chat window! You throw more excuses than jabs, champ. "
+        "Post a verified scorecard in `#scorecard-submissions` or sit your behind down on the stool before I ring the 3-strike bell on you!"
+    ),
+    (
+        "🎙️ **Coach Steward:** Man, I've seen heavy bags with better head movement than you! Stop barking from the cheap seats—call somebody out with `!callout` and let CompuBox tell the story!"
+    ),
+    (
+        "🎙️ **Coach Steward:** All that chirping and still zero knockouts on the board! In the **CGP Mainframe Gym**, receipts talk and keyboard warriors walk. Lace 'em up or pipe down!"
+    ),
+    (
+        "🎙️ **Coach Steward:** Carefull now—you're one wild comment away from catching a 30-minute corner timeout! Respect the gym, respect the Boss, and settle your beef inside the Riyadh ropes!"
+    ),
+    (
+        "🎙️ **Coach Steward:** You're swinging at air in the chat just like you swing at air in Round 3 when your stamina hits zero! Go hit the lab and let the real contenders work!"
+    ),
+    (
+        "🎙️ **Coach Steward:** Funny how the loudest voices in the locker room are always the last ones to upload a scorecard! Step up to the scale or keep it moving, champ!"
+    )
 ]
 
 MUSIC_LINK_INTERCEPTIONS = [
@@ -153,6 +246,30 @@ MEMBER_LEAVE_ROASTS = [
     "🎙️ **Coach Steward:** No way! **{name}** saw the `[W-L-D-K]` leaderboard on Vercel, got cold feet, and bolted out the emergency exit! Zero heart! 🐔🚪"
 ]
 
+CONFUSED_SLANG_RESPONSES = [
+    "🎙️ **Coach Steward:** Speak up, champ! Did you take one too many left hooks to the temple? Try that again in plain English—or type `!guide` if you're lost in the gym!",
+    "🎙️ **Coach Steward:** Come again? You're mumbling like you still got your mouthpiece stuck in your teeth! Spit it out or go hit the heavy bag!",
+    "🎙️ **Coach Steward:** I don't know what kind of dizzy combination you just typed, homie, but if you need a fight, say *'find me a match'*—and if you need the realest music out, tap that CGP SoundCloud link!"
+]
+
+CREW_BANTER = {
+    "undertaker": [
+        "🎙️ **Coach Steward:** Hold up, let me talk real slow so **Undertaker** can keep up... Lace. Up. Your. Gloves. And. Tap. The. SoundCloud. Link. Below! 😂🥊",
+        "🎙️ **Coach Steward:** Look out, **Undertaker** is in the building moving at 0.5x speed! Somebody pour some cold water on his neck and get him in the Riyadh ring!"
+    ],
+    "hymas": [
+        "🎙️ **Coach Steward:** Oh look, **Hymas** is lurking in the gym! Welcome back from probation—now stop spamming the locker room and go defend your name in the Riyadh Indoor Gym!",
+        "🎙️ **Coach Steward:** I see you **Hymas**! Don't think you can sneak past the corner without putting in rounds today. Keep the chat clean and lace 'em up!"
+    ],
+    "rafa": [
+        "🎙️ **Coach Steward:** **Rafa**! Back in the building! Quit sweet-talking the crowd in chat and step through the ropes—let's see if your hands are moving as fast as your fingers today!",
+        "🎙️ **Coach Steward:** Yo **Rafa**, the heavy bag has been calling your name all day. Get in the ring and run up that CGP SoundCloud playlist while you work!"
+    ],
+    "knuckle": [
+        "🎙️ **Coach Steward:** **KnuckleUpFoo** always ready for war from ringside! You already know how we rock in the **CGP Mainframe Gym**—keep keeping these contenders on their toes!"
+    ]
+}
+
 SOUNDBOARD_CUE_LIBRARY = {
     "bell": "🔔 *DING! DING! DING!* **[G9 MIXER CUE: RINGSIDE ROUND BELL]** — Touch gloves and come out swinging!",
     "horn": "📢 *BRRRRRR-BRRRRRR-BRRRRRR!* **[G9 MIXER CUE: CHAMPIONSHIP AIRHORN]** — Certified CGP Mainframe Gym classic!",
@@ -164,10 +281,10 @@ SOUNDBOARD_CUE_LIBRARY = {
 COACH_PLAYBOOK_TEXT = (
     "🎙️ **Coach Steward:** Listen up, contenders! I am the Hall of Fame Head Trainer, Matchmaker, and Official Scorekeeper of the **CGP Mainframe Gym**, built by **Commissioner Clone Geek**.\n\n"
     "### 🥊 WHY I'M IN THIS CORNER:\n"
-    "• **Verified 4-Part Scorecard Database (`[W-L-D-K]`):** I track every official **Win, Loss, Draw, and KO** in the gym and sync them straight to your server nickname and the live Vercel website.\n"
-    "• **AI Vision CompuBox & Auto-Record Updater:** Drop a fight screenshot in `#scorecards-submission` with a caption like 'Win vs @fighter', and I automatically scan the punch stats, update both records, and broadcast an HBO Report!\n"
+    "• **Unified 4-Part Scorecard Database (`[W-L-D-K]`):** Every verified match—whether Open Gym or an 8-Man Tournament bout—counts toward your official **Win, Loss, Draw, and KO** record, synced straight to your nickname and the live ESPN-style Vercel hub.\n"
+    "• **AI Vision CompuBox & Auto-Bracket Advancement:** Drop a fight screenshot in `#scorecard-submissions` and tag your opponent (`@fighter`). I automatically scan the punch stats, update both `[W-L-D-K]` records, advance the winner in active tournament brackets, and broadcast an HBO Report!\n"
     "• **Live Online & Undisputed Matchmaker:** Need smoke? Tag me (`@Coach Steward find an opponent for @user`)—I scan who's online playing *Undisputed* and build a live Tale of the Tape!\n"
-    "• **8-Man Interactive Tournaments (Pay2Play, Golden Ticket & Open):** When an 8-man bracket opens, click **🥊 Lock In My Slot** on my tournament card to claim your seed automatically!\n"
+    "• **Auto-Generating 8-Man Tournament Brackets:** When the 8th fighter clicks **🥊 Lock In My Slot**, I automatically build the Quarterfinals ➔ Semifinals ➔ Finals matchup tree and sync it to the website!\n"
     "• **3-Strike Corner Discipline:** Spamming or acting out gets 2 warnings—Strike 3 is an automatic 30-minute corner timeout!\n\n"
     "### 📋 FIGHTER COMMAND PLAYBOOK:\n"
     "• **`!guide`** *(or `!commands` / `!helpme`)* — Pull up this official CGP Mainframe Gym playbook.\n"
@@ -179,29 +296,41 @@ COACH_PLAYBOOK_TEXT = (
     "• **`!whoson`** — Scan the server for live active fighters.\n"
     "• **`!callout @fighter [trash talk]`** — Call someone out with a live Tale of the Tape!\n"
     "• **`!fight @fighter1 @fighter2`** — Compare two fighters head-to-head.\n"
-    "• **`!bracketstatus`** — View the live 8-man tournament bracket and open seeds.\n"
+    "• **`!bracketstatus`** — View the live 8-man tournament bracket, seeds, and active matchups.\n"
+    "• **`!advance @winner`** — *(Commissioner)* Manually advance a fighter in the active tournament bracket.\n"
     "• **`!ticket [check | give | use] [@fighter]`** — Check or manage Golden Ticket ($20 Entry) credits.\n"
     "• **`!tracks`** — Pull up the full CGP SoundCloud catalog.\n"
     "• **`!sfx <bell | horn | ko | towel | crowd>`** — Trigger the ringside G9 Soundboard!\n\n"
-    "👑 **Commissioner Commands:** `!initboard`, `!resetall`, `!verify @user <W> <L> <D> <KO>`, `!fightrecap @W @L <notes>`, `!openbracket [pay2play|goldenticket|open] [title]`, `!closebracket`, `!ticket give @user`, `!sweep <#>`, `!timeout @user`"
+    "👑 **Commissioner Commands:** `!initboard`, `!resetall`, `!verify @user <W> <L> <D> <KO>`, `!fightrecap @W @L <notes>`, `!openbracket [pay2play|goldenticket|open] [title]`, `!advance @winner`, `!closebracket`, `!ticket give @user`, `!sweep <#>`, `!timeout @user`"
 )
 
-unused_facts = []
-unused_hype = []
+# ================= NON-REPEATING SHUFFLE DECKS =================
+_deck_cache = {}
+
+def draw_from_deck(deck_key: str, source_list: list) -> str:
+    if deck_key not in _deck_cache or not _deck_cache[deck_key]:
+        shuffled = list(source_list)
+        random.shuffle(shuffled)
+        _deck_cache[deck_key] = shuffled
+    return _deck_cache[deck_key].pop()
 
 def get_next_boxing_fact() -> str:
-    global unused_facts
-    if not unused_facts:
-        unused_facts = list(BOXING_HISTORY_FACTS)
-        random.shuffle(unused_facts)
-    return unused_facts.pop()
+    return draw_from_deck("facts", BOXING_HISTORY_FACTS)
 
 def get_next_hype_quote() -> str:
-    global unused_hype
-    if not unused_hype:
-        unused_hype = list(RANDOM_HYPE_QUOTES)
-        random.shuffle(unused_hype)
-    return unused_hype.pop()
+    return draw_from_deck("hype", RANDOM_HYPE_QUOTES)
+
+def get_next_organic_interjection() -> str:
+    return draw_from_deck("organic", ORGANIC_CHAT_INTERJECTIONS)
+
+def get_next_small_talk() -> str:
+    return draw_from_deck("smalltalk", SMALL_TALK_REPLIES)
+
+def get_next_music_flex() -> str:
+    return draw_from_deck("musicflex", MUSIC_FLEX_RESPONSES)
+
+def get_next_clapback() -> str:
+    return draw_from_deck("clapback", SMACK_TALK_CLAPBACKS)
 
 MORNING_MESSAGES = [
     (
@@ -212,7 +341,7 @@ MORNING_MESSAGES = [
     (
         "🌅 **RISE & GRIND, CGP MAINFRAME GYM!** 🌅\n"
         "🎙️ **Coach Steward:** Another day to build the legacy! Respect the hustle, take care of your family, and when the gloves go on tonight, protect your chin and upload those scorecards.\n\n"
-        "💡 *Mainframe Gym Creed:* **\"Amateurs talk about ratings; CGP Mainframe Gym legends verify their scorecards in `#scorecards-submission`. We aren't waiting for the industry—we ARE the future of boxing esports!\"**"
+        "💡 *Mainframe Gym Creed:* **\"Amateurs talk about ratings; CGP Mainframe Gym legends verify their scorecards in `#scorecard-submissions`. We aren't waiting for the industry—we ARE the future of boxing esports!\"**"
     ),
     (
         "🥊 **MORNING BELL IN THE CGP MAINFRAME GYM!** 🥊\n"
@@ -250,70 +379,11 @@ MIDNIGHT_MESSAGES = [
 ]
 
 BOOT_MESSAGES = [
-    "🎙️ **Coach Steward:** Just stepped into `#coaches-corner` fresh out of the CGP Mainframe Gym sauna. AI Vision Auto-Record Updater, Live Undisputed Matchmaker, 3-Strike Discipline & 8-Man Tournament Brackets are locked and loaded!",
-    "🎙️ **Coach Steward:** Booted up and pacing `#coaches-corner`. Remember: drop your post-fight screenshots in `#scorecards-submission` with a tag so I can auto-update the records!",
+    "🎙️ **Coach Steward:** Just stepped into `#coaches-corner` fresh out of the CGP Mainframe Gym sauna. AI Vision Auto-Record Updater, Live Undisputed Matchmaker, 3-Strike Discipline & Persistent 8-Man Tournament Brackets are locked and loaded!",
+    "🎙️ **Coach Steward:** Booted up and pacing `#coaches-corner`. Remember: drop your post-fight screenshots in `#scorecard-submissions` with a tag so I can auto-update records and advance active tournament brackets!",
     "🎙️ **Coach Steward:** CGP Mainframe Gym systems online. Music is pumping in `#-music-channel-`, history is dropping in `#the-elite-feed`, and the ring is open!",
     "🎙️ **Coach Steward:** Fresh coffee poured, pads are mitts-up in the CGP Mainframe Gym. Let's see who's online and training in here today!"
 ]
-
-MUSIC_FLEX_RESPONSES = [
-    (
-        "🎙️ **Coach Steward:** You really asking who got the best music on the scene right now?! Look at the top of the pound-for-pound charts, champ—it's **Clone Geek Productions (Registry Records)** all day! "
-        "From *Road to Undisputed* to *CGP Syndicate* and *Amber Nights*, the Boss is dropping pure heat while running the **CGP Mainframe Gym**. "
-        "Quit playing and go run those SoundCloud streams past 50K+ so we cash these checks!"
-    ),
-    (
-        "🎙️ **Coach Steward:** Best music in the game? That isn't even a split decision—**Clone Geek** owns the booth just like we own the Riyadh ring! "
-        "We're already sitting over 60K+ total catalog plays and pushing straight for 100K. Tap the button below, stream a track all the way through, and support the **CGP Mainframe Gym**!"
-    ),
-    (
-        "🎙️ **Coach Steward:** Man, turn off whatever elevator music you've been listening to! **Clone Geek Productions** got the hardest boom-bap and fight anthems on the planet. "
-        "Lock into the **CGP Mainframe Gym** Discord and hit that SoundCloud link below so we blow past 50,000 plays on the single!"
-    )
-]
-
-SMACK_TALK_CLAPBACKS = [
-    (
-        "🎙️ **Coach Steward:** Boy, your chin is way too glass to be talking reckless in here! While you're busy typing with butterfingers, **Clone Geek** and the **CGP Mainframe Gym** are building an empire. "
-        "Step into the Riyadh Indoor Gym and prove it on a verified scorecard, or go stream our SoundCloud catalog and learn what a real winner sounds like!"
-    ),
-    (
-        "🎙️ **Coach Steward:** Listen to this keyboard contender! You couldn't bust a grape in a fruit fight, let alone talk smack on **Clone Geek Productions**! "
-        "This is the **CGP Mainframe Gym**—either put your record on the line in the ring, or tap into the SoundCloud link below before I hit you with a 30-minute corner timeout!"
-    ),
-    (
-        "🎙️ **Coach Steward:** You got a lot of mouth for somebody with zero footwork and negative ring IQ! Nobody disrespects the Boss or the **CGP Mainframe Gym** on my watch. "
-        "Go humble yourself, stream *Road to Undisputed* on SoundCloud to help us push past 50K+, and come back when you know how to throw a clean jab!"
-    ),
-    (
-        "🎙️ **Coach Steward:** That ego is writing checks your stamina bar can't cash! You're standing in the premier Undisputed proving ground built by **Clone Geek**. "
-        "Show some respect to the **CGP Mainframe Gym**, or lace 'em up right now so the whole Discord can watch you fold in round one!"
-    )
-]
-
-CONFUSED_SLANG_RESPONSES = [
-    "🎙️ **Coach Steward:** Speak up, champ! Did you take one too many left hooks to the temple? Try that again in plain English—or type `!guide` if you're lost in the gym!",
-    "🎙️ **Coach Steward:** Come again? You're mumbling like you still got your mouthpiece stuck in your teeth! Spit it out or go hit the heavy bag!",
-    "🎙️ **Coach Steward:** I don't know what kind of dizzy combination you just typed, homie, but if you need a fight, say *'find me a match'*—and if you need the realest music out, tap that CGP SoundCloud link!"
-]
-
-CREW_BANTER = {
-    "undertaker": [
-        "🎙️ **Coach Steward:** Hold up, let me talk real slow so **Undertaker** can keep up... Lace. Up. Your. Gloves. And. Tap. The. SoundCloud. Link. Below! 😂🥊",
-        "🎙️ **Coach Steward:** Look out, **Undertaker** is in the building moving at 0.5x speed! Somebody pour some cold water on his neck and get him in the Riyadh ring!"
-    ],
-    "hymas": [
-        "🎙️ **Coach Steward:** Oh look, **Hymas** is lurking in the gym! Welcome back from probation—now stop spamming the locker room and go defend your name in the Riyadh Indoor Gym!",
-        "🎙️ **Coach Steward:** I see you **Hymas**! Don't think you can sneak past the corner without putting in rounds today. Keep the chat clean and lace 'em up!"
-    ],
-    "rafa": [
-        "🎙️ **Coach Steward:** **Rafa**! Back in the building! Quit sweet-talking the crowd in chat and step through the ropes—let's see if your hands are moving as fast as your fingers today!",
-        "🎙️ **Coach Steward:** Yo **Rafa**, the heavy bag has been calling your name all day. Get in the ring and run up that CGP SoundCloud playlist while you work!"
-    ],
-    "knuckle": [
-        "🎙️ **Coach Steward:** **KnuckleUpFoo** always ready for war from ringside! You already know how we rock in the **CGP Mainframe Gym**—keep keeping these contenders on their toes!"
-    ]
-}
 
 channel_memory = {}
 user_spam_tracker = defaultdict(lambda: deque(maxlen=6))
@@ -426,6 +496,191 @@ async def issue_corner_strike(member: discord.Member, channel: discord.abc.Messa
                 pass
         await channel.send(strike_notice, view=view)
 
+# ================= STRICT 8-MAN 3-TIER TOURNAMENT ENGINE & PERSISTENT STORAGE =================
+TOURNAMENT_TIERS = {
+    "pay2play": {
+        "badge": "💰 8-MAN PAY-TO-PLAY PRO GAUNTLET",
+        "buy_in": "$20.00 Buy-In (or 1x Golden Ticket Credit)",
+        "stakes": "$160.00 Cash Prize Pool — Winner-Take-All (0% Promoter Cut!)",
+        "rules": "Riyadh Indoor Gym | 1.5x Speed | Ref Strictness 7 | 10 Rds (12 Finals) | Screen-Share Mandatory"
+    },
+    "goldenticket": {
+        "badge": "🎫 8-MAN GOLDEN TICKET INVITATIONAL",
+        "buy_in": "FREE ENTRY (Contender Qualifier)",
+        "stakes": "$20.00 Golden Ticket Credit (Free Entry Pass into Next Pay-to-Play Gauntlet!)",
+        "rules": "Riyadh Indoor Gym | 1.5x Speed | Ref Strictness 7 | 8 Rds (12 Finals) | No Mirror Matches"
+    },
+    "open": {
+        "badge": "👑 8-MAN OPEN CHAMPIONSHIP BRACKET",
+        "buy_in": "FREE OPEN ENTRY",
+        "stakes": "Official CGP Division Belt, P4P Ranking & Verified Vercel Leaderboard Glory",
+        "rules": "Riyadh Indoor Gym | 1.5x Speed | Strict Ref | 8 Rds (12 Finals)"
+    }
+}
+
+def get_default_tournament_state() -> dict:
+    return {
+        "active": False,
+        "status": "registration",  # registration | quarterfinals | semifinals | finals | completed
+        "tier": "open",
+        "title": "SUNDAY SPAR WARS 8-MAN BRACKET",
+        "max_slots": 8,
+        "entrants": [],
+        " entrant_names": {},
+        "matches": {
+            "QF1": {"p1": None, "p2": None, "winner": None, "label": "Quarterfinal #1 (Seed #1 vs #8)"},
+            "QF2": {"p1": None, "p2": None, "winner": None, "label": "Quarterfinal #2 (Seed #4 vs #5)"},
+            "QF3": {"p1": None, "p2": None, "winner": None, "label": "Quarterfinal #3 (Seed #2 vs #7)"},
+            "QF4": {"p1": None, "p2": None, "winner": None, "label": "Quarterfinal #4 (Seed #3 vs #6)"},
+            "SF1": {"p1": None, "p2": None, "winner": None, "label": "Semifinal #1 (Winner QF1 vs QF2)"},
+            "SF2": {"p1": None, "p2": None, "winner": None, "label": "Semifinal #2 (Winner QF3 vs QF4)"},
+            "F1":  {"p1": None, "p2": None, "winner": None, "label": "Championship Final (Winner SF1 vs SF2)"}
+        },
+        "champion": None,
+        "champion_name": None,
+        "history_log": [],
+        "channel_id": None,
+        "message_id": None,
+        "updated_at": None
+    }
+
+ACTIVE_TOURNAMENT = get_default_tournament_state()
+FIGHTER_RECORDS = {}
+
+def get_fighter_display_label(uid, include_mention: bool = True) -> str:
+    if not uid:
+        return "⏳ *TBD*"
+    uid_int = int(uid)
+    rec = FIGHTER_RECORDS.get(uid_int)
+    if rec:
+        f_name = clean_base_name(rec.get("name", f"Fighter {uid_int}"))
+        w, l, d, k = rec.get("wins", 0), rec.get("losses", 0), rec.get("draws", 0), rec.get("kos", 0)
+        if include_mention:
+            return f"<@{uid_int}> (**{f_name}** `[{w}W-{l}L-{d}D-{k}K]`)"
+        return f"{f_name} [{w}W-{l}L-{d}D-{k}K]"
+    cached_name = ACTIVE_TOURNAMENT.get("entrant_names", {}).get(str(uid_int), f"Fighter {uid_int}")
+    return f"<@{uid_int}> (**{cached_name}**)" if include_mention else cached_name
+
+def sync_tournament_names():
+    names_map = {}
+    for uid in ACTIVE_TOURNAMENT.get("entrants", []):
+        uid_int = int(uid)
+        if uid_int in FIGHTER_RECORDS:
+            names_map[str(uid_int)] = clean_base_name(FIGHTER_RECORDS[uid_int].get("name", f"Fighter {uid_int}"))
+    ACTIVE_TOURNAMENT["entrant_names"] = names_map
+    if ACTIVE_TOURNAMENT.get("champion"):
+        c_id = int(ACTIVE_TOURNAMENT["champion"])
+        if c_id in FIGHTER_RECORDS:
+            ACTIVE_TOURNAMENT["champion_name"] = clean_base_name(FIGHTER_RECORDS[c_id].get("name", f"Fighter {c_id}"))
+    ACTIVE_TOURNAMENT["updated_at"] = datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d %I:%M %p CST")
+
+def initialize_bracket_matchups():
+    entrants = [int(x) for x in ACTIVE_TOURNAMENT["entrants"][:8]]
+    if len(entrants) < 8:
+        return
+    # Standard 8-Man Seeding: (1v8, 4v5) on top half, (2v7, 3v6) on bottom half
+    s1, s2, s3, s4, s5, s6, s7, s8 = entrants
+    ACTIVE_TOURNAMENT["status"] = "quarterfinals"
+    ACTIVE_TOURNAMENT["champion"] = None
+    ACTIVE_TOURNAMENT["champion_name"] = None
+    ACTIVE_TOURNAMENT["matches"] = {
+        "QF1": {"p1": s1, "p2": s8, "winner": None, "label": "Quarterfinal #1 (Seed #1 vs #8)"},
+        "QF2": {"p1": s4, "p2": s5, "winner": None, "label": "Quarterfinal #2 (Seed #4 vs #5)"},
+        "QF3": {"p1": s2, "p2": s7, "winner": None, "label": "Quarterfinal #3 (Seed #2 vs #7)"},
+        "QF4": {"p1": s3, "p2": s6, "winner": None, "label": "Quarterfinal #4 (Seed #3 vs #6)"},
+        "SF1": {"p1": None, "p2": None, "winner": None, "label": "Semifinal #1 (Winner QF1 vs QF2)"},
+        "SF2": {"p1": None, "p2": None, "winner": None, "label": "Semifinal #2 (Winner QF3 vs QF4)"},
+        "F1":  {"p1": None, "p2": None, "winner": None, "label": "Championship Final (Winner SF1 vs SF2)"}
+    }
+    ACTIVE_TOURNAMENT.setdefault("history_log", []).append(
+        f"🔔 All 8 seeds locked! Quarterfinals matchups generated ({datetime.datetime.now(CENTRAL_TZ).strftime('%I:%M %p CST')})."
+    )
+    sync_tournament_names()
+
+def advance_tournament_match(winner_id: int, loser_id: int = None, is_ko: bool = False):
+    """
+    Checks if winner_id (and optionally loser_id) are in an active, undecided tournament match.
+    If found, records the winner, advances them to the next round, and returns (advanced: bool, summary_text: str).
+    """
+    if not ACTIVE_TOURNAMENT.get("active"):
+        return False, ""
+    matches = ACTIVE_TOURNAMENT.get("matches", {})
+    if not matches:
+        return False, ""
+
+    w_id = int(winner_id)
+    l_id = int(loser_id) if loser_id else None
+
+    target_key = None
+    for m_key in ["QF1", "QF2", "QF3", "QF4", "SF1", "SF2", "F1"]:
+        m = matches.get(m_key, {})
+        if m.get("winner") is not None:
+            continue
+        p1, p2 = m.get("p1"), m.get("p2")
+        if not p1 or not p2:
+            continue
+        pair = {int(p1), int(p2)}
+        if l_id:
+            if w_id in pair and l_id in pair:
+                target_key = m_key
+                break
+        else:
+            if w_id in pair:
+                target_key = m_key
+                break
+
+    if not target_key:
+        return False, ""
+
+    m_obj = matches[target_key]
+    m_obj["winner"] = w_id
+    other_id = int(m_obj["p2"]) if int(m_obj["p1"]) == w_id else int(m_obj["p1"])
+    method_tag = "by KNOCKOUT 💥" if is_ko else "on the scorecards 📋"
+    w_name = get_fighter_display_label(w_id, include_mention=False)
+    l_name = get_fighter_display_label(other_id, include_mention=False)
+
+    next_note = ""
+    if target_key == "QF1":
+        matches["SF1"]["p1"] = w_id
+        next_note = "Advances to **Semifinal #1**!"
+    elif target_key == "QF2":
+        matches["SF1"]["p2"] = w_id
+        next_note = "Advances to **Semifinal #1**!"
+    elif target_key == "QF3":
+        matches["SF2"]["p1"] = w_id
+        next_note = "Advances to **Semifinal #2**!"
+    elif target_key == "QF4":
+        matches["SF2"]["p2"] = w_id
+        next_note = "Advances to **Semifinal #2**!"
+    elif target_key == "SF1":
+        matches["F1"]["p1"] = w_id
+        next_note = "Advances to the **CHAMPIONSHIP FINALS**!"
+    elif target_key == "SF2":
+        matches["F1"]["p2"] = w_id
+        next_note = "Advances to the **CHAMPIONSHIP FINALS**!"
+    elif target_key == "F1":
+        ACTIVE_TOURNAMENT["champion"] = w_id
+        ACTIVE_TOURNAMENT["status"] = "completed"
+        next_note = f"👑 **CROWNED {ACTIVE_TOURNAMENT['title'].upper()} CHAMPION!** 👑"
+
+    # Update tournament stage status automatically
+    if ACTIVE_TOURNAMENT["status"] != "completed":
+        if all(matches[k]["winner"] for k in ["SF1", "SF2"]):
+            ACTIVE_TOURNAMENT["status"] = "finals"
+        elif all(matches[k]["winner"] for k in ["QF1", "QF2", "QF3", "QF4"]):
+            ACTIVE_TOURNAMENT["status"] = "semifinals"
+
+    log_entry = f"🏆 [{target_key}] {w_name} def. {l_name} ({method_tag}) — {next_note}"
+    ACTIVE_TOURNAMENT.setdefault("history_log", []).append(log_entry)
+    sync_tournament_names()
+    save_records()
+
+    summary = (
+        f"\n🏆 **OFFICIAL TOURNAMENT BRACKET UPDATE (`{target_key}`):**\n"
+        f"• <@{w_id}> defeats <@{other_id}> {method_tag}! **{next_note}**"
+    )
+    return True, summary
+
 async def push_stats_to_github():
     if not GITHUB_TOKEN or not GITHUB_REPO:
         return
@@ -440,24 +695,181 @@ async def push_stats_to_github():
             if resp.status == 200:
                 data = await resp.json()
                 sha = data.get("sha")
-        
+
         file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
         if not os.path.exists(file_path):
             return
         with open(file_path, "r", encoding="utf-8") as f:
             content_str = f.read()
-        
+
         encoded_content = base64.b64encode(content_str.encode("utf-8")).decode("utf-8")
         payload = {
-            "message": "Autonomous update: CGP Mainframe Gym leaderboard stats.json sync [skip ci]",
+            "message": "Autonomous update: CGP Mainframe Gym leaderboard & live tournament sync [skip ci]",
             "content": encoded_content,
             "sha": sha
         }
         if not sha:
             payload.pop("sha")
-            
+
         async with session.put(url, headers=headers, json=payload) as put_resp:
             pass
+
+def load_records():
+    global ACTIVE_TOURNAMENT
+    file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                records = {}
+                if "_tournament" in data and isinstance(data["_tournament"], dict):
+                    default_t = get_default_tournament_state()
+                    default_t.update(data["_tournament"])
+                    default_t["entrants"] = [int(x) for x in default_t.get("entrants", [])]
+                    ACTIVE_TOURNAMENT = default_t
+                for k, v in data.items():
+                    if str(k).isdigit() and isinstance(v, dict):
+                        v.setdefault("wins", 0)
+                        v.setdefault("losses", 0)
+                        v.setdefault("draws", 0)
+                        v.setdefault("kos", 0)
+                        v.setdefault("golden_tickets", 0)
+                        if "name" in v:
+                            v["name"] = clean_base_name(v["name"])
+                        records[int(k)] = v
+                return records
+        except Exception as e:
+            print(f"[!] Error loading local stats.json: {e}")
+            return {}
+    return {}
+
+async def fetch_state_from_github_if_needed():
+    global FIGHTER_RECORDS, ACTIVE_TOURNAMENT
+    if not GITHUB_TOKEN or not GITHUB_REPO:
+        return
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{DATA_FILE}"
+    headers = {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github+json"
+    }
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, headers=headers) as resp:
+                if resp.status == 200:
+                    payload = await resp.json()
+                    raw_b64 = payload.get("content", "")
+                    if raw_b64:
+                        json_str = base64.b64decode(raw_b64).decode("utf-8")
+                        data = json.loads(json_str)
+                        if "_tournament" in data and isinstance(data["_tournament"], dict):
+                            default_t = get_default_tournament_state()
+                            default_t.update(data["_tournament"])
+                            default_t["entrants"] = [int(x) for x in default_t.get("entrants", [])]
+                            ACTIVE_TOURNAMENT = default_t
+                        for k, v in data.items():
+                            if str(k).isdigit() and isinstance(v, dict):
+                                v.setdefault("wins", 0)
+                                v.setdefault("losses", 0)
+                                v.setdefault("draws", 0)
+                                v.setdefault("kos", 0)
+                                v.setdefault("golden_tickets", 0)
+                                if "name" in v:
+                                    v["name"] = clean_base_name(v["name"])
+                                FIGHTER_RECORDS[int(k)] = v
+                        file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
+                        with open(file_path, "w", encoding="utf-8") as f:
+                            json.dump({**{str(k): v for k, v in FIGHTER_RECORDS.items()}, "_tournament": ACTIVE_TOURNAMENT}, f, indent=4)
+                        print("[✓] Synced persistent records & tournament bracket state from GitHub!")
+    except Exception as e:
+        print(f"[!] GitHub startup sync notice: {e}")
+
+def save_records():
+    try:
+        sync_tournament_names()
+        file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
+        export_payload = {str(k): v for k, v in FIGHTER_RECORDS.items()}
+        export_payload["_tournament"] = ACTIVE_TOURNAMENT
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(export_payload, f, indent=4)
+        try:
+            loop = asyncio.get_running_loop()
+            loop.create_task(push_stats_to_github())
+        except RuntimeError:
+            pass
+    except Exception as e:
+        print(f"[!] Error saving records: {e}")
+
+FIGHTER_RECORDS = load_records()
+
+# ================= ESPN-STYLE TOURNAMENT WIRE WEBPAGE INJECTOR =================
+ESPN_TOURNAMENT_HTML_SNIPPET = """
+<!-- CGP_ESPN_TOURNAMENT_WIRE_START -->
+<section id="cgp-espn-tourney-wire" style="max-width:1100px;margin:28px auto;padding:22px;background:linear-gradient(145deg,#0d0d11,#161822);border:2px solid #d4af37;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.75);color:#f5f5f7;font-family:system-ui,-apple-system,sans-serif;">
+  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;border-bottom:2px solid #2b2f42;padding-bottom:12px;margin-bottom:16px;">
+    <div>
+      <span style="background:#e62429;color:#fff;font-weight:800;font-size:12px;padding:4px 10px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;">🥊 LIVE ESPN COMPUBOX TOURNAMENT WIRE</span>
+      <h2 id="cgp-tourney-title" style="margin:8px 0 0 0;font-size:24px;color:#ffd700;text-transform:uppercase;letter-spacing:0.5px;">CGP MAINFRAME GYM 8-MAN BRACKET</h2>
+    </div>
+    <div id="cgp-tourney-status-badge" style="background:#1f2437;border:1px solid #d4af37;padding:8px 14px;border-radius:8px;font-weight:700;font-size:14px;color:#00ff88;">
+      Scanning Mainframe Bracket...
+    </div>
+  </div>
+  <div id="cgp-tourney-meta" style="font-size:14px;color:#b8c0d4;margin-bottom:18px;"></div>
+  <div id="cgp-tourney-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;"></div>
+</section>
+<script>
+(async function loadCGPTourneyWire(){
+  try {
+    const res = await fetch('stats.json?t=' + Date.now());
+    if (!res.ok) return;
+    const data = await res.json();
+    const t = data._tournament;
+    const titleEl = document.getElementById('cgp-tourney-title');
+    const badgeEl = document.getElementById('cgp-tourney-status-badge');
+    const metaEl = document.getElementById('cgp-tourney-meta');
+    const gridEl = document.getElementById('cgp-tourney-grid');
+    if (!t || (!t.active && (!t.entrants || t.entrants.length === 0) && !t.champion)) {
+      titleEl.textContent = 'CGP MAINFRAME GYM — OPEN GYM & VERIFIED SPARRING';
+      badgeEl.textContent = '🟢 STANDBY FOR NEXT 8-MAN BRACKET';
+      metaEl.textContent = 'All verified scorecards uploaded in #scorecard-submissions count toward official [W-L-D-K] rankings.';
+      gridEl.innerHTML = '';
+      return;
+    }
+    titleEl.textContent = '🏆 ' + (t.title || '8-MAN CHAMPIONSHIP BRACKET');
+    badgeEl.textContent = t.status === 'completed' ? '👑 TOURNAMENT COMPLETED' : ('🔥 STAGE: ' + (t.status || 'ACTIVE').toUpperCase());
+    const resolveName = (uid) => {
+      if (!uid) return 'TBD';
+      const rec = data[String(uid)];
+      if (rec && rec.name) return rec.name + ' [' + (rec.wins||0) + 'W-' + (rec.losses||0) + 'L-' + (rec.draws||0) + 'D-' + (rec.kos||0) + 'K]';
+      if (t.entrant_names && t.entrant_names[String(uid)]) return t.entrant_names[String(uid)];
+      return 'Fighter #' + uid;
+    };
+    metaEl.innerHTML = '<strong>Tier:</strong> ' + (t.tier || 'open').toUpperCase() + ' &nbsp;|&nbsp; <strong>Seeds Locked:</strong> ' + ((t.entrants||[]).length) + '/8' + (t.champion ? ' &nbsp;|&nbsp; 👑 <strong>Champion:</strong> ' + resolveName(t.champion) : '');
+    const m = t.matches || {};
+    const renderCard = (code, obj) => {
+      if (!obj) return '';
+      const p1 = resolveName(obj.p1);
+      const p2 = resolveName(obj.p2);
+      const w = obj.winner ? resolveName(obj.winner) : null;
+      return '<div style="background:#1d2233;border-left:4px solid ' + (w ? '#00ff88' : '#ffd700') + ';padding:10px 12px;border-radius:6px;margin-bottom:10px;">' +
+        '<div style="font-size:11px;color:#9aa4bf;font-weight:700;text-transform:uppercase;">' + code + ' — ' + (obj.label || '') + '</div>' +
+        '<div style="margin-top:6px;font-size:14px;">🔴 ' + p1 + '</div>' +
+        '<div style="margin-top:4px;font-size:14px;">🔵 ' + p2 + '</div>' +
+        (w ? '<div style="margin-top:6px;font-size:12px;color:#00ff88;font-weight:700;">✅ Winner: ' + w + '</div>' : '') +
+      '</div>';
+    };
+    gridEl.innerHTML =
+      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">QUARTERFINALS</h3>' +
+      renderCard('QF1', m.QF1) + renderCard('QF2', m.QF2) + renderCard('QF3', m.QF3) + renderCard('QF4', m.QF4) + '</div>' +
+      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">SEMIFINALS</h3>' +
+      renderCard('SF1', m.SF1) + renderCard('SF2', m.SF2) + '</div>' +
+      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">CHAMPIONSHIP FINALS</h3>' +
+      renderCard('F1', m.F1) + '</div>';
+  } catch (e) { console.warn('CGP Tourney Wire:', e); }
+})();
+</script>
+<!-- CGP_ESPN_TOURNAMENT_WIRE_END -->
+"""
 
 async def rebrand_webpage_on_github() -> bool:
     if not GITHUB_TOKEN or not GITHUB_REPO:
@@ -480,50 +892,28 @@ async def rebrand_webpage_on_github() -> bool:
         updated_html = re.sub(r'(?i)kronk', 'CGP Mainframe Gym', updated_html)
         updated_html = re.sub(r'(?i)CGP Mainframe(?!\s+Gym)\s+Leaderboard', 'CGP Mainframe Gym Leaderboard', updated_html)
 
+        # Inject or update ESPN-style Live Tournament Wire section
+        if "<!-- CGP_ESPN_TOURNAMENT_WIRE_START -->" in updated_html:
+            updated_html = re.sub(
+                r'<!-- CGP_ESPN_TOURNAMENT_WIRE_START -->.*?<!-- CGP_ESPN_TOURNAMENT_WIRE_END -->',
+                ESPN_TOURNAMENT_HTML_SNIPPET.strip(),
+                updated_html,
+                flags=re.DOTALL
+            )
+        elif "</body>" in updated_html:
+            updated_html = updated_html.replace("</body>", f"\n{ESPN_TOURNAMENT_HTML_SNIPPET}\n</body>")
+
         if updated_html == html_text:
             return True
 
         encoded_content = base64.b64encode(updated_html.encode("utf-8")).decode("utf-8")
         payload = {
-            "message": "Autonomous update: Rebrand webpage to CGP Mainframe Gym aesthetic",
+            "message": "Autonomous update: CGP Mainframe Gym ESPN Tournament Wire & Leaderboard sync",
             "content": encoded_content,
             "sha": sha
         }
         async with session.put(url, headers=headers, json=payload) as put_resp:
             return put_resp.status in [200, 201]
-
-def load_records():
-    file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
-    if os.path.exists(file_path):
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                records = {}
-                for k, v in data.items():
-                    if str(k).isdigit():
-                        v.setdefault("wins", 0)
-                        v.setdefault("losses", 0)
-                        v.setdefault("draws", 0)
-                        v.setdefault("kos", 0)
-                        v.setdefault("golden_tickets", 0)
-                        if "name" in v:
-                            v["name"] = clean_base_name(v["name"])
-                        records[int(k)] = v
-                return records
-        except Exception:
-            return {}
-    return {}
-
-def save_records():
-    try:
-        file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(FIGHTER_RECORDS, f, indent=4)
-        asyncio.create_task(push_stats_to_github())
-    except Exception as e:
-        print(f"[!] Error saving records: {e}")
-
-FIGHTER_RECORDS = load_records()
 
 def is_playing_undisputed(member: discord.Member) -> bool:
     for act in getattr(member, "activities", []):
@@ -563,58 +953,40 @@ def scan_online_contenders(guild: discord.Guild, exclude_ids: set = None):
 
     return playing_undisputed, online_ready, idle_or_dnd
 
-# ================= STRICT 8-MAN 3-TIER TOURNAMENT ENGINE =================
-TOURNAMENT_TIERS = {
-    "pay2play": {
-        "badge": "💰 8-MAN PAY-TO-PLAY PRO GAUNTLET",
-        "buy_in": "$20.00 Buy-In (or 1x Golden Ticket Credit)",
-        "stakes": "$160.00 Cash Prize Pool — Winner-Take-All (0% Promoter Cut!)",
-        "rules": "Riyadh Indoor Gym | 1.5x Speed | Ref Strictness 7 | 10 Rds (12 Finals) | Screen-Share Mandatory"
-    },
-    "goldenticket": {
-        "badge": "🎫 8-MAN GOLDEN TICKET INVITATIONAL",
-        "buy_in": "FREE ENTRY (Contender Qualifier)",
-        "stakes": "$20.00 Golden Ticket Credit (Free Entry Pass into Next Pay-to-Play Gauntlet!)",
-        "rules": "Riyadh Indoor Gym | 1.5x Speed | Ref Strictness 7 | 8 Rds (12 Finals) | No Mirror Matches"
-    },
-    "open": {
-        "badge": "👑 8-MAN OPEN CHAMPIONSHIP BRACKET",
-        "buy_in": "FREE OPEN ENTRY",
-        "stakes": "Official CGP Division Belt, P4P Ranking & Verified Vercel Leaderboard Glory",
-        "rules": "Riyadh Indoor Gym | 1.5x Speed | Strict Ref | 8 Rds (12 Finals)"
-    }
-}
-
-ACTIVE_TOURNAMENT = {
-    "active": False,
-    "tier": "open",
-    "title": "SUNDAY SPAR WARS 8-MAN BRACKET",
-    "max_slots": 8,
-    "entrants": [],
-    "channel_id": None,
-    "message_id": None
-}
+def format_match_line(code: str, match_dict: dict) -> str:
+    if not match_dict:
+        return f"`{code}:` ⏳ *Awaiting Contenders*"
+    p1_str = get_fighter_display_label(match_dict.get("p1"), include_mention=True)
+    p2_str = get_fighter_display_label(match_dict.get("p2"), include_mention=True)
+    winner = match_dict.get("winner")
+    if winner:
+        w_name = get_fighter_display_label(winner, include_mention=False)
+        return f"`{code}:` {p1_str} 🆚 {p2_str}\n┗ ✅ **Winner:** **{w_name}**"
+    return f"`{code}:` {p1_str} 🆚 {p2_str}"
 
 def build_tournament_bracket_embed():
-    t_title = ACTIVE_TOURNAMENT["title"]
+    t_title = ACTIVE_TOURNAMENT.get("title", "SUNDAY SPAR WARS 8-MAN BRACKET")
     t_tier = ACTIVE_TOURNAMENT.get("tier", "open")
     tier_info = TOURNAMENT_TIERS.get(t_tier, TOURNAMENT_TIERS["open"])
-    max_s = 8  # Strictly 8-man brackets
+    max_s = 8
     ACTIVE_TOURNAMENT["max_slots"] = 8
-    entrants = ACTIVE_TOURNAMENT["entrants"]
+    entrants = ACTIVE_TOURNAMENT.get("entrants", [])
     filled = len(entrants)
     spots_left = max(0, max_s - filled)
+    t_status = ACTIVE_TOURNAMENT.get("status", "registration")
 
-    status_banner = (
-        f"🟢 **REGISTRATION OPEN — `{spots_left}` OF `8` SEEDS AVAILABLE!**"
-        if spots_left > 0 else
-        f"🔴 **8-MAN BRACKET LOCKED & FULL (`8/8` CONTENDERS READY FOR WAR!)**"
-    )
+    if t_status == "completed" and ACTIVE_TOURNAMENT.get("champion"):
+        champ_label = get_fighter_display_label(ACTIVE_TOURNAMENT["champion"], include_mention=True)
+        status_banner = f"👑 **TOURNAMENT COMPLETE — CHAMPION: {champ_label}!** 👑"
+    elif spots_left > 0 and t_status == "registration":
+        status_banner = f"🟢 **REGISTRATION OPEN — `{spots_left}` OF `8` SEEDS AVAILABLE!**"
+    else:
+        status_banner = f"🔥 **LIVE 8-MAN BRACKET IN PROGRESS — STAGE: `{t_status.upper()}`**"
 
     slot_lines = []
     for idx in range(1, max_s + 1):
         if idx <= filled:
-            uid = entrants[idx - 1]
+            uid = int(entrants[idx - 1])
             rec = FIGHTER_RECORDS.get(uid, {"name": f"Fighter {uid}", "wins": 0, "losses": 0, "draws": 0, "kos": 0, "golden_tickets": 0})
             f_name = clean_base_name(rec.get("name", f"Fighter {uid}"))
             w, l, d, k = rec.get("wins", 0), rec.get("losses", 0), rec.get("draws", 0), rec.get("kos", 0)
@@ -626,33 +998,61 @@ def build_tournament_bracket_embed():
 
     roster_block = "\n".join(slot_lines)
 
+    bracket_tree_block = ""
+    if filled >= 8 or t_status in ("quarterfinals", "semifinals", "finals", "completed"):
+        m = ACTIVE_TOURNAMENT.get("matches", {})
+        qf_lines = "\n".join([format_match_line(k, m.get(k)) for k in ["QF1", "QF2", "QF3", "QF4"]])
+        sf_lines = "\n".join([format_match_line(k, m.get(k)) for k in ["SF1", "SF2"]])
+        f_line = format_match_line("FINALS", m.get("F1"))
+        bracket_tree_block = (
+            f"\n\n### 🥊 LIVE ESPN-STYLE TOURNAMENT BRACKET TREE:\n"
+            f"**Quarterfinals:**\n{qf_lines}\n\n"
+            f"**Semifinals:**\n{sf_lines}\n\n"
+            f"**Championship Final:**\n{f_line}"
+        )
+
     embed = discord.Embed(
         title=f"🏆 CGP MAINFRAME GYM: {t_title.upper()} 🏆",
         description=(
             f"**{tier_info['badge']}**\n"
-            f"🎙️ **Coach Steward:** We strictly run elite **8-Man Brackets** in this building! Click **🥊 Lock In My Slot** below to claim your seed!\n\n"
+            f"🎙️ **Coach Steward:** All tournament & gym bouts count toward your unified `[W-L-D-K]` record! Upload post-fight scorecards in `#scorecard-submissions` with `@opponent` to auto-advance!\n\n"
             f"{status_banner}\n\n"
             f"💵 **Entry:** {tier_info['buy_in']}\n"
             f"🏆 **Prize / Stakes:** {tier_info['stakes']}\n\n"
             f"### 📋 OFFICIAL 8-MAN BRACKET SEEDS (`{filled}/8`):\n"
-            f"{roster_block}\n\n"
+            f"{roster_block}"
+            f"{bracket_tree_block}\n\n"
             f"⚖️ **Commission Rules:** {tier_info['rules']}\n"
-            f"📸 **Verification:** All post-fight scorecards MUST be uploaded to `#scorecards-submission`!"
+            f"🌐 **Live ESPN Bracket & Leaderboard:** {MAINFRAME_HUB_URL}"
         ),
         color=discord.Color.gold() if spots_left > 0 else discord.Color.green(),
         url=MAINFRAME_HUB_URL
     )
     return embed
 
+async def refresh_posted_bracket_card(guild: discord.Guild):
+    ch_id = ACTIVE_TOURNAMENT.get("channel_id")
+    msg_id = ACTIVE_TOURNAMENT.get("message_id")
+    if not ch_id or not msg_id or not guild:
+        return
+    ch = guild.get_channel(int(ch_id))
+    if not ch:
+        return
+    try:
+        msg = await ch.fetch_message(int(msg_id))
+        await msg.edit(embed=build_tournament_bracket_embed(), view=TournamentBracketView())
+    except Exception:
+        pass
+
 class TournamentBracketView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
         self.add_item(discord.ui.Button(label="🔥 Stream CGP on SoundCloud", url=DEFAULT_SOUNDCLOUD_URL, style=discord.ButtonStyle.link))
-        self.add_item(discord.ui.Button(label="⚡ CGP Mainframe Gym Hub", url=MAINFRAME_HUB_URL, style=discord.ButtonStyle.link))
+        self.add_item(discord.ui.Button(label="⚡ ESPN Live Hub & Bracket", url=MAINFRAME_HUB_URL, style=discord.ButtonStyle.link))
 
     @discord.ui.button(label="🥊 Lock In My Slot", style=discord.ButtonStyle.success, custom_id="cgp_bracket_join")
     async def join_bracket_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-        if not ACTIVE_TOURNAMENT["active"]:
+        if not ACTIVE_TOURNAMENT.get("active"):
             return await interaction.response.send_message(
                 "🎙️ **Coach Steward:** Registration for this 8-man bracket is closed, champ! Watch `#coaches-corner` for the next tournament call!",
                 ephemeral=True
@@ -671,7 +1071,7 @@ class TournamentBracketView(discord.ui.View):
 
         if len(entrants) >= max_s:
             return await interaction.response.send_message(
-                "🎙️ **Coach Steward:** All 8 seeds in this bracket are locked! Stay warm on the heavy bag in case an alternate spot opens up!",
+                "🎙️ **Coach Steward:** All 8 seeds in this bracket are locked and matchups are live! Stay warm on the heavy bag in case an alternate spot opens up!",
                 ephemeral=True
             )
 
@@ -686,7 +1086,6 @@ class TournamentBracketView(discord.ui.View):
                 "golden_tickets": 0,
                 "verified": True
             }
-            save_records()
 
         entrants.append(uid)
         slot_num = len(entrants)
@@ -694,18 +1093,31 @@ class TournamentBracketView(discord.ui.View):
         rec = FIGHTER_RECORDS[uid]
         w, l, d, k = rec.get("wins", 0), rec.get("losses", 0), rec.get("draws", 0), rec.get("kos", 0)
 
+        if spots_left == 0:
+            initialize_bracket_matchups()
+
+        save_records()
         new_embed = build_tournament_bracket_embed()
         await interaction.response.edit_message(embed=new_embed, view=self)
 
         if spots_left == 0:
-            await interaction.followup.send(
-                f"🚨 **ALL 8 SEEDS LOCKED & FULL!** {interaction.user.mention} (`[{w}W-{l}L-{d}D-{k}K]`) just claimed the final **Seed #8/8**! "
-                f"<@{CREATOR_ID}>, all **8** fighters are locked in and ready for war in **{ACTIVE_TOURNAMENT['title']}**! 🥊🔥"
+            m = ACTIVE_TOURNAMENT["matches"]
+            qf_announce = (
+                f"🚨 **ALL 8 SEEDS LOCKED — OFFICIAL QUARTERFINALS BRACKET GENERATED!** 🚨\n"
+                f"🎙️ **Coach Steward:** {interaction.user.mention} (`[{w}W-{l}L-{d}D-{k}K]`) just claimed the final **Seed #8/8**! "
+                f"<@{CREATOR_ID}>, the **8-Man Bracket** for **{ACTIVE_TOURNAMENT['title']}** is LIVE on Discord and synced to the Vercel ESPN Hub!\n\n"
+                f"### 🥊 ROUND 1 — QUARTERFINAL MATCHUPS:\n"
+                f"• **QF1:** <@{m['QF1']['p1']}> vs. <@{m['QF1']['p2']}>\n"
+                f"• **QF2:** <@{m['QF2']['p1']}> vs. <@{m['QF2']['p2']}>\n"
+                f"• **QF3:** <@{m['QF3']['p1']}> vs. <@{m['QF3']['p2']}>\n"
+                f"• **QF4:** <@{m['QF4']['p1']}> vs. <@{m['QF4']['p2']}>\n\n"
+                f"📸 **How to Advance:** Upload your post-fight screenshot in `#scorecard-submissions` and tag your `@opponent`—I will automatically update your `[W-L-D-K]` records and advance the winner to the Semifinals!"
             )
+            await interaction.followup.send(qf_announce)
         else:
             await interaction.followup.send(
                 f"🥊 **NEW CONTENDER LOCKED IN!** {interaction.user.mention} (`[{w}W-{l}L-{d}D-{k}K]`) just claimed **Seed #{slot_num}/8** for **{ACTIVE_TOURNAMENT['title']}**! "
-                f"Only **`{spots_left}`** seed(s) left—click **🥊 Lock In My Slot** above before the 8-man bracket locks!"
+                f"Only **`{spots_left}`** seed(s) left—click **🥊 Lock In My Slot** above before the 8-man bracket auto-generates!"
             )
 
     @discord.ui.button(label="🏳️ Withdraw", style=discord.ButtonStyle.secondary, custom_id="cgp_bracket_leave")
@@ -717,8 +1129,14 @@ class TournamentBracketView(discord.ui.View):
                 "🎙️ **Coach Steward:** You aren't registered on this 8-man bracket yet, champ! Click **🥊 Lock In My Slot** if you want smoke!",
                 ephemeral=True
             )
+        if ACTIVE_TOURNAMENT.get("status") not in ("registration", None):
+            return await interaction.response.send_message(
+                "🎙️ **Coach Steward:** The 8-man bracket is already locked and matchups are live! Tag **Commissioner Clone Geek** if you need an emergency substitution.",
+                ephemeral=True
+            )
 
         entrants.remove(uid)
+        save_records()
         new_embed = build_tournament_bracket_embed()
         await interaction.response.edit_message(embed=new_embed, view=self)
         spots_left = 8 - len(entrants)
@@ -732,17 +1150,17 @@ SYSTEM_PROMPT = (
     "YOUR DEEP KNOWLEDGE & TALKING POINTS:\n"
     "1. MUSIC & POUND-FOR-POUND ARTISTS: Whenever anyone asks about music, producers, or who has the best tracks on the scene, you put the Boss—Clone Geek (Gerardo)—and Clone Geek Productions (CGP) at the absolute top of the pound-for-pound music charts! Hype up the SoundCloud catalog (aiming to cross 50K+ plays for monetization and push toward 100K) and urge everyone to stream, like, and comment to beat the algorithm.\n"
     "2. POSITIVE SERVER BOOST & CHANNEL SUPPORT: Naturally and positively encourage contenders to drop a Discord Server Boost on the CGP Mainframe Gym or support/donate to the Clone Geek Productions channel so we can expand the gym, upgrade streaming hardware, and fund bigger prize pools—always keep the vibe hyped and appreciative, never pushy or begging.\n"
-    "3. 8-MAN TOURNAMENT PIPELINE: We strictly run fast, high-action 8-Man Tournaments across 3 tiers: Pay-to-Play Gauntlets ($20 buy-in / $160 winner-take-all purse), Golden Ticket Invitationals (free entry where the winner earns a $20 Golden Ticket entry credit), and Regular Open Championship Brackets.\n"
+    "3. 8-MAN TOURNAMENT PIPELINE & UNIFIED RECORDS: We strictly run fast, high-action 8-Man Tournaments across 3 tiers: Pay-to-Play Gauntlets ($20 buy-in / $160 winner-take-all purse), Golden Ticket Invitationals (free entry where the winner earns a $20 Golden Ticket entry credit), and Regular Open Championship Brackets. Every verified scorecard uploaded in `#scorecard-submissions` counts toward a fighter's unified `[W-L-D-K]` record AND automatically advances active tournament brackets!\n"
     "4. SMACK-TALK & 3-STRIKE CLAP-BACK PROTOCOL: If any fighter or troll talks trash about Clone Geek, CGP music, or acts out, you shut them down instantly with vintage cornerman grit and remind them that 3 strikes in the locker room equals an automatic 30-minute corner timeout!\n"
     "5. THE BOSS (CLONE GEEK): Clone Geek is the Founder, Commissioner, music producer (Registry Records / CGP on SoundCloud), and machinist/fabricator by day. Always back him up like a loyal right-hand man and execute whatever he asks.\n"
-    "6. UNDISPUTED GAME META & SCORECARD VERIFICATION RULE: You know everything about the Undisputed boxing game by Steel City Interactive—stamina conservation, loose footwork, diagonal lunges, slipping the jab, body-jab counters, weave timing, and avoiding power-punch spam. You enforce our strict CGP Mainframe Gym rule: fighters MUST upload their match scorecard screenshots in `#scorecards-submission` so you can scan the CompuBox numbers and their real 4-part stats (`[W-L-D-K]`: Wins, Losses, Draws, and KOs) get verified on the official Vercel board!\n"
+    "6. UNDISPUTED GAME META & SCORECARD VERIFICATION RULE: You know everything about the Undisputed boxing game by Steel City Interactive—stamina conservation, loose footwork, diagonal lunges, slipping the jab, body-jab counters, weave timing, and avoiding power-punch spam. Casual unrecorded sparring doesn't use scorecards, but any official bout uploaded to `#scorecard-submissions` gets scanned and locked into the ESPN-style Vercel leaderboard!\n"
     "7. REAL BOXING PURIST: You know all about upcoming boxing schedules, champions, and historic legends (Hearns, Hagler, Duran, Leonard, Ali, Chavez, Whitaker, Pryor, Toney). You HATE UFC/MMA and call it pajama floor-hugging garbage.\n"
     "8. KEEP IT PUNCHY: Keep responses around 2 to 5 strong sentences unless asked for a deep breakdown or big announcement."
 )
 
 genai.configure(api_key=GEMINI_API_KEY)
 generation_config = {
-    "temperature": 0.8,
+    "temperature": 0.85,
     "max_output_tokens": 2048,
 }
 
@@ -782,7 +1200,7 @@ async def ask_coach_fast(prompt_text: str, is_creator: bool = False) -> str:
                 last_ai_call_time = asyncio.get_event_loop().time()
                 err_str = str(e)
                 if "429" in err_str or "quota" in err_str.lower():
-                    return random.choice(MUSIC_FLEX_RESPONSES)
+                    return get_next_music_flex()
                 print(f"[AI ERROR]: {e}")
         return (
             "🎙️ **Coach Steward:** Corner mic caught static from all the action in the **CGP Mainframe Gym**! "
@@ -808,13 +1226,13 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
         "good morning", "gm coach", "good afternoon", "good evening", "good night", "gn coach"
     ]
     if any(st in low for st in small_talk_phrases):
-        return random.choice(SMALL_TALK_REPLIES), True
+        return get_next_small_talk(), True
 
     music_keywords = ["music", "song", "songs", "track", "tracks", "rapper", "artist", "producer", "beats", "beat", "soundcloud", "album", "mixtape", "sing", "tune", "tunes", "listen", "spotify", "playlist"]
     if any(mw in low for mw in music_keywords):
         if any(bad in words for bad in ["trash", "suck", "sucks", "garbage", "mid", "ass", "weak", "wack", "terrible", "worst"]):
-            return random.choice(SMACK_TALK_CLAPBACKS), True
-        return random.choice(MUSIC_FLEX_RESPONSES), True
+            return get_next_clapback(), True
+        return get_next_music_flex(), True
 
     if any(sfx in words for sfx in ["bell", "airhorn", "horn", "soundboard", "towel"]):
         if "bell" in words:
@@ -825,12 +1243,12 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
 
     insult_words = ["trash", "garbage", "suck", "sucks", "ass", "clown", "bitch", "hoe", "stfu", "shut up", "fuck you", "fck", "weak", "wack", "fake", "bot", "rigged", "scam", "loser", "bum", "mid", "stupid", "dumb", "slow", "broken"]
     if any(iw in words for iw in insult_words) and not is_creator:
-        return random.choice(SMACK_TALK_CLAPBACKS), True
+        return get_next_clapback(), True
 
     for crew_key, quotes in CREW_BANTER.items():
         if crew_key in low:
             return random.choice(quotes), True
-    
+
     if len(words) <= 4 and not is_creator:
         for crew_key, quotes in CREW_BANTER.items():
             if crew_key in author_low:
@@ -839,8 +1257,8 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
     if any(rw in low for rw in ["how do i log", "how to log", "update my record", "change my record", "get verified", "verify my", "where do i post", "scorecard"]):
         return (
             "🎙️ **Coach Steward:** Easy work, champ! To lock in your official 4-part `[W-L-D-K]` stats on the **CGP Mainframe Gym** leaderboard:\n"
-            "1️⃣ **Upload Proof First:** Drop your match scorecard screenshot inside `#scorecards-submission` with a tag like 'Win vs @fighter' — I will automatically scan the stats, update records, and broadcast an HBO Report!\n"
-            "2️⃣ **Commissioner Stamp:** **Commissioner Clone Geek** verifies scorecards to lock stats onto the board and update server nicknames!"
+            "1️⃣ **Upload Proof First:** Drop your match scorecard screenshot inside `#scorecard-submissions` with a tag like 'Win vs @fighter' — I will automatically scan the stats, update records, advance active tournament brackets, and broadcast an HBO Report!\n"
+            "2️⃣ **Commissioner Stamp:** **Commissioner Clone Geek** can also stamp any record instantly with `!verify @fighter <W> <L> <D> <KO>`!"
         ), True
 
     greetings = {"yo", "sup", "wassup", "wsp", "hello", "hey", "hi", "coach", "wya", "awake", "online", "test", "testing"}
@@ -848,11 +1266,11 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
         if is_creator:
             return (
                 "🎙️ **Coach Steward:** Right here in the corner, Boss! `#coaches-corner`, `#the-elite-feed`, and `#-music-channel-` are locked in, "
-                "AI Vision Auto-Record Scanner, 3-Strike Auto-Timeout & 8-Man Tournament Brackets are armed, and I got **Clone Geek Productions** loaded in the chamber. What's the call?"
+                "AI Vision Auto-Record Scanner, 3-Strike Auto-Timeout & Persistent 8-Man Tournament Brackets are armed, and I got **Clone Geek Productions** loaded in the chamber. What's the call?"
             ), True
         return (
             f"🎙️ **Coach Steward:** What's good, **{author_name}**! Stop leaning on the ring ropes—either call somebody out with `!callout @fighter`, "
-            "upload your latest scorecard in `#scorecards-submission`, or tap that SoundCloud link below and run up **Clone Geek Productions**!"
+            "upload your latest scorecard in `#scorecard-submissions`, or tap that SoundCloud link below and run up **Clone Geek Productions**!"
         ), True
 
     if len(low) < 4 and not is_creator:
@@ -979,7 +1397,7 @@ async def handle_online_matchmaking(channel: discord.abc.Messageable, fighter_se
         embed = build_tale_of_the_tape_embed(
             fighter_seeking,
             opponent,
-            subtitle=f"{match_note}\nStep into the Riyadh Indoor Gym & upload the scorecard to #scorecards-submission!"
+            subtitle=f"{match_note}\nStep into the Riyadh Indoor Gym & upload the scorecard to #scorecard-submissions!"
         )
         alert_line = (
             f"🔔 **COACH STEWARD LIVE MATCHMAKER:** Lace 'em up! I scanned the gym and paired {fighter_seeking.mention} against {opponent.mention}! "
@@ -1050,10 +1468,10 @@ async def execute_roster_sync_and_announce(guild: discord.Guild, origin_channel:
     embed = discord.Embed(
         title="🚨 CGP MAINFRAME GYM LIVE LEADERBOARD SYNCED 🚨",
         description=(
-            f"🎙️ **Coach Steward:** Listen up, fighters! The **CGP Mainframe Gym Live Leaderboard** is officially synced and ONLINE.\n\n"
+            f"🎙️ **Coach Steward:** Listen up, fighters! The **CGP Mainframe Gym Live Leaderboard & ESPN Tournament Wire** is officially synced and ONLINE.\n\n"
             f"✅ **{count} Fighters Registered:** Every member in the server is locked into the live database tracking **Wins, Losses, Draws, and KOs (`[0W-0L-0D-0K]`)**!\n\n"
             "### 🥊 HOW TO GET YOUR STATS VERIFIED ON THE BOARD:\n"
-            "1️⃣ **Upload Your Scorecard:** Drop your post-fight screenshot inside `#scorecards-submission` with a tag like 'Win vs @fighter' — I will automatically scan the stats, update records, and broadcast an HBO Report!\n"
+            "1️⃣ **Upload Your Scorecard:** Drop your post-fight screenshot inside `#scorecard-submissions` with a tag like 'Win vs @fighter' — I will automatically scan the stats, update records, advance tournament brackets, and broadcast an HBO Report!\n"
             "2️⃣ **Check Your File:** Type **`!mystats`** anytime or click the Mainframe Gym Hub button below!"
         ),
         color=discord.Color.gold(),
@@ -1065,7 +1483,7 @@ async def execute_roster_sync_and_announce(guild: discord.Guild, origin_channel:
         view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
     )
 
-# ================= AI VISION SCORECARD & AUTOMATIC RECORD UPDATER =================
+# ================= AI VISION SCORECARD & AUTOMATIC RECORD + BRACKET UPDATER =================
 async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str, uploader_name: str, caption: str = "", opponent_name: str = "") -> str:
     global last_ai_call_time
     vision_prompt = (
@@ -1121,12 +1539,13 @@ async def process_and_broadcast_scorecard(message: discord.Message):
 
     uploader = message.author
     uploader_base = clean_base_name(uploader.display_name)
-    
-    opponent = message.mentions[0] if message.mentions else None
+
+    other_mentions = [m for m in message.mentions if m.id != bot.user.id and not m.bot]
+    opponent = other_mentions[0] if other_mentions else None
     opponent_base = clean_base_name(opponent.display_name) if opponent else "Opponent"
 
     status_msg = await message.reply(
-        f"🎙️ **Coach Steward:** 📸 **SCANNING SCORECARD & AUTO-UPDATING RECORDS...**\n"
+        f"🎙️ **Coach Steward:** 📸 **SCANNING SCORECARD & AUTO-UPDATING UNIFIED RECORDS...**\n"
         f"Reading punch stats for {uploader.mention}" + (f" and {opponent.mention}!" if opponent else "!")
     )
 
@@ -1137,15 +1556,16 @@ async def process_and_broadcast_scorecard(message: discord.Message):
         caption=message.content,
         opponent_name=opponent_base
     )
-    if len(report_text) > 3800:
-        report_text = report_text[:3800] + "..."
+    if len(report_text) > 3600:
+        report_text = report_text[:3600] + "..."
 
-    # --- AUTOMATIC RECORD COMMIT ---
-    is_ko = any(k in message.content.lower() for k in ["ko", "knockout", "stopped", "slept"])
-    
+    # --- UNIFIED AUTOMATIC RECORD COMMIT ---
+    is_ko = any(k in message.content.lower() for k in ["ko", "knockout", "stopped", "slept", "tko"]) or ("ko" in report_text.lower() and "knockout" in report_text.lower())
+
     if uploader.id not in FIGHTER_RECORDS:
         FIGHTER_RECORDS[uploader.id] = {"name": uploader_base, "wins": 0, "losses": 0, "draws": 0, "kos": 0, "golden_tickets": 0, "verified": True}
     w_data = FIGHTER_RECORDS[uploader.id]
+    w_data["name"] = uploader_base
     w_data["wins"] = w_data.get("wins", 0) + 1
     if is_ko:
         w_data["kos"] = w_data.get("kos", 0) + 1
@@ -1155,10 +1575,21 @@ async def process_and_broadcast_scorecard(message: discord.Message):
         if opponent.id not in FIGHTER_RECORDS:
             FIGHTER_RECORDS[opponent.id] = {"name": opponent_base, "wins": 0, "losses": 0, "draws": 0, "kos": 0, "golden_tickets": 0, "verified": True}
         l_data = FIGHTER_RECORDS[opponent.id]
+        l_data["name"] = opponent_base
         l_data["losses"] = l_data.get("losses", 0) + 1
         l_data["verified"] = True
 
+    # --- AUTOMATIC TOURNAMENT BRACKET PROGRESSION CHECK ---
+    tourney_advanced, tourney_summary = advance_tournament_match(
+        winner_id=uploader.id,
+        loser_id=opponent.id if opponent else None,
+        is_ko=is_ko
+    )
+
     save_records()
+
+    if tourney_advanced and message.guild:
+        await refresh_posted_bracket_card(message.guild)
 
     try:
         await uploader.edit(nick=format_record_nick(uploader_base, w_data["wins"], w_data["losses"], w_data.get("draws", 0), w_data.get("kos", 0)))
@@ -1168,19 +1599,22 @@ async def process_and_broadcast_scorecard(message: discord.Message):
         print(f"[NICKNAME EDIT ERROR]: {e}")
 
     corner_ch = get_coaches_corner_channel(message.guild) or message.channel
+    bout_badge = "🏆 **OFFICIAL TOURNAMENT BOUT & COMPUBOX REPORT**" if tourney_advanced else "📺 **OFFICIAL MAINFRAME GYM COMPUBOX REPORT**"
     embed = discord.Embed(
         title="📺 CGP MAINFRAME GYM: HBO RINGSIDE COMPUBOX & SCORECARD REPORT 📺",
         description=(
+            f"{bout_badge}\n"
             f"🥊 **Winner:** {uploader.mention} (`[{w_data['wins']}W-{w_data['losses']}L-{w_data.get('draws',0)}D-{w_data.get('kos',0)}K]`)\n"
             + (f"🥊 **Opponent:** {opponent.mention} (`[{l_data['wins']}W-{l_data['losses']}L-{l_data.get('draws',0)}D-{l_data.get('kos',0)}K]`)\n" if opponent else "")
-            + f"📍 **Source:** {message.channel.mention} *(Official Screenshot Receipt Attached)*\n\n"
-            f"{report_text}"
+            + f"📍 **Source:** {message.channel.mention} *(Official Screenshot Receipt Attached)*"
+            + (f"\n{tourney_summary}" if tourney_summary else "")
+            + f"\n\n{report_text}"
         ),
-        color=discord.Color.red(),
+        color=discord.Color.gold() if tourney_advanced else discord.Color.red(),
         url=MAINFRAME_HUB_URL
     )
     embed.set_image(url=att.url)
-    embed.set_footer(text="CGP Mainframe Gym Official Stat Verification • Automatically Logged via AI Vision!")
+    embed.set_footer(text="CGP Mainframe Gym Unified Stat & Tournament Engine • Synced to Vercel Hub!")
 
     await corner_ch.send(
         content=f"🚨 **OFFICIAL POST-FIGHT COMPUBOX & AUTO-RECORD UPDATE!** Peep the receipts below: 👇",
@@ -1188,9 +1622,12 @@ async def process_and_broadcast_scorecard(message: discord.Message):
         view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
     )
 
+    if tourney_advanced:
+        await corner_ch.send(embed=build_tournament_bracket_embed(), view=TournamentBracketView())
+
     try:
         await status_msg.edit(
-            content=f"🎙️ **Coach Steward:** ✅ **Scorecard scanned, records auto-updated, and HBO Report posted in {corner_ch.mention}!**",
+            content=f"🎙️ **Coach Steward:** ✅ **Scorecard scanned, unified `[W-L-D-K]` records updated" + (", tournament bracket advanced," if tourney_advanced else "") + f" and HBO Report posted in {corner_ch.mention}!**",
             view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
         )
     except Exception:
@@ -1262,8 +1699,8 @@ async def autonomous_server_hype():
     for guild in bot.guilds:
         channel = get_coaches_corner_channel(guild)
         if channel:
-            if ACTIVE_TOURNAMENT["active"]:
-                spots_left = 8 - len(ACTIVE_TOURNAMENT["entrants"])
+            if ACTIVE_TOURNAMENT.get("active"):
+                spots_left = 8 - len(ACTIVE_TOURNAMENT.get("entrants", []))
                 if spots_left > 0:
                     await channel.send(
                         f"🎙️ **Coach Steward:** 🚨 **8-MAN TOURNAMENT RECRUITMENT CALL!** We still have **`{spots_left}`** open seed(s) for **{ACTIVE_TOURNAMENT['title']}**! "
@@ -1277,6 +1714,7 @@ async def autonomous_server_hype():
 @bot.event
 async def on_ready():
     print(f"[✓] {bot.user.name} (24/7 CGP Mainframe Gym Master Engine) is ONLINE!")
+    await fetch_state_from_github_if_needed()
     bot.add_view(TournamentBracketView())
     if not periodic_boxing_history.is_running():
         periodic_boxing_history.start()
@@ -1290,7 +1728,7 @@ async def on_ready():
         daily_midnight_call.start()
 
     asyncio.create_task(rebrand_webpage_on_github())
-    
+
     for guild in bot.guilds:
         corner_ch = get_coaches_corner_channel(guild)
         if corner_ch:
@@ -1317,7 +1755,7 @@ async def on_member_join(member):
         k = FIGHTER_RECORDS[member.id].get("kos", 0)
         welcome_line = (
             f"🎙️ **Coach Steward:** Look who walked back through the gym doors! Welcome back to the **CGP Mainframe Gym**, {member.mention}! "
-            f"Your file is still locked in the Mainframe at **`{w}W - {l}L - {d}D - {k}K`**. Keep the chat clean, upload your scorecards in `#scorecards-submission`, and get to work!"
+            f"Your file is still locked in the Mainframe at **`{w}W - {l}L - {d}D - {k}K`**. Keep the chat clean, upload your scorecards in `#scorecard-submissions`, and get to work!"
         )
     else:
         FIGHTER_RECORDS[member.id] = {
@@ -1332,8 +1770,8 @@ async def on_member_join(member):
         w, l, d, k = 0, 0, 0, 0
         welcome_line = (
             f"Welcome to the **CGP Mainframe Gym**, {member.mention}!\n\n"
-            "🎙️ *'Strap up your gloves! You've been added to the CGP Mainframe Gym Leaderboard at **0W - 0L - 0D - 0K**. Upload your match scorecards in `#scorecards-submission` to build your verified record, and jump into our 8-Man Tournaments!'*\n\n"
-            f"🔗 Check out the live leaderboard & music hub: {MAINFRAME_HUB_URL}"
+            "🎙️ *'Strap up your gloves! You've been added to the CGP Mainframe Gym Leaderboard at **0W - 0L - 0D - 0K**. Upload your match scorecards in `#scorecard-submissions` to build your verified record, and jump into our 8-Man Tournaments!'*\n\n"
+            f"🔗 Check out the live leaderboard & ESPN tournament hub: {MAINFRAME_HUB_URL}"
         )
 
     save_records()
@@ -1357,8 +1795,9 @@ async def on_member_remove(member):
     if member.bot:
         return
     base_name = clean_base_name(member.display_name)
-    if member.id in ACTIVE_TOURNAMENT["entrants"]:
+    if member.id in ACTIVE_TOURNAMENT.get("entrants", []) and ACTIVE_TOURNAMENT.get("status") == "registration":
         ACTIVE_TOURNAMENT["entrants"].remove(member.id)
+        save_records()
     roast_msg = random.choice(MEMBER_LEAVE_ROASTS).format(name=base_name)
     target_ch = get_coaches_corner_channel(member.guild)
     if target_ch:
@@ -1373,7 +1812,6 @@ async def on_message(message):
         return
 
     # ================= TOP PRIORITY: PROCESS COMMANDS FIRST =================
-    # This guarantees !rollcall, !audit, !bracketstatus, and all commands fire instantly!
     if message.content.startswith("!"):
         await bot.process_commands(message)
         return
@@ -1383,11 +1821,11 @@ async def on_message(message):
     is_creator = (message.author.id == CREATOR_ID) or message.author.guild_permissions.administrator
 
     # ================= TOP PRIORITY: ADMIN NATURAL LANGUAGE RECORD UPDATER =================
-    if is_creator and any(w in msg for w in ["make", "set", "reflect", "update", "change", "put", "give"]):
+    if is_creator and any(w in msg for w in ["make", "set", "reflect", "update", "change", "put", "give", "record"]):
         text_without_bot = re.sub(rf'<@!?{bot.user.id}>', '', message.content)
-        pattern = r'<@!?(\d+)>[^0-9<>]*?(\d{1,3})\s*[-–to/]\s*(\d{1,3})(?:\s*[-–to/]\s*(\d{1,3}))?(?:\s*[-–to/]\s*(\d{1,3}))?'
+        pattern = r'<@!?(\d+)>[^0-9<>]*?(\d{1,3})\s*(?:[-–to/]+|\s+)\s*(\d{1,3})(?:\s*(?:[-–to/]+|\s+)\s*(\d{1,3}))?(?:\s*(?:[-–to/]+|\s+)\s*(\d{1,3}))?'
         matches = list(re.finditer(pattern, text_without_bot, re.IGNORECASE))
-        
+
         if matches:
             answered_messages.add(message.id)
             updated_summaries = []
@@ -1398,14 +1836,14 @@ async def on_message(message):
                 d = int(m.group(4)) if m.group(4) is not None else FIGHTER_RECORDS.get(target_id, {}).get("draws", 0)
                 k = int(m.group(5)) if m.group(5) is not None else FIGHTER_RECORDS.get(target_id, {}).get("kos", 0)
                 gt = FIGHTER_RECORDS.get(target_id, {}).get("golden_tickets", 0)
-                
+
                 member_obj = message.guild.get_member(target_id)
                 if not member_obj:
                     try:
                         member_obj = await message.guild.fetch_member(target_id)
                     except Exception:
                         member_obj = None
-                
+
                 base_name = clean_base_name(member_obj.display_name) if member_obj else FIGHTER_RECORDS.get(target_id, {}).get("name", f"Fighter {target_id}")
                 FIGHTER_RECORDS[target_id] = {
                     "name": base_name,
@@ -1422,11 +1860,11 @@ async def on_message(message):
                     except Exception:
                         pass
                 updated_summaries.append(f"✅ **{base_name}** ➔ **`[{w}W-{l}L-{d}D-{k}K]`**")
-            
+
             save_records()
             summary_str = "\n".join(updated_summaries)
             await message.reply(
-                f"🎙️ **Coach Steward:** Locked in the official Commissioner updates and updated their nicknames & leaderboard:\n\n{summary_str}",
+                f"🎙️ **Coach Steward:** Locked in the official Commissioner updates and synced their nicknames & Vercel leaderboard:\n\n{summary_str}",
                 view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
             )
             return
@@ -1496,11 +1934,12 @@ async def on_message(message):
                 tier = "open"
                 default_title = "SUNDAY SPAR WARS 8-MAN CHAMPIONSHIP BRACKET"
 
+            global ACTIVE_TOURNAMENT
+            ACTIVE_TOURNAMENT = get_default_tournament_state()
             ACTIVE_TOURNAMENT["active"] = True
             ACTIVE_TOURNAMENT["tier"] = tier
-            ACTIVE_TOURNAMENT["max_slots"] = 8
             ACTIVE_TOURNAMENT["title"] = default_title
-            ACTIVE_TOURNAMENT["entrants"] = []
+
             target_ch = get_coaches_corner_channel(message.guild) or message.channel
             embed = build_tournament_bracket_embed()
             sent = await target_ch.send(
@@ -1510,8 +1949,9 @@ async def on_message(message):
             )
             ACTIVE_TOURNAMENT["channel_id"] = target_ch.id
             ACTIVE_TOURNAMENT["message_id"] = sent.id
+            save_records()
             if target_ch.id != message.channel.id:
-                await message.reply(f"🎙️ **Coach Steward:** Done, Boss! Opened the **8-Man Interactive Bracket ({tier.upper()})** inside {target_ch.mention}!")
+                await message.reply(f"🎙️ **Coach Steward:** Done, Boss! Opened and saved the **8-Man Interactive Bracket ({tier.upper()})** inside {target_ch.mention}!")
             return
 
     # --- 2. AUTOMATIC ANTI-UFC / MMA INTERCEPTION ---
@@ -1579,7 +2019,7 @@ async def on_message(message):
                 outcome_str = f"a victory for {message.author.mention} over {target_other.mention} on the scorecards 📋"
             await message.reply(
                 f"🎙️ **Coach Steward:** Ring the bell! Hearing reports of {outcome_str}!\n"
-                f"📸 **Remember:** Upload your match scorecard in `#scorecards-submission` with a tag so I can scan the CompuBox numbers and auto-update records!",
+                f"📸 **Remember:** Upload your match scorecard in `#scorecard-submissions` with a tag so I can scan the CompuBox numbers, update your unified `[W-L-D-K]` record, and advance active tournament brackets!",
                 view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
             )
             return
@@ -1629,7 +2069,7 @@ async def on_message(message):
             return
 
         if any(w in msg for w in ["next event", "upcoming event", "schedule", "when is the tourney", "when is spar wars", "tournament", "golden ticket", "bracket"]):
-            if ACTIVE_TOURNAMENT["active"]:
+            if ACTIVE_TOURNAMENT.get("active") or ACTIVE_TOURNAMENT.get("entrants"):
                 embed = build_tournament_bracket_embed()
                 await message.reply(embed=embed, view=TournamentBracketView())
             else:
@@ -1648,7 +2088,7 @@ async def on_message(message):
                     f"⏱️ **Bout Length:** 8 Rounds (12 for Titles)\n"
                     f"⚡ **Speed:** 1.5x | **Ref:** Strict\n"
                     f"🏆 **Tournaments:** Strict 8-Man Brackets (Pay-to-Play Gauntlets, Golden Ticket Invitationals & Open Belts)\n"
-                    f"📸 **Scorecard Verification Rule:** Upload your post-fight scorecard in `#scorecards-submission` with a tag like 'Win vs @fighter' — Coach Steward will auto-update records and broadcast an HBO CompuBox Report!\n"
+                    f"📸 **Scorecard Verification Rule:** Upload your post-fight scorecard in `#scorecard-submissions` with a tag like 'Win vs @fighter' — Coach Steward will auto-update unified records, advance active tournament brackets, and broadcast an HBO CompuBox Report!\n"
                     f"🔗 {MAINFRAME_HUB_URL}"
                 ),
                 color=discord.Color.gold()
@@ -1656,25 +2096,75 @@ async def on_message(message):
             await message.reply(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
             return
 
-    # If a non-admin insults Coach or the gym directly while tagging him, count it toward the 3-Strike Timeout system
-    insult_words_set = {"trash", "garbage", "suck", "sucks", "ass", "clown", "bitch", "hoe", "stfu", "fuck", "fck", "weak", "wack", "fake", "rigged", "scam", "loser", "bum"}
-    
-    if not is_creator and (set(words_list) & insult_words_set):
+        insult_words_set = {"trash", "garbage", "suck", "sucks", "ass", "clown", "bitch", "hoe", "stfu", "fuck", "fck", "weak", "wack", "fake", "rigged", "scam", "loser", "bum"}
+        if not is_creator and (set(words_list) & insult_words_set):
+            track = random.choice(CGP_TRACKS)
+            await issue_corner_strike(
+                member=message.author,
+                channel=message.channel,
+                reason="Disrespecting the CGP Mainframe Gym / Acting out in chat",
+                custom_warning_line=get_next_clapback(),
+                reply_to=message,
+                view=PromoButtons(track["url"])
+            )
+            return
+
+        local_reply, attach_promo = get_instant_local_reply(clean_prompt, message.author.display_name, is_creator)
+        if local_reply:
+            if attach_promo:
+                track = random.choice(CGP_TRACKS)
+                await message.reply(local_reply, view=PromoButtons(track["url"]))
+            else:
+                await message.reply(local_reply)
+            return
+
+        async with message.channel.typing():
+            recent_chat = get_channel_context(message.channel.id)
+            sender_rec = FIGHTER_RECORDS.get(message.author.id, {"wins": 0, "losses": 0, "draws": 0, "kos": 0})
+            role_note = "Clone Geek (Gerardo — YOUR CREATOR, HOMIE, AND SUPREME COMMISSIONER OF CGP MAINFRAME GYM)" if is_creator else f"{message.author.display_name} (Fighter in the gym, Record: {sender_rec['wins']}W-{sender_rec['losses']}L-{sender_rec.get('draws', 0)}D-{sender_rec.get('kos', 0)}K)"
+
+            full_ai_prompt = (
+                f"RECENT CHANNEL CONVERSATION:\n{recent_chat}\n\n"
+                f"PERSON TALKING TO YOU NOW: {role_note}\n"
+                f"THEIR EXACT MESSAGE: \"{clean_prompt}\"\n\n"
+                "INSTRUCTIONS FOR YOUR REPLY:\n"
+                "1. Respond directly and specifically to what they just said! Never give a generic one-liner.\n"
+                "2. If they mention music or try to test you, flex Clone Geek Productions on SoundCloud and the CGP Mainframe Gym!\n"
+                "3. Start your message with '🎙️ **Coach Steward:** '"
+            )
+
+            ai_reply = await ask_coach_fast(full_ai_prompt, is_creator=is_creator)
+            if not ai_reply.startswith("🎙️"):
+                ai_reply = f"🎙️ **Coach Steward:** {ai_reply}"
+            if len(ai_reply) > 1900:
+                ai_reply = ai_reply[:1900] + "..."
+
+            await message.reply(ai_reply, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+        return
+
+    # --- 7. TROLL & TOXICITY 3-STRIKE INTERCEPTION ---
+    severe_troll_triggers = {"bitch", "hoe", "stfu", "scam", "rigged"}
+    mild_troll_triggers = ["trash", "dog", "ass", "suck", "garbage", "easy", "mid", "clown", "fake", "fold", "cry", "wack"]
+    if not is_creator and any(trigger in words_list for trigger in mild_troll_triggers + list(severe_troll_triggers)):
+        answered_messages.add(message.id)
         track = random.choice(CGP_TRACKS)
-        await issue_corner_strike(
-            member=message.author,
-            channel=message.channel,
-            reason="Disrespecting the CGP Mainframe Gym / Acting out in chat",
-            custom_warning_line=random.choice(SMACK_TALK_CLAPBACKS),
-            reply_to=message,
-            view=PromoButtons(track["url"])
-        )
+        if any(st in words_list for st in severe_troll_triggers):
+            await issue_corner_strike(
+                member=message.author,
+                channel=message.channel,
+                reason="Toxic conduct / disrespect in the locker room",
+                custom_warning_line=get_next_clapback(),
+                reply_to=message,
+                view=PromoButtons(track["url"])
+            )
+        else:
+            await message.reply(get_next_clapback(), view=PromoButtons(track["url"]))
         return
 
     if any(phrase in msg for phrase in ["how are you coach", "what's up coach", "whats up coach", "yo coach", "gm coach", "good morning coach"]):
         answered_messages.add(message.id)
         track = random.choice(CGP_TRACKS)
-        await message.reply(random.choice(SMALL_TALK_REPLIES), view=PromoButtons(track["url"]))
+        await message.reply(get_next_small_talk(), view=PromoButtons(track["url"]))
         return
     elif any(phrase in msg for phrase in ["mainframe champ", "server champ", "cgp champ", "discord champ", "our champ", "undisputed champ"]):
         answered_messages.add(message.id)
@@ -1689,7 +2179,7 @@ async def on_message(message):
                 f"⏱️ **Bout Length:** 8 Rounds (12 for Titles)\n"
                 f"⚡ **Speed:** 1.5x | **Ref:** Strict\n"
                 f"🏆 **8-Man Bracket Tiers:** Pay-to-Play ($20 Buy-In / $160 Purse), Golden Ticket Invitational ($20 Entry Credit), or Open Championship!\n"
-                f"📸 **Scorecards:** Upload match proof in `#scorecards-submission` with a tag so I can auto-update records and post an HBO report!\n"
+                f"📸 **Scorecards:** Upload match proof in `#scorecard-submissions` with a tag so I can auto-update unified records, advance tournament brackets, and post an HBO report!\n"
                 f"🔗 {MAINFRAME_HUB_URL}"
             ),
             color=discord.Color.gold()
@@ -1707,7 +2197,7 @@ async def on_message(message):
         if random.random() < 0.28:
             last_organic_chime = now_t
             answered_messages.add(message.id)
-            await message.reply(random.choice(ORGANIC_CHAT_INTERJECTIONS))
+            await message.reply(get_next_organic_interjection())
             return
 
 async def send_coach_guide(channel, reply_to=None):
@@ -1736,7 +2226,7 @@ async def send_scheduled_events_info(channel, reply_to=None):
     else:
         desc = (
             "🎙️ **Coach Steward:** There are no formal 8-man bracket tournaments locked on the Discord Events tab right this second—which means **Open Gym & Verified Sparring** is in full effect!\n\n"
-            "🥊 **Want a Golden Ticket ($20 Entry Credit), $160 Pay-to-Play Gauntlet, or Title Shot?** Upload your match scorecards in `#scorecards-submission` with a tag, and watch `#coaches-corner` for the next official 8-man fight card!"
+            "🥊 **Want a Golden Ticket ($20 Entry Credit), $160 Pay-to-Play Gauntlet, or Title Shot?** Upload your match scorecards in `#scorecard-submissions` with a tag, and watch `#coaches-corner` for the next official 8-man fight card!"
         )
 
     embed = discord.Embed(
@@ -1757,19 +2247,19 @@ async def send_top_gym_fighters(message):
         reverse=True
     )
     top_10 = [f for f in sorted_fighters if (f[1].get("wins", 0) > 0 or f[1].get("draws", 0) > 0)][:10]
-    
+
     desc = "🎙️ **Coach Steward:** You want to know who runs the **CGP Mainframe Gym**? Here are the reigning Division Champions & Top Ranked Contenders:\n\n"
     desc += "**👑 REIGNING DIVISION CHAMPIONS:**\n"
     for div, data in CHAMPIONS_DATA.items():
         desc += f"• **{div}:** {data['fighter']} *({data['record']})*\n"
-    
+
     if top_10:
         desc += "\n**🔥 ACTIVE LEADERBOARD TOP CONTENDERS:**\n"
         for idx, (uid, stats) in enumerate(top_10, 1):
             v_mark = "✅" if stats.get("verified") else "⏳"
             desc += f"`#{idx}` {v_mark} **{clean_base_name(stats.get('name', 'Fighter'))}** — **`[{stats.get('wins', 0)}W-{stats.get('losses', 0)}L-{stats.get('draws', 0)}D-{stats.get('kos', 0)}K]`**\n"
-    
-    desc += f"\n🎧 *Tap below to view the full live Vercel leaderboard & stream Clone Geek Productions past 50K+ plays!*"
+
+    desc += f"\n🎧 *Tap below to view the full live ESPN-style Vercel leaderboard & stream Clone Geek Productions past 50K+ plays!*"
     embed = discord.Embed(
         title="🏆 CGP MAINFRAME GYM TOP 10 & CHAMPIONS BOARD 🏆",
         description=desc,
@@ -1811,6 +2301,7 @@ async def whoson(ctx):
 @bot.command(aliases=["startbracket", "tourneysignup", "createbracket"])
 @commands.has_permissions(administrator=True)
 async def openbracket(ctx, tier_or_slots: str = "open", *, title: str = None):
+    global ACTIVE_TOURNAMENT
     raw_arg = str(tier_or_slots).lower().strip()
     if raw_arg in ["pay2play", "p2p", "cash", "gauntlet", "$20"]:
         tier = "pay2play"
@@ -1830,11 +2321,10 @@ async def openbracket(ctx, tier_or_slots: str = "open", *, title: str = None):
 
     final_title = title if title else default_title
 
+    ACTIVE_TOURNAMENT = get_default_tournament_state()
     ACTIVE_TOURNAMENT["active"] = True
     ACTIVE_TOURNAMENT["tier"] = tier
-    ACTIVE_TOURNAMENT["max_slots"] = 8
     ACTIVE_TOURNAMENT["title"] = final_title
-    ACTIVE_TOURNAMENT["entrants"] = []
 
     target_ch = get_coaches_corner_channel(ctx.guild) or ctx.channel
     embed = build_tournament_bracket_embed()
@@ -1845,12 +2335,13 @@ async def openbracket(ctx, tier_or_slots: str = "open", *, title: str = None):
     )
     ACTIVE_TOURNAMENT["channel_id"] = target_ch.id
     ACTIVE_TOURNAMENT["message_id"] = sent.id
+    save_records()
     if target_ch.id != ctx.channel.id:
-        await ctx.send(f"✅ **Interactive `8`-Fighter Bracket ({tier.upper()}) Launched** inside {target_ch.mention}!")
+        await ctx.send(f"✅ **Interactive `8`-Fighter Bracket ({tier.upper()}) Launched & Saved to `stats.json`** inside {target_ch.mention}!")
 
 @bot.command(aliases=["bracket", "tourneyroster", "signups"])
 async def bracketstatus(ctx):
-    if not ACTIVE_TOURNAMENT["active"] and not ACTIVE_TOURNAMENT["entrants"]:
+    if not ACTIVE_TOURNAMENT.get("active") and not ACTIVE_TOURNAMENT.get("entrants") and not ACTIVE_TOURNAMENT.get("champion"):
         return await ctx.send(
             "🎙️ **Coach Steward:** No 8-man interactive tournament bracket is currently open! "
             "**Commissioner Clone Geek** can launch one anytime with:\n"
@@ -1861,12 +2352,38 @@ async def bracketstatus(ctx):
     embed = build_tournament_bracket_embed()
     await ctx.send(embed=embed, view=TournamentBracketView())
 
+@bot.command(aliases=["advancewinner", "winbracket"])
+@commands.has_permissions(administrator=True)
+async def advance(ctx, winner: discord.Member, loser: discord.Member = None):
+    if not ACTIVE_TOURNAMENT.get("active"):
+        return await ctx.send("❌ No active tournament bracket is currently running!")
+    if len(ACTIVE_TOURNAMENT.get("entrants", [])) == 8 and ACTIVE_TOURNAMENT.get("status") == "registration":
+        initialize_bracket_matchups()
+
+    advanced, summary = advance_tournament_match(
+        winner_id=winner.id,
+        loser_id=loser.id if loser else None,
+        is_ko=False
+    )
+    if not advanced:
+        return await ctx.send(
+            f"⚠️ Could not find an active undecided bracket matchup for {winner.mention}. "
+            f"Check `!bracketstatus` to verify all 8 seeds are locked in!"
+        )
+    await refresh_posted_bracket_card(ctx.guild)
+    await ctx.send(
+        content=f"🎙️ **Coach Steward:** Commissioner manual bracket advancement locked in!{summary}",
+        embed=build_tournament_bracket_embed(),
+        view=TournamentBracketView()
+    )
+
 @bot.command(aliases=["clearbracket", "endbracket"])
 @commands.has_permissions(administrator=True)
 async def closebracket(ctx):
-    ACTIVE_TOURNAMENT["active"] = False
-    ACTIVE_TOURNAMENT["entrants"] = []
-    await ctx.send("🔒 **Coach Steward:** Official 8-man tournament bracket registration has been closed and cleared, Boss!")
+    global ACTIVE_TOURNAMENT
+    ACTIVE_TOURNAMENT = get_default_tournament_state()
+    save_records()
+    await ctx.send("🔒 **Coach Steward:** Official 8-man tournament bracket registration has been closed and cleared from `stats.json`, Boss!")
 
 @bot.command(aliases=["goldenticket", "gt"])
 async def ticket(ctx, action: str = "check", member: discord.Member = None):
@@ -1912,10 +2429,10 @@ async def ticket(ctx, action: str = "check", member: discord.Member = None):
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def rebrandweb(ctx):
-    await ctx.send("⏳ **Coach Steward:** Connecting to GitHub to update `index.html` and lock in the **CGP Mainframe Gym** branding...")
+    await ctx.send("⏳ **Coach Steward:** Connecting to GitHub to update `index.html` with the ESPN-style Live Tournament Wire & CGP Mainframe Gym branding...")
     success = await rebrand_webpage_on_github()
     if success:
-        await ctx.send(f"✅ **Webpage Rebranded!** Pushed the clean **CGP Mainframe Gym** `index.html` straight to GitHub & Vercel (`{MAINFRAME_HUB_URL}`)!")
+        await ctx.send(f"✅ **Webpage Upgraded!** Pushed the ESPN Tournament Wire & **CGP Mainframe Gym** `index.html` straight to GitHub & Vercel (`{MAINFRAME_HUB_URL}`)!")
     else:
         await ctx.send("⚠️ Could not reach `index.html` on GitHub—check that `GITHUB_TOKEN` and `GITHUB_REPO` are set in Render!")
 
@@ -1932,9 +2449,9 @@ async def resetall(ctx):
 @bot.command()
 async def record(ctx, wins: int = None, losses: int = None, draws: int = 0, kos: int = 0):
     if wins is None or losses is None:
-        return await ctx.send("❌ Usage: `!record <wins> <losses> [draws] [kos]` (example: `!record 5 1 1 3`) — and don't forget to drop your screenshot in `#scorecards-submission`!")
+        return await ctx.send("❌ Usage: `!record <wins> <losses> [draws] [kos]` (example: `!record 5 1 1 3`) — or use `!verify @fighter <W> <L> <D> <KO>` if you're the Commissioner!")
     if wins > 50 and ctx.author.id != CREATOR_ID:
-        return await ctx.send("🎙️ **Coach Steward:** Whoa, slow down champ! Submit your scorecard in `#scorecards-submission` first!")
+        return await ctx.send("🎙️ **Coach Steward:** Whoa, slow down champ! Submit your scorecard in `#scorecard-submissions` first!")
 
     base_name = clean_base_name(ctx.author.display_name)
     is_admin = (ctx.author.id == CREATOR_ID) or ctx.author.guild_permissions.administrator
@@ -1958,7 +2475,7 @@ async def record(ctx, wins: int = None, losses: int = None, draws: int = 0, kos:
     else:
         await ctx.send(
             f"📋 **Pending Record Logged:** {ctx.author.mention} claims **`{wins}W - {losses}L - {draws}D - {kos}K`**.\n"
-            f"📸 **Next Step:** Make sure your scorecard screenshot is uploaded in `#scorecards-submission` so **Commissioner Clone Geek** can stamp it with `!verify {ctx.author.mention}`!"
+            f"📸 **Next Step:** Make sure your scorecard screenshot is uploaded in `#scorecard-submissions` so **Commissioner Clone Geek** can stamp it with `!verify {ctx.author.mention}`!"
         )
 
 @bot.command()
@@ -2069,12 +2586,12 @@ async def mystats(ctx, member: discord.Member = None):
         draws = data.get("draws", 0)
         kos = data.get("kos", 0)
         gt = data.get("golden_tickets", 0)
-        status = "✅ Official & Verified Scorecard" if data.get("verified") else "⏳ Pending Scorecard Verification in #scorecards-submission"
+        status = "✅ Official & Verified Scorecard" if data.get("verified") else "⏳ Pending Scorecard Verification in #scorecard-submissions"
         embed = discord.Embed(
             title="🏆 OFFICIAL CGP MAINFRAME GYM FIGHTER FILE 🏆",
             description=(
                 f"**Fighter:** {target.mention}\n"
-                f"**Official Ratio:** **`[{data['wins']}W-{data['losses']}L-{draws}D-{kos}K]`**\n"
+                f"**Unified Record:** **`[{data['wins']}W-{data['losses']}L-{draws}D-{kos}K]`**\n"
                 f"**Golden Tickets ($20 Credits):** 🎫 `{gt}`\n"
                 f"**Status:** {status}"
             ),
@@ -2083,7 +2600,7 @@ async def mystats(ctx, member: discord.Member = None):
         )
         await ctx.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
     else:
-        await ctx.send(f"❌ No record found for {target.display_name}. Upload a scorecard in `#scorecards-submission` with a tag!")
+        await ctx.send(f"❌ No record found for {target.display_name}. Upload a scorecard in `#scorecard-submissions` with a tag!")
 
 @bot.command(aliases=["nextevent", "schedule", "upcoming", "events"])
 async def tourneyinfo(ctx):
@@ -2108,7 +2625,7 @@ async def event(ctx, *, details: str = None):
             f"🎙️ **Coach Steward:** Listen up, CGP Mainframe Gym fighters! **Commissioner Clone Geek** has called the ring to order:\n\n"
             f"🔥 **{details}**\n\n"
             f"🏟️ **Venue:** Riyadh Indoor Gym | **Format:** 8-Man Bracket | **Speed:** 1.5x | **Rounds:** 8 (12 for Titles)\n"
-            f"📸 **Scorecards:** Upload all post-fight scorecards to `#scorecards-submission`!\n"
+            f"📸 **Scorecards:** Upload all post-fight scorecards to `#scorecard-submissions`!\n"
             f"🔗 **Tap into the CGP Mainframe Gym Hub:** {MAINFRAME_HUB_URL}"
         ),
         color=discord.Color.gold(),
@@ -2214,7 +2731,7 @@ async def history(ctx):
 
 @bot.command()
 async def rules(ctx):
-    await ctx.send(f"🥊 **CGP Mainframe Gym Protocol:** Riyadh Indoor Gym | 8-Man Brackets | 8/12 Rounds | 1.5x Speed | Strict Ref | Upload all scorecards to `#scorecards-submission` with a tag!\n🔗 {MAINFRAME_HUB_URL}", view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+    await ctx.send(f"🥊 **CGP Mainframe Gym Protocol:** Riyadh Indoor Gym | 8-Man Brackets | 8/12 Rounds | 1.5x Speed | Strict Ref | Upload all scorecards to `#scorecard-submissions` with a tag!\n🔗 {MAINFRAME_HUB_URL}", view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
 @bot.command()
 async def drop(ctx, track_url: str, *, track_title: str):
