@@ -577,9 +577,9 @@
     },
     "1546624124829302786": {
         "name": "TURBO",
-        "wins": 1,
+        "wins": 2,
         "losses": 0,
-        "kos": 0,
+        "kos": 1,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0
@@ -704,7 +704,7 @@
     "1279476207603290197": {
         "name": "Clone_Geek",
         "wins": 3,
-        "losses": 1,
+        "losses": 2,
         "draws": 0,
         "kos": 3,
         "golden_tickets": 0,
@@ -1063,7 +1063,7 @@
         "history_log": [],
         "channel_id": 1565566398137114786,
         "message_id": 1567348042917609534,
-        "updated_at": "2026-11-05 05:13 PM CST",
+        "updated_at": "2026-11-05 05:50 PM CST",
         "entrant_names": {
             "1279476207603290197": "Clone_Geek",
             "1527537783604776990": "\ud83c\udf83\ud83e\udea6the UNDERTAKER.I",
