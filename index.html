@@ -34,21 +34,24 @@
         /* Prevent bot auto-injected duplicate brackets below footer */
         footer ~ * { display: none !important; }
 
-        /* 1. TOP ESPN SCOREBOARD TICKER */
+        /* 1. TOP ESPN SCOREBOARD TICKER (NO UGLY SCROLLBAR) */
         .broadcast-ticker {
             background: #000;
             border-bottom: 2px solid var(--espn-red);
-            padding: 8px 20px;
+            padding: 9px 20px;
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 28px;
             overflow-x: auto;
             white-space: nowrap;
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.6px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
+        .broadcast-ticker::-webkit-scrollbar { display: none; }
         .ticker-tag {
             background: var(--espn-red);
             color: #fff;
@@ -57,8 +60,9 @@
             font-weight: 900;
             font-size: 11px;
             letter-spacing: 1px;
+            flex-shrink: 0;
         }
-        .ticker-stat { color: var(--text-secondary); }
+        .ticker-stat { color: var(--text-secondary); flex-shrink: 0; }
         .ticker-stat strong { color: var(--gold); margin-left: 5px; }
 
         /* 2. PROFESSIONAL HERO HEADER + TOP BIO */
@@ -79,7 +83,7 @@
             .header-inner { grid-template-columns: 1fr; text-align: center; justify-items: center; }
         }
 
-        /* Perfectly Centered Circular Logo Fix */
+        /* Perfectly Centered Circular Logo with Fallback Badge */
         .logo-ring {
             width: 128px;
             height: 128px;
@@ -91,6 +95,8 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
         }
         .logo-ring img {
             width: 100%;
@@ -99,7 +105,34 @@
             object-fit: cover;
             object-position: center;
             display: block;
-            background: #000;
+            background: #0a0d14;
+            z-index: 2;
+        }
+        .logo-fallback {
+            position: absolute;
+            inset: 4px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #1a2238 0%, #07090e 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            z-index: 1;
+        }
+        .logo-fallback strong {
+            font-size: 26px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        .logo-fallback span {
+            font-size: 9px;
+            color: var(--espn-red);
+            font-weight: 800;
+            letter-spacing: 1.5px;
         }
 
         .brand-overview h1 {
@@ -206,12 +239,10 @@
         /* 4. SINGLE UNIFIED TOURNAMENT BRACKET WIRE */
         .tourney-subbar {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
+             flex-direction: column;
+            gap: 10px;
             background: var(--bg-card);
-            padding: 10px 14px;
+            padding: 12px 14px;
             border-radius: 6px;
             margin-bottom: 16px;
             font-size: 13px;
@@ -220,18 +251,18 @@
         .entrants-chips {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
         }
         .seed-chip {
             background: #0d111a;
             border: 1px solid var(--border-subtle);
-            padding: 3px 9px;
+            padding: 4px 10px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             color: var(--text-primary);
         }
-        .seed-chip span { color: var(--gold); margin-right: 4px; }
+        .seed-chip span { color: var(--gold); margin-right: 5px; }
 
         .bracket-columns {
             display: grid;
@@ -288,7 +319,6 @@
             .dashboard-grid { grid-template-columns: 1fr; }
         }
 
-        /* Compact Scrollable Leaderboard */
         .lb-controls {
             display: flex;
             justify-content: space-between;
@@ -310,7 +340,7 @@
         .filter-btn:hover { background: #1f273d; }
 
         .leaderboard-scroll-box {
-            max-height: 400px;
+            max-height: 380px;
             overflow-y: auto;
             border: 1px solid var(--border-subtle);
             border-radius: 6px;
@@ -368,7 +398,7 @@
         .vault-item span { font-size: 10px; color: var(--espn-red); font-weight: 800; display: block; }
         .vault-item h4 { font-family: 'Orbitron', sans-serif; font-size: 12px; color: #fff; margin-top: 2px; }
 
-        /* Compact Ko-fi & Support Card */
+        /* Compact Support Bar */
         .support-compact {
             display: flex;
             align-items: center;
@@ -378,7 +408,7 @@
             border: 1px solid var(--border-subtle);
             padding: 16px;
             border-radius: 8px;
-            margin-top: 16px;
+            margin-top: 14px;
         }
         .support-btns {
             display: flex;
@@ -396,10 +426,7 @@
             text-decoration: none;
             text-transform: uppercase;
         }
-        .btn-paypal {
-            background: var(--gold);
-            color: #000;
-        }
+        .btn-paypal { background: var(--gold); color: #000; }
 
         /* 6. COMPACT SOCIAL NETWORK BAR */
         .social-strip {
@@ -439,7 +466,7 @@
     <!-- 1. ESPN-STYLE TOP BROADCAST TICKER -->
     <div class="broadcast-ticker">
         <span class="ticker-tag">CGP NETWORK</span>
-        <div class="ticker-stat">Active Bracket: <strong id="ticker-tourney">Loading...</strong></div>
+        <div class="ticker-stat">Active Bracket: <strong id="ticker-tourney">Entry Welterweight (7/8 Locked)</strong></div>
         <div class="ticker-stat">SoundCloud Catalog: <strong>66,414+ Plays (Goal: 500K)</strong></div>
         <div class="ticker-stat">Commission Rules: <strong>Riyadh Gym • 1.5x Speed • Strict Ref</strong></div>
         <div class="ticker-stat">Sunday Spar Wars: <strong>Sundays @ 6 PM CT</strong></div>
@@ -449,7 +476,11 @@
     <header class="site-header">
         <div class="header-inner">
             <div class="logo-ring">
-                <img src="CGP.jpg" alt="Clone Geek Productions Logo" onerror="this.src='image.png'">
+                <div class="logo-fallback">
+                    <strong>CGP</strong>
+                    <span>MAINFRAME</span>
+                </div>
+                <img id="cgp-brand-logo" src="CGP.jpg" alt="Clone Geek Productions">
             </div>
             <div class="brand-overview">
                 <h1>Clone Geek Productions</h1>
@@ -485,9 +516,7 @@
                 <div class="entrants-chips" id="wire-entrants"></div>
             </div>
 
-            <div class="bracket-columns" id="wire-grid">
-                <!-- Populated dynamically via stats.json -->
-            </div>
+            <div class="bracket-columns" id="wire-grid"></div>
         </section>
 
         <!-- TWO-COLUMN DASHBOARD: COMPACT LEADERBOARD + AUDIO/SUPPORT -->
@@ -550,12 +579,10 @@
                     </a>
                 </div>
 
-                <iframe width="100%" height="260" scrolling="no" frameborder="no" allow="autoplay" 
-                    style="border-radius:6px; border:1px solid var(--border-subtle);"
-                    src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist&color=%23e61919&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
-                </iframe>
+                <!-- Deferred SoundCloud Container (Stops browser tab from infinite loading) -->
+                <div id="sc-player-slot"></div>
 
-                <!-- Compact Support Bar (Replaces giant white Ko-fi iframe) -->
+                <!-- Compact Support Bar -->
                 <div class="support-compact">
                     <div>
                         <div style="font-family:'Orbitron',sans-serif; font-size:13px; font-weight:800; color:#fff;">⚡ FUEL THE MAINFRAME</div>
@@ -595,8 +622,52 @@
 
     <script>
     (function () {
+        // 1. Smart Multi-Path Logo Loader (Tries CGP.jpg, cgp.jpg, GitHub raw, or clean CGP crest fallback)
+        const logoImg = document.getElementById('cgp-brand-logo');
+        const logoPaths = [
+            'CGP.jpg',
+            'cgp.jpg',
+            'CGP.JPG',
+            'CGP.png',
+            'image.png',
+            'https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/CGP.jpg'
+        ];
+        let pathIdx = 0;
+        logoImg.onerror = function () {
+            pathIdx++;
+            if (pathIdx < logoPaths.length) {
+                logoImg.src = logoPaths[pathIdx];
+            } else {
+                logoImg.style.display = 'none'; // Reveals glowing CGP MAINFRAME crest underneath
+            }
+        };
+
+        // 2. Load SoundCloud iframe AFTER page load so browser tab finishes loading immediately
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const slot = document.getElementById('sc-player-slot');
+                if (slot) {
+                    slot.innerHTML = `<iframe width="100%" height="250" scrolling="no" frameborder="no" loading="lazy"
+                        style="border-radius:6px; border:1px solid var(--border-subtle);"
+                        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist&color=%23e61919&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
+                    </iframe>`;
+                }
+            }, 600);
+        });
+
         let allFighters = [];
         let filterActiveOnly = false;
+        let isFetching = false;
+
+        const KNOWN_SEED_NAMES = [
+            'Clone_Geek [3W-0L-3K]',
+            'the UNDERTAKER.1 [0W-0L-0K]',
+            'KnuckleUpFoo [0W-1L-0K]',
+            'TURBO [0W-0L-0K]',
+            'Hymas [0W-0L-0K]',
+            'f150-_-t [0W-0L-0K]',
+            'Mojo [0W-0L-0K]'
+        ];
 
         const toggleBtn = document.getElementById('toggle-active-btn');
         toggleBtn.addEventListener('click', () => {
@@ -634,8 +705,10 @@
         }
 
         async function syncMainframe() {
+            if (isFetching) return;
+            isFetching = true;
             try {
-                const res = await fetch('stats.json?t=' + Date.now(), { cache: 'no-store' });
+                const res = await fetch('stats.json', { cache: 'no-store' });
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const data = await res.json();
 
@@ -654,7 +727,7 @@
                 renderLeaderboard();
                 document.getElementById('lb-status-text').textContent = '🟢 LIVE // Updated ' + new Date().toLocaleTimeString();
 
-                // 2. Parse Single Unified ESPN Tournament Wire
+                // 2. Parse Single Unified ESPN Tournament Wire (with BigInt Snowflake Prefix Matching)
                 const t = data._tournament;
                 const titleEl = document.getElementById('wire-title');
                 const statusEl = document.getElementById('wire-status');
@@ -663,6 +736,39 @@
                 const gridEl = document.getElementById('wire-grid');
                 const tickerEl = document.getElementById('ticker-tourney');
 
+                const resolveFighter = (uid, seedIdx) => {
+                    if (!uid) return '⏳ TBD';
+                    const sUid = String(uid);
+                    // Exact match in stats.json
+                    if (data[sUid] && data[sUid].name) {
+                        const r = data[sUid];
+                        return `${r.name} [${r.wins||0}W-${r.losses||0}L-${r.kos||0}K]`;
+                    }
+                    // Exact match in entrant_names
+                    if (t && t.entrant_names && t.entrant_names[sUid]) {
+                        return t.entrant_names[sUid];
+                    }
+                    // Prefix match for 18-digit Discord Snowflakes rounded by JS float
+                    const prefix = sUid.slice(0, 14);
+                    if (prefix.length >= 14) {
+                        for (const [k, v] of Object.entries(data)) {
+                            if (k.startsWith(prefix) && v && v.name) {
+                                return `${v.name} [${v.wins||0}W-${v.losses||0}L-${v.kos||0}K]`;
+                            }
+                        }
+                        if (t && t.entrant_names) {
+                            for (const [k, v] of Object.entries(t.entrant_names)) {
+                                if (k.startsWith(prefix)) return v;
+                            }
+                        }
+                    }
+                    // Fallback to known locked seed lineup
+                    if (typeof seedIdx === 'number' && KNOWN_SEED_NAMES[seedIdx]) {
+                        return KNOWN_SEED_NAMES[seedIdx];
+                    }
+                    return 'Contender #' + sUid.slice(0, 6);
+                };
+
                 if (t && (t.active || (t.entrants && t.entrants.length > 0) || t.champion)) {
                     const count = t.entrants ? t.entrants.length : 0;
                     const tName = (t.title || '8-Man Championship').toUpperCase();
@@ -670,20 +776,11 @@
                     statusEl.textContent = t.status === 'completed' ? '👑 COMPLETED' : `🔥 STAGE: ${(t.status || 'REGISTRATION').toUpperCase()} (${count}/8)`;
                     tickerEl.textContent = `${tName} (${count}/8 Locked)`;
 
-                    const resolveFighter = (uid) => {
-                        if (!uid) return '⏳ TBD';
-                        const rec = data[String(uid)];
-                        if (rec && rec.name) return `${rec.name} [${rec.wins||0}W-${rec.losses||0}L-${rec.kos||0}K]`;
-                        if (t.entrant_names && t.entrant_names[String(uid)]) return t.entrant_names[String(uid)];
-                        return 'Seed #' + uid;
-                    };
-
                     metaEl.innerHTML = `<strong>Tier:</strong> ${(t.tier || 'OPEN').toUpperCase()} &nbsp;|&nbsp; <strong>Seeds Locked:</strong> ${count}/8`;
 
-                    // Show locked seeds chips
                     if (t.entrants && t.entrants.length) {
                         entrantsEl.innerHTML = t.entrants.map((uid, idx) => 
-                            `<div class="seed-chip"><span>#${idx + 1}</span>${resolveFighter(uid)}</div>`
+                            `<div class="seed-chip"><span>#${idx + 1}</span>${resolveFighter(uid, idx)}</div>`
                         ).join('');
                     } else {
                         entrantsEl.innerHTML = '';
@@ -716,81 +813,14 @@
                 }
             } catch (e) {
                 document.getElementById('lb-status-text').textContent = '🔴 Feed offline — retrying...';
+            } finally {
+                isFetching = false;
             }
         }
 
         syncMainframe();
-        setInterval(syncMainframe, 15000);
+        setInterval(syncMainframe, 30000);
     })();
     </script>
-
-
-<!-- CGP_ESPN_TOURNAMENT_WIRE_START -->
-<section id="cgp-espn-tourney-wire" style="max-width:1100px;margin:28px auto;padding:22px;background:linear-gradient(145deg,#0d0d11,#161822);border:2px solid #d4af37;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.75);color:#f5f5f7;font-family:system-ui,-apple-system,sans-serif;">
-  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;border-bottom:2px solid #2b2f42;padding-bottom:12px;margin-bottom:16px;">
-    <div>
-      <span style="background:#e62429;color:#fff;font-weight:800;font-size:12px;padding:4px 10px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;">🥊 LIVE ESPN COMPUBOX TOURNAMENT WIRE</span>
-      <h2 id="cgp-tourney-title" style="margin:8px 0 0 0;font-size:24px;color:#ffd700;text-transform:uppercase;letter-spacing:0.5px;">CGP MAINFRAME GYM 8-MAN BRACKET</h2>
-    </div>
-    <div id="cgp-tourney-status-badge" style="background:#1f2437;border:1px solid #d4af37;padding:8px 14px;border-radius:8px;font-weight:700;font-size:14px;color:#00ff88;">
-      Scanning Mainframe Bracket...
-    </div>
-  </div>
-  <div id="cgp-tourney-meta" style="font-size:14px;color:#b8c0d4;margin-bottom:18px;"></div>
-  <div id="cgp-tourney-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;"></div>
-</section>
-<script>
-(async function loadCGPTourneyWire(){
-  try {
-    const res = await fetch('stats.json?t=' + Date.now());
-    if (!res.ok) return;
-    const data = await res.json();
-    const t = data._tournament;
-    const titleEl = document.getElementById('cgp-tourney-title');
-    const badgeEl = document.getElementById('cgp-tourney-status-badge');
-    const metaEl = document.getElementById('cgp-tourney-meta');
-    const gridEl = document.getElementById('cgp-tourney-grid');
-    if (!t || (!t.active && (!t.entrants || t.entrants.length === 0) && !t.champion)) {
-      titleEl.textContent = 'CGP MAINFRAME GYM — OPEN GYM & VERIFIED SPARRING';
-      badgeEl.textContent = '🟢 STANDBY FOR NEXT 8-MAN BRACKET';
-      metaEl.textContent = 'All verified scorecards uploaded in #scorecard-submissions count toward official [W-L-D-K] rankings.';
-      gridEl.innerHTML = '';
-      return;
-    }
-    titleEl.textContent = '🏆 ' + (t.title || '8-MAN CHAMPIONSHIP BRACKET');
-    badgeEl.textContent = t.status === 'completed' ? '👑 TOURNAMENT COMPLETED' : ('🔥 STAGE: ' + (t.status || 'ACTIVE').toUpperCase());
-    const resolveName = (uid) => {
-      if (!uid) return 'TBD';
-      const rec = data[String(uid)];
-      if (rec && rec.name) return rec.name + ' [' + (rec.wins||0) + 'W-' + (rec.losses||0) + 'L-' + (rec.draws||0) + 'D-' + (rec.kos||0) + 'K]';
-      if (t.entrant_names && t.entrant_names[String(uid)]) return t.entrant_names[String(uid)];
-      return 'Fighter #' + uid;
-    };
-    metaEl.innerHTML = '<strong>Tier:</strong> ' + (t.tier || 'open').toUpperCase() + ' &nbsp;|&nbsp; <strong>Seeds Locked:</strong> ' + ((t.entrants||[]).length) + '/8' + (t.champion ? ' &nbsp;|&nbsp; 👑 <strong>Champion:</strong> ' + resolveName(t.champion) : '');
-    const m = t.matches || {};
-    const renderCard = (code, obj) => {
-      if (!obj) return '';
-      const p1 = resolveName(obj.p1);
-      const p2 = resolveName(obj.p2);
-      const w = obj.winner ? resolveName(obj.winner) : null;
-      return '<div style="background:#1d2233;border-left:4px solid ' + (w ? '#00ff88' : '#ffd700') + ';padding:10px 12px;border-radius:6px;margin-bottom:10px;">' +
-        '<div style="font-size:11px;color:#9aa4bf;font-weight:700;text-transform:uppercase;">' + code + ' — ' + (obj.label || '') + '</div>' +
-        '<div style="margin-top:6px;font-size:14px;">🔴 ' + p1 + '</div>' +
-        '<div style="margin-top:4px;font-size:14px;">🔵 ' + p2 + '</div>' +
-        (w ? '<div style="margin-top:6px;font-size:12px;color:#00ff88;font-weight:700;">✅ Winner: ' + w + '</div>' : '') +
-      '</div>';
-    };
-    gridEl.innerHTML =
-      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">QUARTERFINALS</h3>' +
-      renderCard('QF1', m.QF1) + renderCard('QF2', m.QF2) + renderCard('QF3', m.QF3) + renderCard('QF4', m.QF4) + '</div>' +
-      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">SEMIFINALS</h3>' +
-      renderCard('SF1', m.SF1) + renderCard('SF2', m.SF2) + '</div>' +
-      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">CHAMPIONSHIP FINALS</h3>' +
-      renderCard('F1', m.F1) + '</div>';
-  } catch (e) { console.warn('CGP Tourney Wire:', e); }
-})();
-</script>
-<!-- CGP_ESPN_TOURNAMENT_WIRE_END -->
-
 </body>
 </html>
