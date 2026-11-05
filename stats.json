@@ -577,8 +577,8 @@
     },
     "1546624124829302786": {
         "name": "TURBO",
-        "wins": 0,
-        "losses": 1,
+        "wins": 1,
+        "losses": 0,
         "kos": 0,
         "verified": true,
         "draws": 0,
