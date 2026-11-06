@@ -392,6 +392,7 @@ channel_memory = {}
 user_spam_tracker = defaultdict(lambda: deque(maxlen=6))
 user_strike_counter = defaultdict(int)
 last_organic_chime = 0.0
+has_booted = False
 
 def log_channel_message(channel_id: int, author_name: str, text: str):
     if channel_id not in channel_memory:
@@ -465,7 +466,6 @@ def parse_fight_caption_intent(caption: str, uploader_id: int = None, opponent_i
     Returns dict: {"outcome": "win"|"loss"|"draw"|None, "is_ko": bool}
     """
     t = caption.lower().strip()
-    # Strip out <@12345> mentions so numbers/letters inside IDs don't confuse token parsing
     t_no_mentions = re.sub(r'<@!?\d+>', ' ', t)
     tokens = re.findall(r"\b[a-z']+\b", t_no_mentions)
 
@@ -672,14 +672,11 @@ def sanitize_turbo_false_advance() -> bool:
     sf1 = matches.get("SF1", {})
     f1 = matches.get("F1", {})
 
-    # Identify if QF2 had a winner who then got auto-pushed to SF1 winner and F1 p1
-    # while SF2 is still completely undecided (proving the tournament is still in Quarterfinals)
     qf2_w = qf2.get("winner")
     sf1_w = sf1.get("winner")
     f1_p1 = f1.get("p1")
 
     changed = False
-    # Check if Turbo (or QF2 winner) was falsely pushed through SF1 into F1 while QF3/QF4 aren't even done
     if qf2_w and (sf1_w == qf2_w or f1_p1 == qf2_w or sf1.get("p2") == qf2_w):
         w_label = get_fighter_display_label(qf2_w, include_mention=False).lower()
         if "turbo" in w_label or (sf1_w == qf2_w and not matches.get("QF3", {}).get("winner")):
@@ -735,7 +732,6 @@ def advance_tournament_match(winner_id: int, loser_id: int = None, is_ko: bool =
     w_id = int(winner_id)
     l_id = int(loser_id) if loser_id else None
 
-    # Never advance from a scorecard unless we know who the opponent was (unless Commissioner manually used !advance @winner)
     if not l_id and not allow_single_admin_override:
         return False, ""
 
@@ -822,7 +818,6 @@ def rollback_bracket_slot(slot_key: str, new_p1: int = None, new_p2: int = None)
     if new_p2 is not None:
         m_obj["p2"] = int(new_p2)
 
-    # Cascade downstream cleanup so false winners don't stay stuck in SF1/SF2/F1
     if slot_key == "QF1":
         matches["SF1"]["p1"] = None
         if matches["SF1"].get("winner") == old_winner:
@@ -1827,11 +1822,9 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
     if len(report_text) > 3600:
         report_text = report_text[:3600] + "..."
 
-    # Determine final outcome: Caption explicit loss/draw overrides default; Vision loss overrides default if caption was silent
     final_outcome = caption_intent["outcome"] or vision_outcome or "win"
     is_ko = caption_intent["is_ko"] or vision_ko
 
-    # Ensure both fighters exist in FIGHTER_RECORDS
     if uploader.id not in FIGHTER_RECORDS:
         FIGHTER_RECORDS[uploader.id] = {"name": uploader_base, "wins": 0, "losses": 0, "draws": 0, "kos": 0, "golden_tickets": 0, "verified": True}
     FIGHTER_RECORDS[uploader.id]["name"] = uploader_base
@@ -1853,7 +1846,6 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
         winner_member = None
         loser_member = None
     elif final_outcome == "loss" and opponent:
-        # Uploader honestly reported their LOSS -> Opponent gets the W!
         winner_member = opponent
         loser_member = uploader
     else:
@@ -1885,7 +1877,6 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
     if tourney_advanced and message.guild:
         await refresh_posted_bracket_card(message.guild)
 
-    # Sync both nicknames
     try:
         u_d = FIGHTER_RECORDS[uploader.id]
         await uploader.edit(nick=format_record_nick(uploader_base, u_d["wins"], u_d["losses"], u_d.get("draws", 0), u_d.get("kos", 0)))
@@ -1948,6 +1939,7 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
         pass
     return True
 
+# ================= QUIET-MODE SCHEDULED TASKS & SINGLE-BOOT LOCK =================
 @tasks.loop(time=datetime.time(hour=8, minute=0, tzinfo=CENTRAL_TZ))
 async def daily_morning_call():
     await bot.wait_until_ready()
@@ -1982,18 +1974,22 @@ async def daily_midnight_call():
             await channel.send(content="@everyone 🔔 **MIDNIGHT BELL IN THE CGP MAINFRAME GYM:** 👇", embed=embed, view=PromoButtons(track['url']))
         break
 
-@tasks.loop(hours=3)
+@tasks.loop(hours=6)
 async def periodic_boxing_history():
     await bot.wait_until_ready()
+    if periodic_boxing_history.current_loop == 0:
+        return  # Skip firing immediately on boot/redeploy!
     for guild in bot.guilds:
         channel = get_elite_feed_channel(guild)
         if channel:
             await channel.send(f"🥊 **CGP Mainframe Gym Ringside History Vault:**\n{get_next_boxing_fact()}")
         break
 
-@tasks.loop(hours=4)
+@tasks.loop(hours=6)
 async def periodic_soundcloud_promo():
     await bot.wait_until_ready()
+    if periodic_soundcloud_promo.current_loop == 0:
+        return  # Skip firing immediately on boot/redeploy!
     for guild in bot.guilds:
         channel = get_music_channel(guild)
         if channel:
@@ -2007,12 +2003,22 @@ async def periodic_soundcloud_promo():
             await channel.send(content="🎵 **Official CGP Music Channel Drop!** Tap in below: 👇", embed=embed, view=PromoButtons(track['url']))
         break
 
-@tasks.loop(hours=2)
+@tasks.loop(hours=4)
 async def autonomous_server_hype():
     await bot.wait_until_ready()
+    if autonomous_server_hype.current_loop == 0:
+        return  # Skip firing immediately on boot/redeploy!
     for guild in bot.guilds:
         channel = get_coaches_corner_channel(guild)
         if channel:
+            # Don't talk to himself if Coach Steward already sent the last 2 messages with no human activity
+            try:
+                last_msgs = [m async for m in channel.history(limit=2)]
+                if last_msgs and all(m.author.id == bot.user.id for m in last_msgs):
+                    return
+            except Exception:
+                pass
+
             if ACTIVE_TOURNAMENT.get("active"):
                 spots_left = 8 - len(ACTIVE_TOURNAMENT.get("entrants", []))
                 if spots_left > 0:
@@ -2027,6 +2033,11 @@ async def autonomous_server_hype():
 
 @bot.event
 async def on_ready():
+    global has_booted
+    if has_booted:
+        return  # Prevent duplicate boot messages when Discord gateway reconnects
+    has_booted = True
+
     print(f"[✓] {bot.user.name} (24/7 CGP Mainframe Gym Master Engine) is ONLINE!")
     await fetch_state_from_github_if_needed()
     bot.add_view(TournamentBracketView())
@@ -2047,7 +2058,18 @@ async def on_ready():
         await refresh_posted_bracket_card(guild)
         corner_ch = get_coaches_corner_channel(guild)
         if corner_ch:
-            await corner_ch.send(random.choice(BOOT_MESSAGES), view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+            should_announce = True
+            try:
+                async for m in corner_ch.history(limit=3):
+                    if m.author.id == bot.user.id:
+                        age_sec = (datetime.datetime.now(datetime.timezone.utc) - m.created_at).total_seconds()
+                        if age_sec < 900:
+                            should_announce = False
+                            break
+            except Exception:
+                pass
+            if should_announce:
+                await corner_ch.send(random.choice(BOOT_MESSAGES), view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
         break
 
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Clone Geek on SoundCloud | CGP Mainframe Gym"))
@@ -2129,7 +2151,6 @@ async def on_message(message):
     # ================= TOP PRIORITY: PROCESS COMMANDS FIRST =================
     if message.content.startswith("!") or message.content.startswith("/"):
         if message.content.startswith("/"):
-            # Allow Commissioner slash-style text like /fixtourney or /rollback to work seamlessly as ! commands
             message.content = "!" + message.content[1:]
         await bot.process_commands(message)
         return
@@ -2141,7 +2162,6 @@ async def on_message(message):
 
     # ================= TOP PRIORITY: NATURAL LANGUAGE COMMISSIONER BRACKET FIX & FIGHTER SWAP =================
     if is_creator and (bot.user in message.mentions or "coach" in msg or "override" in msg or "rollback" in msg):
-        # 1. Natural Language Fighter Swap (e.g. "@Coach Steward swap @Hymas with @NewGuy")
         if any(w in msg for w in ["swap", "replace", "sub in", "substitute"]) and len(other_mentions) >= 2:
             answered_messages.add(message.id)
             old_f, new_f = other_mentions[0], other_mentions[1]
@@ -2154,7 +2174,6 @@ async def on_message(message):
             )
             return
 
-        # 2. Natural Language Bracket Rollback / Turbo Fix (e.g. "@Coach Steward fix the tourney" or "rollback QF2")
         if any(w in msg for w in ["rollback", "nullify", "reset slot", "fix tourney", "fix the tourney", "fix bracket", "clear the false", "undo"]):
             answered_messages.add(message.id)
             slot_match = re.search(r'\b(qf1|qf2|qf3|qf4|sf1|sf2|f1)\b', msg, re.IGNORECASE)
@@ -2534,10 +2553,11 @@ async def on_message(message):
         await send_tracks_menu(message.channel)
         return
 
+    # Quieter Organic Chat Chime (25-minute cooldown & 12% chance)
     boxing_chat_triggers = {"mindset", "stamina", "footwork", "jab", "counter", "hook", "uppercut", "undisputed", "round", "rounds", "combo", "ring", "training", "belt", "champion", "heavyweight", "welterweight", "spar", "scorecard"}
     now_t = asyncio.get_event_loop().time()
-    if (set(words_list) & boxing_chat_triggers) and len(words_list) >= 5 and (now_t - last_organic_chime > 180):
-        if random.random() < 0.28:
+    if (set(words_list) & boxing_chat_triggers) and len(words_list) >= 6 and (now_t - last_organic_chime > 1500):
+        if random.random() < 0.12:
             last_organic_chime = now_t
             answered_messages.add(message.id)
             await message.reply(get_next_organic_interjection())
