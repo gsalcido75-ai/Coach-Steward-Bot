@@ -262,12 +262,11 @@ CREW_BANTER = {
         "🎙️ **Coach Steward:** Oh look, **Hymas** is lurking in the gym! Welcome back from probation—now stop spamming the locker room and go defend your name in the Riyadh Indoor Gym!",
         "🎙️ **Coach Steward:** I see you **Hymas**! Don't think you can sneak past the corner without putting in rounds today. Keep the chat clean and lace 'em up!"
     ],
-    "rafa": [
-        "🎙️ **Coach Steward:** **Rafa**! Back in the building! Quit sweet-talking the crowd in chat and step through the ropes—let's see if your hands are moving as fast as your fingers today!",
-        "🎙️ **Coach Steward:** Yo **Rafa**, the heavy bag has been calling your name all day. Get in the ring and run up that CGP SoundCloud playlist while you work!"
-    ],
     "knuckle": [
         "🎙️ **Coach Steward:** **KnuckleUpFoo** always ready for war from ringside! You already know how we rock in the **CGP Mainframe Gym**—keep keeping these contenders on their toes!"
+    ],
+    "f150": [
+        "🎙️ **Coach Steward:** **f150** rolling heavy into the gym like a truckload of championship belts! Keep that engine purring and hands up in the Riyadh ring!"
     ]
 }
 
@@ -925,8 +924,8 @@ def swap_fighter_in_tournament(old_uid: int, new_uid: int, new_base_name: str) -
 # ================= GUARANTEED GITHUB & VERCEL LIVE SYNC ENGINE =================
 async def push_stats_to_github() -> bool:
     """
-    Serializes pushes with `github_push_lock`, includes `[skip ci]` so Render/Vercel ignore background JSON saves,
-    and retries up to 3 times if GitHub returns a 409 SHA conflict.
+    Serializes pushes with `github_push_lock` and updates stats.json on GitHub 
+    without triggering any Render build loops (since Auto-Deploy is disabled).
     """
     if not GITHUB_TOKEN or not GITHUB_REPO:
         print("[!] GITHUB_TOKEN or GITHUB_REPO missing—cannot push stats.json to GitHub.")
@@ -959,7 +958,7 @@ async def push_stats_to_github() -> bool:
 
                     now_stamp = datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d %I:%M:%S %p CST")
                     payload = {
-                        "message": f"Live CGP Mainframe Gym Leaderboard & Bracket Sync ({now_stamp}) [skip ci]",
+                        "message": f"Live CGP Mainframe Gym Leaderboard & Bracket Sync ({now_stamp})",
                         "content": encoded_content
                     }
                     if sha:
@@ -967,7 +966,7 @@ async def push_stats_to_github() -> bool:
 
                     async with session.put(url, headers=headers, json=payload) as put_resp:
                         if put_resp.status in (200, 201):
-                            print(f"[✓] Pushed stats.json to GitHub with [skip ci] ({now_stamp})!")
+                            print(f"[✓] Pushed stats.json to GitHub successfully ({now_stamp})!")
                             return True
                         elif put_resp.status == 409:
                             print(f"[!] GitHub SHA conflict on attempt {attempt+1}, retrying...")
@@ -1212,7 +1211,7 @@ async def rebrand_webpage_on_github() -> bool:
 
         encoded_content = base64.b64encode(updated_html.encode("utf-8")).decode("utf-8")
         payload = {
-            "message": "Autonomous update: CGP Mainframe Gym ESPN Tournament Wire & Leaderboard live no-cache sync [skip ci]",
+            "message": "Autonomous update: CGP Mainframe Gym ESPN Tournament Wire & Leaderboard live no-cache sync",
             "content": encoded_content,
             "sha": sha
         }
