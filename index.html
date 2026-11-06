@@ -442,7 +442,7 @@
         }
         .btn-paypal { background: var(--gold); color: #000; }
 
-        /* 6. SOCIAL NETWORK BAR (LNK.BIO REMOVED) */
+        /* 6. SOCIAL NETWORK BAR (LNK.BIO EXCLUDED) */
         .social-strip {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -481,7 +481,7 @@
     <div class="broadcast-ticker">
         <span class="ticker-tag">CGP NETWORK</span>
         <div class="ticker-stat">Active Bracket: <strong id="ticker-tourney">Entry Welterweight (7/8 Locked)</strong></div>
-        <div class="ticker-stat">SoundCloud Catalog: <strong>66,576+ Plays (Goal: 500K)</strong></div>
+        <div class="ticker-stat">SoundCloud Catalog: <strong id="ticker-soundcloud">66,576+ Plays (Goal: 500K)</strong></div>
         <div class="ticker-stat">Commission Rules: <strong>Riyadh Gym • 1.5x Speed • Strict Ref</strong></div>
         <div class="ticker-stat">Sunday Spar Wars: <strong>Sundays @ 6 PM CT</strong></div>
     </div>
@@ -506,7 +506,7 @@
                     <div class="proto-badge">🏆 Winner-Takes-All 8-Man Brackets</div>
                     <div class="proto-badge">🥊 Sunday Spar Wars (6 PM CT)</div>
                     <div class="proto-badge">📊 AI-Verified [W-L-D-K] Records</div>
-                    <div class="proto-badge">🎵 66.5K+ SoundCloud Streams</div>
+                    <div class="proto-badge" id="badge-soundcloud">🎵 66.5K+ SoundCloud Streams</div>
                 </div>
             </div>
         </div>
@@ -571,7 +571,7 @@
             <section class="panel">
                 <div class="panel-header">
                     <div class="panel-title">🎧 CGP Sound Vault</div>
-                    <span style="font-size:12px; color:var(--gold); font-weight:700;">Road to 500K Plays</span>
+                    <span style="font-size:12px; color:var(--gold); font-weight:700;" id="vault-goal-text">Road to 500K Plays</span>
                 </div>
 
                 <div class="vault-grid">
@@ -738,6 +738,16 @@
 
                 renderLeaderboard();
                 document.getElementById('lb-status-text').textContent = '🟢 LIVE // Updated ' + new Date().toLocaleTimeString();
+
+                // --- AUTOMATED SOUNDCLOUD STATS BINDER ---
+                const sc = data._soundcloud;
+                if (sc && sc.total_plays) {
+                    const scText = sc.total_plays + ' Plays (Goal: ' + (sc.goal || '500K') + ')';
+                    const tickerSc = document.getElementById('ticker-soundcloud');
+                    if (tickerSc) tickerSc.textContent = scText;
+                    const badgeSc = document.getElementById('badge-soundcloud');
+                    if (badgeSc) badgeSc.textContent = '🎵 ' + scText;
+                }
 
                 const t = data._tournament;
                 const titleEl = document.getElementById('wire-title');
