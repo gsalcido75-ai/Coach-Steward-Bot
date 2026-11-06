@@ -469,7 +469,7 @@
     },
     "1292874958237859919": {
         "name": "SlokeNastyTheCapti",
-        "wins": 1,
+        "wins": 2,
         "losses": 0,
         "kos": 1,
         "verified": true,
@@ -704,7 +704,7 @@
     "1279476207603290197": {
         "name": "Clone_Geek",
         "wins": 3,
-        "losses": 6,
+        "losses": 7,
         "draws": 0,
         "kos": 3,
         "golden_tickets": 0,
@@ -1078,8 +1078,8 @@
         ],
         "channel_id": 1565566398137114786,
         "message_id": 1567348042917609534,
-        "updated_at": "2026-11-05 10:20:35 PM CST",
+        "updated_at": "2026-11-05 10:21:05 PM CST",
         " entrant_names": {}
     },
-    "_last_synced": "2026-11-05T22:20:35.984876-06:00"
+    "_last_synced": "2026-11-05T22:21:05.683221-06:00"
 }
