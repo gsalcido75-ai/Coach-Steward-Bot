@@ -640,9 +640,9 @@
     },
     "1409789020971470909": {
         "name": "Roy\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd",
-        "wins": 1,
+        "wins": 2,
         "losses": 0,
-        "kos": 1,
+        "kos": 2,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0
@@ -1078,7 +1078,7 @@
         ],
         "channel_id": 1565566398137114786,
         "message_id": 1567348042917609534,
-        "updated_at": "2026-11-05 09:16 PM CST",
+        "updated_at": "2026-11-05 09:17 PM CST",
         " entrant_names": {}
     }
 }
