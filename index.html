@@ -857,10 +857,23 @@
 </section>
 <script>
 (async function loadCGPTourneyWire(){
+  async function fetchFreshStats() {
+    const bust = Date.now();
+    const urls = [
+      'https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/stats.json?t=' + bust,
+      'stats.json?t=' + bust
+    ];
+    for (const u of urls) {
+      try {
+        const r = await fetch(u, { cache: 'no-store' });
+        if (r.ok) return await r.json();
+      } catch (e) {}
+    }
+    return null;
+  }
   try {
-    const res = await fetch('stats.json?t=' + Date.now());
-    if (!res.ok) return;
-    const data = await res.json();
+    const data = await fetchFreshStats();
+    if (!data) return;
     const t = data._tournament;
     const titleEl = document.getElementById('cgp-tourney-title');
     const badgeEl = document.getElementById('cgp-tourney-status-badge');
