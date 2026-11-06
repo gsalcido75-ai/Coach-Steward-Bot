@@ -1014,7 +1014,16 @@
             420825645258506240,
             767061225141174282
         ],
-        " entrant_names": {},
+        "entrant_names": {
+            "1279476207603290197": "Clone_Geek",
+            "1527537783604776990": "\ud83c\udf83\ud83e\udea6the UNDERTAKER.I",
+            "1487227892340621384": "KnuckleUpFoo",
+            "1546624124829302786": "TURBO",
+            "882231043426512957": "Hymas",
+            "1330344102067310685": "f150-_-t",
+            "420825645258506240": "\ud835\udd10\ud835\udd2c\ud835\udd27\ud835\udd2c",
+            "767061225141174282": "(NLB)Strive"
+        },
         "matches": {
             "QF1": {
                 "p1": 1279476207603290197,
@@ -1025,7 +1034,7 @@
             "QF2": {
                 "p1": 1546624124829302786,
                 "p2": 882231043426512957,
-                "winner": 1546624124829302786,
+                "winner": null,
                 "label": "Quarterfinal #2 (Seed #4 vs #5)"
             },
             "QF3": {
@@ -1042,8 +1051,8 @@
             },
             "SF1": {
                 "p1": 767061225141174282,
-                "p2": 1546624124829302786,
-                "winner": 1546624124829302786,
+                "p2": null,
+                "winner": null,
                 "label": "Semifinal #1 (Winner QF1 vs QF2)"
             },
             "SF2": {
@@ -1053,7 +1062,7 @@
                 "label": "Semifinal #2 (Winner QF3 vs QF4)"
             },
             "F1": {
-                "p1": 1546624124829302786,
+                "p1": null,
                 "p2": null,
                 "winner": null,
                 "label": "Championship Final (Winner SF1 vs SF2)"
@@ -1070,15 +1079,6 @@
         "channel_id": 1565566398137114786,
         "message_id": 1567348042917609534,
         "updated_at": "2026-11-05 06:58 PM CST",
-        "entrant_names": {
-            "1279476207603290197": "Clone_Geek",
-            "1527537783604776990": "\ud83c\udf83\ud83e\udea6the UNDERTAKER.I",
-            "1487227892340621384": "KnuckleUpFoo",
-            "1546624124829302786": "TURBO",
-            "882231043426512957": "Hymas",
-            "1330344102067310685": "f150-_-t",
-            "420825645258506240": "\ud835\udd10\ud835\udd2c\ud835\udd27\ud835\udd2c",
-            "767061225141174282": "(NLB)Strive"
-        }
+        " entrant_names": {}
     }
 }
