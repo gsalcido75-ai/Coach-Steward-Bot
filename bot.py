@@ -925,7 +925,7 @@ def swap_fighter_in_tournament(old_uid: int, new_uid: int, new_base_name: str) -
 # ================= GUARANTEED GITHUB & VERCEL LIVE SYNC ENGINE =================
 async def push_stats_to_github() -> bool:
     """
-    Serializes pushes with `github_push_lock`, removes `[skip ci]` so Vercel ALWAYS rebuilds,
+    Serializes pushes with `github_push_lock`, includes `[skip ci]` so Render/Vercel ignore background JSON saves,
     and retries up to 3 times if GitHub returns a 409 SHA conflict.
     """
     if not GITHUB_TOKEN or not GITHUB_REPO:
@@ -959,7 +959,7 @@ async def push_stats_to_github() -> bool:
 
                     now_stamp = datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d %I:%M:%S %p CST")
                     payload = {
-                        "message": f"Live CGP Mainframe Gym Leaderboard & Bracket Sync ({now_stamp})",
+                        "message": f"Live CGP Mainframe Gym Leaderboard & Bracket Sync ({now_stamp}) [skip ci]",
                         "content": encoded_content
                     }
                     if sha:
@@ -967,7 +967,7 @@ async def push_stats_to_github() -> bool:
 
                     async with session.put(url, headers=headers, json=payload) as put_resp:
                         if put_resp.status in (200, 201):
-                            print(f"[✓] Pushed stats.json to GitHub & triggered Vercel sync ({now_stamp})!")
+                            print(f"[✓] Pushed stats.json to GitHub with [skip ci] ({now_stamp})!")
                             return True
                         elif put_resp.status == 409:
                             print(f"[!] GitHub SHA conflict on attempt {attempt+1}, retrying...")
@@ -1212,7 +1212,7 @@ async def rebrand_webpage_on_github() -> bool:
 
         encoded_content = base64.b64encode(updated_html.encode("utf-8")).decode("utf-8")
         payload = {
-            "message": "Autonomous update: CGP Mainframe Gym ESPN Tournament Wire & Leaderboard live no-cache sync",
+            "message": "Autonomous update: CGP Mainframe Gym ESPN Tournament Wire & Leaderboard live no-cache sync [skip ci]",
             "content": encoded_content,
             "sha": sha
         }
