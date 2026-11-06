@@ -1075,10 +1075,10 @@ async def fetch_state_from_github_if_needed():
                                     v["name"] = clean_base_name(v["name"])
                                 FIGHTER_RECORDS[int(k)] = v
 
-                        sanitize_turbo_false_advance()
-                        deduplicate_fighter_records(CREATOR_ID, "Clone_Geek")
-                        await save_and_sync_records()
-                        print("[✓] Synced & sanitized persistent records & tournament bracket state from GitHub!")
+                    sanitize_turbo_false_advance()
+                    deduplicate_fighter_records(CREATOR_ID, "Clone_Geek")
+                    await save_and_sync_records()
+                    print("[✓] Synced & sanitized persistent records & tournament bracket state from GitHub!")
     except Exception as e:
         print(f"[!] GitHub startup sync notice: {e}")
 
@@ -1191,7 +1191,6 @@ async def rebrand_webpage_on_github() -> bool:
         updated_html = re.sub(r'(?i)kronk', 'CGP Mainframe Gym', updated_html)
         updated_html = re.sub(r'(?i)CGP Mainframe(?!\s+Gym)\s+Leaderboard', 'CGP Mainframe Gym Leaderboard', updated_html)
 
-        # Upgrade any cached fetch('stats.json...') inside index.html to use live GitHub Raw + no-store cache busting
         updated_html = re.sub(
             r"fetch\(\s*['\"]/?stats\.json(?:\?[^'\"]*)?['\"]\s*(?:,\s*\{[^}]*\})?\s*\)",
             f"fetch('https://raw.githubusercontent.com/{GITHUB_REPO}/main/stats.json?t=' + Date.now(), {{ cache: 'no-store' }})",
@@ -1770,7 +1769,7 @@ async def execute_roster_sync_and_announce(guild: discord.Guild, origin_channel:
 
     announce_channel = get_coaches_corner_channel(guild) or origin_channel
     embed = discord.Embed(
-        title="🚨 CGP MAINFRAME GYM LIVE LEADERBOARD SYNCED 🚨",
+        title="🚨 CGP MAIN FRAME GYM LIVE LEADERBOARD SYNCED 🚨",
         description=(
             f"🎙️ **Coach Steward:** Listen up, fighters! The **CGP Mainframe Gym Live Leaderboard & ESPN Tournament Wire** is officially synced and ONLINE.\n\n"
             f"✅ **{count} Fighters Registered:** Every member in the server is locked into the live database tracking **Wins, Losses, Draws, and KOs (`[W-L-D-K]`)**!\n"
@@ -2414,7 +2413,7 @@ async def on_message(message):
         return
 
     # --- 3. SMART EMOJI REACTIONS ---
-    toxic_check = {"trash", "garbage", "suck", "sucks", "ass", "bitch", "hoe", "stfu", "fuck", "fck", "rigged", "scam", "loser", "bum", "ugly", "hate", "nasty", "gross", "die"}
+    toxic_check = {"trash", "garbage", "suck", "sucks", "ass", "clown", "bitch", "hoe", "stfu", "fuck", "fck", "rigged", "scam", "loser", "bum", "ugly", "hate", "nasty", "gross", "die"}
     has_toxic = any(tw in words_list for tw in toxic_check)
     has_gif_or_img = (
         any(dom in msg for dom in ["tenor.com", "giphy.com", ".gif"]) or
