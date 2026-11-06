@@ -577,9 +577,9 @@
     },
     "1546624124829302786": {
         "name": "TURBO",
-        "wins": 2,
+        "wins": 3,
         "losses": 0,
-        "kos": 1,
+        "kos": 2,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0
@@ -1025,7 +1025,7 @@
             "QF2": {
                 "p1": 1546624124829302786,
                 "p2": 882231043426512957,
-                "winner": null,
+                "winner": 1546624124829302786,
                 "label": "Quarterfinal #2 (Seed #4 vs #5)"
             },
             "QF3": {
@@ -1042,7 +1042,7 @@
             },
             "SF1": {
                 "p1": 767061225141174282,
-                "p2": null,
+                "p2": 1546624124829302786,
                 "winner": null,
                 "label": "Semifinal #1 (Winner QF1 vs QF2)"
             },
@@ -1063,11 +1063,12 @@
         "champion_name": null,
         "history_log": [
             "\ud83d\udd14 All 8 seeds locked! Quarterfinals matchups generated (06:21 PM CST).",
-            "\ud83c\udfc6 [QF1] (NLB)Strive [1W-0L-0D-0K] def. Clone_Geek [3W-3L-0D-3K] (on the scorecards \ud83d\udccb) \u2014 Advances to **Semifinal #1**!"
+            "\ud83c\udfc6 [QF1] (NLB)Strive [1W-0L-0D-0K] def. Clone_Geek [3W-3L-0D-3K] (on the scorecards \ud83d\udccb) \u2014 Advances to **Semifinal #1**!",
+            "\ud83c\udfc6 [QF2] TURBO [3W-0L-0D-2K] def. Hymas [0W-0L-0D-0K] (by KNOCKOUT \ud83d\udca5) \u2014 Advances to **Semifinal #1**!"
         ],
         "channel_id": 1565566398137114786,
         "message_id": 1567348042917609534,
-        "updated_at": "2026-11-05 06:49 PM CST",
+        "updated_at": "2026-11-05 06:58 PM CST",
         "entrant_names": {
             "1279476207603290197": "Clone_Geek",
             "1527537783604776990": "\ud83c\udf83\ud83e\udea6the UNDERTAKER.I",
