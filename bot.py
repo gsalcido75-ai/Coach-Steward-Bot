@@ -1191,10 +1191,10 @@ async def rebrand_webpage_on_github() -> bool:
         updated_html = re.sub(r'(?i)kronk', 'CGP Mainframe Gym', updated_html)
         updated_html = re.sub(r'(?i)CGP Mainframe(?!\s+Gym)\s+Leaderboard', 'CGP Mainframe Gym Leaderboard', updated_html)
 
-        # Upgrade any cached fetch('stats.json') inside index.html to use no-store cache busting
+        # Upgrade any cached fetch('stats.json...') inside index.html to use live GitHub Raw + no-store cache busting
         updated_html = re.sub(
-            r"fetch\(\s*['\"]stats\.json['\"]\s*\)",
-            "fetch('stats.json?t=' + Date.now(), { cache: 'no-store' })",
+            r"fetch\(\s*['\"]/?stats\.json(?:\?[^'\"]*)?['\"]\s*(?:,\s*\{[^}]*\})?\s*\)",
+            f"fetch('https://raw.githubusercontent.com/{GITHUB_REPO}/main/stats.json?t=' + Date.now(), {{ cache: 'no-store' }})",
             updated_html
         )
 
