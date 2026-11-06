@@ -92,7 +92,7 @@
     "1487227892340621384": {
         "name": "KnuckleUpFoo",
         "wins": 0,
-        "losses": 3,
+        "losses": 4,
         "kos": 0,
         "verified": true,
         "draws": 0,
@@ -1078,7 +1078,7 @@
         ],
         "channel_id": 1565566398137114786,
         "message_id": 1567348042917609534,
-        "updated_at": "2026-11-05 09:17 PM CST",
+        "updated_at": "2026-11-05 09:18 PM CST",
         " entrant_names": {}
     }
 }
