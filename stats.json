@@ -962,6 +962,15 @@
         "golden_tickets": 0,
         "verified": true
     },
+    "1527537783604776990": {
+        "name": "\u26b0\ud83d\udc10the \ud83c\udf83UNDERTAKER.I.P\u26b1\ud83e\udea6",
+        "wins": 0,
+        "losses": 0,
+        "draws": 0,
+        "kos": 0,
+        "golden_tickets": 0,
+        "verified": true
+    },
     "_tournament": {
         "active": false,
         "status": "registration",
@@ -1019,8 +1028,8 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-07 12:58:06 PM CST"
+        "updated_at": "2026-11-07 04:02:48 PM CST"
     },
-    "_last_synced": "2026-11-07T12:58:06.249952-06:00",
+    "_last_synced": "2026-11-07T16:02:48.121061-06:00",
     "video_archive": []
 }
