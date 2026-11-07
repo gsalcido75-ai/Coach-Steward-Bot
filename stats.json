@@ -91,9 +91,9 @@
     },
     "1487227892340621384": {
         "name": "KnuckleUpFoo",
-        "wins": 2,
+        "wins": 3,
         "losses": 5,
-        "kos": 2,
+        "kos": 3,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0
@@ -704,7 +704,7 @@
     "1279476207603290197": {
         "name": "Clone_Geek",
         "wins": 3,
-        "losses": 9,
+        "losses": 10,
         "draws": 0,
         "kos": 3,
         "golden_tickets": 0,
@@ -1069,8 +1069,8 @@
         ],
         "channel_id": 1565566398137114786,
         "message_id": 1567348042917609534,
-        "updated_at": "2026-11-06 06:30:49 PM CST",
+        "updated_at": "2026-11-06 06:32:07 PM CST",
         " entrant_names": {}
     },
-    "_last_synced": "2026-11-06T18:30:49.891782-06:00"
+    "_last_synced": "2026-11-06T18:32:07.060391-06:00"
 }
