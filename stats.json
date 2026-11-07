@@ -93,7 +93,7 @@
         "name": "KnuckleUpFoo",
         "wins": 2,
         "losses": 5,
-        "kos": 1,
+        "kos": 2,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0
@@ -1069,8 +1069,8 @@
         ],
         "channel_id": 1565566398137114786,
         "message_id": 1567348042917609534,
-        "updated_at": "2026-11-06 06:13:12 PM CST",
+        "updated_at": "2026-11-06 06:18:20 PM CST",
         " entrant_names": {}
     },
-    "_last_synced": "2026-11-06T18:13:12.947507-06:00"
+    "_last_synced": "2026-11-06T18:18:20.945404-06:00"
 }
