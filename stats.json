@@ -1044,12 +1044,5 @@
         " entrant_names": {}
     },
     "_last_synced": "2026-11-07T00:11:05.484399-06:00",
-    "video_archive": [
-        {
-            "title": "CGP",
-            "embed_url": "-",
-            "date": "2026-11-07",
-            "platform": "Neighbor"
-        }
-    ]
+    "video_archive": []
 }
