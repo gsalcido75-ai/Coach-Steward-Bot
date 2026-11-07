@@ -533,6 +533,18 @@
             <div class="bracket-columns" id="wire-grid"></div>
         </section>
 
+        <!-- AUTOMATED RENDERED PROMOS & VIDEO ARCHIVE VAULT -->
+        <section class="panel" id="cgp-video-archive">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="tag-red">REEL VAULT</span>
+                    <span>Official Rendered Promos & Highlights</span>
+                </div>
+                <span class="status-badge" id="cgp-archive-status">Syncing Vault...</span>
+            </div>
+            <div id="cgp-video-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px;"></div>
+        </section>
+
         <!-- TWO-COLUMN DASHBOARD -->
         <div class="dashboard-grid">
 
@@ -721,10 +733,34 @@
             if (isFetching) return;
             isFetching = true;
             try {
-                const res = await fetch('https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/stats.json?t=' + Date.now(), { cache: 'no-store' });
+                const bust = Date.now();
+                const res = await fetch('https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/stats.json?t=' + bust, { cache: 'no-store' });
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const data = await res.json();
 
+                // --- 1. RENDERED PROMOS VIDEO ARCHIVE SYNC ---
+                const archive = data.video_archive || [];
+                const gridEl = document.getElementById('cgp-video-grid');
+                const statusEl = document.getElementById('cgp-archive-status');
+                statusEl.textContent = archive.length + ' Active Reel(s)';
+                if (archive.length === 0) {
+                    gridEl.innerHTML = '<p style="color:#b8c0d4;grid-column:1/-1;text-align:center;padding:20px;">No rendered promos currently in the output folder. Run promos.py to deploy reels!</p>';
+                } else {
+                    gridEl.innerHTML = archive.map(vid => `
+                        <div style="background:#1d2233;border:1px solid #2e344d;border-radius:8px;overflow:hidden;padding:12px;">
+                            <div style="position:relative;padding-bottom:177.8%;height:0;background:#000;border-radius:6px;overflow:hidden;">
+                                <video controls preload="metadata" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;">
+                                    <source src="OUTPUT/${vid.filename}" type="video/mp4">
+                                    Your browser does not support video playback.
+                                </video>
+                            </div>
+                            <h3 style="font-size:15px;color:#ffd700;margin:12px 0 6px 0;">${vid.title}</h3>
+                            <p style="font-size:12px;color:#9aa4bf;margin:0;">📅 ${vid.date} &nbsp;|&nbsp; 🎯 ${vid.platform}</p>
+                        </div>
+                    `).join('');
+                }
+
+                // --- 2. LEADERBOARD SYNC ---
                 allFighters = Object.entries(data)
                     .filter(([k, v]) => !k.startsWith('_') && v && typeof v === 'object')
                     .map(([k, v]) => ({
@@ -739,7 +775,7 @@
                 renderLeaderboard();
                 document.getElementById('lb-status-text').textContent = '🟢 LIVE // Updated ' + new Date().toLocaleTimeString();
 
-                // --- AUTOMATED SOUNDCLOUD STATS BINDER ---
+                // --- 3. SOUNDCLOUD STATS BINDER ---
                 const sc = data._soundcloud;
                 if (sc && sc.total_plays) {
                     const scText = sc.total_plays + ' Plays (Goal: ' + (sc.goal || '500K') + ')';
@@ -749,12 +785,13 @@
                     if (badgeSc) badgeSc.textContent = '🎵 ' + scText;
                 }
 
+                // --- 4. ESPN TOURNAMENT WIRE SYNC ---
                 const t = data._tournament;
                 const titleEl = document.getElementById('wire-title');
-                const statusEl = document.getElementById('wire-status');
+                const tWireStatusEl = document.getElementById('wire-status');
                 const metaEl = document.getElementById('wire-meta');
                 const entrantsEl = document.getElementById('wire-entrants');
-                const gridEl = document.getElementById('wire-grid');
+                const gridWireEl = document.getElementById('wire-grid');
                 const tickerEl = document.getElementById('ticker-tourney');
 
                 const resolveFighter = (uid, seedIdx) => {
@@ -790,7 +827,7 @@
                     const count = t.entrants ? t.entrants.length : 0;
                     const tName = (t.title || '8-Man Championship').toUpperCase();
                     titleEl.textContent = tName;
-                    statusEl.textContent = t.status === 'completed' ? '👑 COMPLETED' : `🔥 STAGE: ${(t.status || 'REGISTRATION').toUpperCase()} (${count}/8)`;
+                    tWireStatusEl.textContent = t.status === 'completed' ? '👑 COMPLETED' : `🔥 STAGE: ${(t.status || 'REGISTRATION').toUpperCase()} (${count}/8)`;
                     tickerEl.textContent = `${tName} (${count}/8 Locked)`;
 
                     metaEl.innerHTML = `<strong>Tier:</strong> ${(t.tier || 'OPEN').toUpperCase()} &nbsp;|&nbsp; <strong>Seeds Locked:</strong> ${count}/8`;
@@ -816,17 +853,17 @@
                         </div>`;
                     };
 
-                    gridEl.innerHTML = `
+                    gridWireEl.innerHTML = `
                         <div><div class="col-title">Quarterfinals</div>${box('QF1', m.QF1)}${box('QF2', m.QF2)}${box('QF3', m.QF3)}${box('QF4', m.QF4)}</div>
                         <div><div class="col-title">Semifinals</div>${box('SF1', m.SF1)}${box('SF2', m.SF2)}</div>
                         <div><div class="col-title">Championship Final</div>${box('F1', m.F1)}</div>
                     `;
                 } else {
-                    statusEl.textContent = '🟢 OPEN GYM';
+                    tWireStatusEl.textContent = '🟢 OPEN GYM';
                     tickerEl.textContent = 'Open Sparring';
                     metaEl.textContent = 'Awaiting next 8-man bracket lock-in inside #coaches-corner.';
                     entrantsEl.innerHTML = '';
-                    gridEl.innerHTML = '';
+                    gridWireEl.innerHTML = '';
                 }
             } catch (e) {
                 document.getElementById('lb-status-text').textContent = '🔴 Feed offline — retrying...';
@@ -839,87 +876,5 @@
         setInterval(syncMainframe, 30000);
     })();
     </script>
-
-
-<!-- CGP_ESPN_TOURNAMENT_WIRE_START -->
-<section id="cgp-espn-tourney-wire" style="max-width:1100px;margin:28px auto;padding:22px;background:linear-gradient(145deg,#0d0d11,#161822);border:2px solid #d4af37;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.75);color:#f5f5f7;font-family:system-ui,-apple-system,sans-serif;">
-  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;border-bottom:2px solid #2b2f42;padding-bottom:12px;margin-bottom:16px;">
-    <div>
-      <span style="background:#e62429;color:#fff;font-weight:800;font-size:12px;padding:4px 10px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;">🥊 LIVE ESPN COMPUBOX TOURNAMENT WIRE</span>
-      <h2 id="cgp-tourney-title" style="margin:8px 0 0 0;font-size:24px;color:#ffd700;text-transform:uppercase;letter-spacing:0.5px;">CGP MAINFRAME GYM 8-MAN BRACKET</h2>
-    </div>
-    <div id="cgp-tourney-status-badge" style="background:#1f2437;border:1px solid #d4af37;padding:8px 14px;border-radius:8px;font-weight:700;font-size:14px;color:#00ff88;">
-      Scanning Mainframe Bracket...
-    </div>
-  </div>
-  <div id="cgp-tourney-meta" style="font-size:14px;color:#b8c0d4;margin-bottom:18px;"></div>
-  <div id="cgp-tourney-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;"></div>
-</section>
-<script>
-(async function loadCGPTourneyWire(){
-  async function fetchFreshStats() {
-    const bust = Date.now();
-    const urls = [
-      'https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/stats.json?t=' + bust,
-      'stats.json?t=' + bust
-    ];
-    for (const u of urls) {
-      try {
-        const r = await fetch(u, { cache: 'no-store' });
-        if (r.ok) return await r.json();
-      } catch (e) {}
-    }
-    return null;
-  }
-  try {
-    const data = await fetchFreshStats();
-    if (!data) return;
-    const t = data._tournament;
-    const titleEl = document.getElementById('cgp-tourney-title');
-    const badgeEl = document.getElementById('cgp-tourney-status-badge');
-    const metaEl = document.getElementById('cgp-tourney-meta');
-    const gridEl = document.getElementById('cgp-tourney-grid');
-    if (!t || (!t.active && (!t.entrants || t.entrants.length === 0) && !t.champion)) {
-      titleEl.textContent = 'CGP MAINFRAME GYM — OPEN GYM & VERIFIED SPARRING';
-      badgeEl.textContent = '🟢 STANDBY FOR NEXT 8-MAN BRACKET';
-      metaEl.textContent = 'All verified scorecards uploaded in #scorecard-submissions count toward official [W-L-D-K] rankings.';
-      gridEl.innerHTML = '';
-      return;
-    }
-    titleEl.textContent = '🏆 ' + (t.title || '8-MAN CHAMPIONSHIP BRACKET');
-    badgeEl.textContent = t.status === 'completed' ? '👑 TOURNAMENT COMPLETED' : ('🔥 STAGE: ' + (t.status || 'ACTIVE').toUpperCase());
-    const resolveName = (uid) => {
-      if (!uid) return 'TBD';
-      const rec = data[String(uid)];
-      if (rec && rec.name) return rec.name + ' [' + (rec.wins||0) + 'W-' + (rec.losses||0) + 'L-' + (rec.draws||0) + 'D-' + (rec.kos||0) + 'K]';
-      if (t.entrant_names && t.entrant_names[String(uid)]) return t.entrant_names[String(uid)];
-      return 'Fighter #' + uid;
-    };
-    metaEl.innerHTML = '<strong>Tier:</strong> ' + (t.tier || 'open').toUpperCase() + ' &nbsp;|&nbsp; <strong>Seeds Locked:</strong> ' + ((t.entrants||[]).length) + '/8' + (t.champion ? ' &nbsp;|&nbsp; 👑 <strong>Champion:</strong> ' + resolveName(t.champion) : '');
-    const m = t.matches || {};
-    const renderCard = (code, obj) => {
-      if (!obj) return '';
-      const p1 = resolveName(obj.p1);
-      const p2 = resolveName(obj.p2);
-      const w = obj.winner ? resolveName(obj.winner) : null;
-      return '<div style="background:#1d2233;border-left:4px solid ' + (w ? '#00ff88' : '#ffd700') + ';padding:10px 12px;border-radius:6px;margin-bottom:10px;">' +
-        '<div style="font-size:11px;color:#9aa4bf;font-weight:700;text-transform:uppercase;">' + code + ' — ' + (obj.label || '') + '</div>' +
-        '<div style="margin-top:6px;font-size:14px;">🔴 ' + p1 + '</div>' +
-        '<div style="margin-top:4px;font-size:14px;">🔵 ' + p2 + '</div>' +
-        (w ? '<div style="margin-top:6px;font-size:12px;color:#00ff88;font-weight:700;">✅ Winner: ' + w + '</div>' : '') +
-      '</div>';
-    };
-    gridEl.innerHTML =
-      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">QUARTERFINALS</h3>' +
-      renderCard('QF1', m.QF1) + renderCard('QF2', m.QF2) + renderCard('QF3', m.QF3) + renderCard('QF4', m.QF4) + '</div>' +
-      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">SEMIFINALS</h3>' +
-      renderCard('SF1', m.SF1) + renderCard('SF2', m.SF2) + '</div>' +
-      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">CHAMPIONSHIP FINALS</h3>' +
-      renderCard('F1', m.F1) + '</div>';
-  } catch (e) { console.warn('CGP Tourney Wire:', e); }
-})();
-</script>
-<!-- CGP_ESPN_TOURNAMENT_WIRE_END -->
-
 </body>
 </html>
