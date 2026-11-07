@@ -1031,12 +1031,5 @@
         "updated_at": "2026-11-07 04:02:48 PM CST"
     },
     "_last_synced": "2026-11-07T16:02:48.121061-06:00",
-    "video_archive": [
-        {
-            "title": "CGP SHORT Run It Back",
-            "embed_url": "https://youtube.com/shorts/s4qNlPZrFOM?feature=share",
-            "date": "2026-11-07",
-            "platform": "YouTube Shorts"
-        }
-    ]
+    "video_archive": []
 }
