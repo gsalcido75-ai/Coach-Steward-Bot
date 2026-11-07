@@ -285,6 +285,7 @@ COACH_PLAYBOOK_TEXT = (
     "• **Strict Tag Guard & AI Vision CompuBox:** Drop a fight screenshot in `#scorecard-submissions` and **you MUST `@tag` your opponent** (`@fighter`). If you don't tag who you fought, I block the scorecard! I read the image and caption (even if you lost or used slang) to award the true Winner/Loser and only advance tournament brackets if you two are actually paired in that bracket round!\n"
     "• **Live Online & Undisputed Matchmaker:** Need smoke? Tag me (`@Coach Steward find an opponent for @user`)—I scan who's online playing *Undisputed* and build a live Tale of the Tape!\n"
     "• **Auto-Generating 8-Man Tournament Brackets:** When the 8th fighter clicks **🥊 Lock In My Slot**, I automatically build the Quarterfinals ➔ Semifinals ➔ Finals matchup tree and sync it to the website!\n"
+    "• **Reel Vault Embed Management:** Admins can use `!addreel` and `!removereel` to instantly sync YouTube Shorts & TikTok promo embeds to the website without hitting file size limits!\n"
     "• **3-Strike Corner Discipline:** Spamming or acting out gets 2 warnings—Strike 3 is an automatic 30-minute corner timeout!\n\n"
     "### 📋 FIGHTER COMMAND PLAYBOOK:\n"
     "• **`!guide`** *(or `!commands` / `!helpme`)* — Pull up this official CGP Mainframe Gym playbook.\n"
@@ -297,13 +298,12 @@ COACH_PLAYBOOK_TEXT = (
     "• **`!callout @fighter [trash talk]`** — Call someone out with a live Tale of the Tape!\n"
     "• **`!fight @fighter1 @fighter2`** — Compare two fighters head-to-head.\n"
     "• **`!bracketstatus`** — View the live 8-man tournament bracket, seeds, and active matchups.\n"
-    "• **`!advance @winner [@loser]`** — *(Commissioner)* Manually advance a fighter in the active tournament bracket.\n"
-    "• **`!fixtourney [slot] [@p1] [@p2]`** — *(Commissioner)* Rollback false advances or reset a specific bracket slot (`QF1`–`F1`).\n"
-    "• **`!swap @inactive @replacement`** — *(Commissioner)* Swap an unresponsive fighter out of the active tournament bracket.\n"
+    "• **`!addreel "Title" "EmbedURL" [Platform]`** — *(Admin)* Add a YouTube/TikTok promo embed to the website.\n"
+    "• **`!removereel <index>`** — *(Admin)* Remove a promo reel from the website archive.\n"
     "• **`!ticket [check | give | use] [@fighter]`** — Check or manage Golden Ticket ($20 Entry) credits.\n"
     "• **`!tracks`** — Pull up the full CGP SoundCloud catalog.\n"
     "• **`!sfx <bell | horn | ko | towel | crowd>`** — Trigger the ringside G9 Soundboard!\n\n"
-    "👑 **Commissioner Commands:** `!initboard`, `!resetall`, `!verify @user <W> <L> <D> <KO>`, `!fixtourney`, `!swap @out @in`, `!advance @winner`, `!closebracket`, `!ticket give @user`, `!sweep <#>`, `!timeout @user`"
+    "👑 **Commissioner Commands:** `!initboard`, `!resetall`, `!verify @user <W> <L> <D> <KO>`, `!fixtourney`, `!swap @out @in`, `!advance @winner`, `!closebracket`, `!ticket give @user`, `!sweep <#>`, `!timeout @user`, `!addreel`, `!removereel`"
 )
 
 # ================= NON-REPEATING SHUFFLE DECKS =================
@@ -381,7 +381,7 @@ MIDNIGHT_MESSAGES = [
 ]
 
 BOOT_MESSAGES = [
-    "🎙️ **Coach Steward:** Just stepped into `#coaches-corner` fresh out of the CGP Mainframe Gym sauna. Strict Tag-Guard Scorecard Scanner, Slang/Loss Parser, Live Undisputed Matchmaker & Instant Website Sync Engine are locked and loaded!",
+    "🎙️ **Coach Steward:** Just stepped into `#coaches-corner` fresh out of the CGP Mainframe Gym sauna. Strict Tag-Guard Scorecard Scanner, Slang/Loss Parser, Live Undisputed Matchmaker & YouTube/TikTok Embed Vault are locked and loaded!",
     "🎙️ **Coach Steward:** Booted up and pacing `#coaches-corner`. Remember: drop your post-fight screenshots in `#scorecard-submissions` and `@tag` your opponent so I can auto-update records and advance active tournament brackets!",
     "🎙️ **Coach Steward:** CGP Mainframe Gym systems online. Music is pumping in `#-music-channel-`, history is dropping in `#the-elite-feed`, and the ring is open!",
     "🎙️ **Coach Steward:** Fresh coffee poured, pads are mitts-up in the CGP Mainframe Gym. Let's see who's online and training in here today!"
@@ -951,60 +951,23 @@ async def push_stats_to_github() -> bool:
                 await asyncio.sleep(0.8)
     return False
 
-# ================= AUTOMATED OUTPUT FOLDER ARCHIVE SYNC =================
-async def sync_output_videos_to_stats():
-    """
-    Scans the local OUTPUT folder for rendered MP4 promo reels 
-    and updates the video_archive array in stats.json automatically.
-    """
-    output_dir = "OUTPUT"
-    if not os.path.exists(output_dir):
-        return
-
-    rendered_files = [f for f in os.listdir(output_dir) if f.lower().endswith(".mp4")]
-    
-    file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
-    data = {}
-    if os.path.exists(file_path):
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except Exception:
-            pass
-
-    current_archive = []
-    for fname in rendered_files:
-        clean_title = fname.replace("CGP_", "").replace(".mp4", "").replace("_", " ").title()
-        current_archive.append({
-            "title": f"CGP Promo — {clean_title}",
-            "filename": fname,
-            "date": datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d"),
-            "platform": "TikTok & YouTube Shorts"
-        })
-
-    data["video_archive"] = current_archive
-
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4)
-
-    await push_stats_to_github()
-    print(f"[✓] Output Folder Synced: {len(rendered_files)} active promo(s) live on Vercel hub.")
-
-@tasks.loop(minutes=5)
-async def auto_output_folder_watcher():
-    """Background task that runs every 5 minutes to sync /OUTPUT folder changes to Vercel."""
-    await bot.wait_until_ready()
-    try:
-        await sync_output_videos_to_stats()
-    except Exception as e:
-        print(f"[!] Output folder watcher notice: {e}")
-
 def write_records_to_disk():
     sync_tournament_names()
     file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
     export_payload = {str(k): v for k, v in FIGHTER_RECORDS.items()}
     export_payload["_tournament"] = ACTIVE_TOURNAMENT
     export_payload["_last_synced"] = datetime.datetime.now(CENTRAL_TZ).isoformat()
+    
+    # Preserve existing video_archive if present
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                existing_data = json.load(f)
+                if "video_archive" in existing_data:
+                    export_payload["video_archive"] = existing_data["video_archive"]
+        except Exception:
+            pass
+
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(export_payload, f, indent=4)
 
@@ -2143,8 +2106,6 @@ async def on_ready():
         daily_morning_call.start()
     if not daily_midnight_call.is_running():
         daily_midnight_call.start()
-    if not auto_output_folder_watcher.is_running():
-        auto_output_folder_watcher.start()
 
     asyncio.create_task(rebrand_webpage_on_github())
 
@@ -2574,7 +2535,7 @@ async def on_message(message):
             full_ai_prompt = (
                 f"RECENT CHANNEL CONVERSATION:\n{recent_chat}\n\n"
                 f"PERSON TALKING TO YOU NOW: {role_note}\n"
-                f"THEIR EXACT MESSAGE (may contain typos, slang, or shorthand—interpret their true intent charitably!): \"{clean_prompt}\"\n\n"
+                f"THEY EXACT MESSAGE (may contain typos, slang, or shorthand—interpret their true intent charitably!): \"{clean_prompt}\"\n\n"
                 "INSTRUCTIONS FOR YOUR REPLY:\n"
                 "1. Respond directly and specifically to what they meant, even if their spelling or grammar is messy!\n"
                 "2. If they mention music or try to test you, flex Clone Geek Productions on SoundCloud and the CGP Mainframe Gym!\n"
@@ -2731,6 +2692,71 @@ async def send_tracks_menu(channel):
         track_desc += f"🎵 **[{t['title']}]({t['url']})**\n"
     embed = discord.Embed(title="🎧 CGP MAINFRAME GYM SOUNDCLOUD CATALOG 🎧", description=track_desc, color=discord.Color.red(), url=DEFAULT_SOUNDCLOUD_URL)
     await channel.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+
+# ================= REEL VAULT EMBED ADMIN COMMANDS =================
+@bot.command(name="addreel")
+@commands.has_permissions(administrator=True)
+async def addreel(ctx, title: str, embed_url: str, platform: str = "YouTube Shorts"):
+    """
+    Adds a new YouTube/TikTok promo embed link to the website Reel Vault and syncs stats.json.
+    Usage: !addreel "Clone Story Promo" https://www.youtube.com/embed/XYZ123 "YouTube Shorts"
+    """
+    file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
+    data = {}
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception:
+            pass
+
+    if "video_archive" not in data:
+        data["video_archive"] = []
+
+    central_time = datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d")
+    new_reel = {
+        "title": title,
+        "embed_url": embed_url,
+        "date": central_time,
+        "platform": platform
+    }
+    
+    data["video_archive"].insert(0, new_reel)
+    
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4)
+
+    await push_stats_to_github()
+    await ctx.send(f"✅ **Reel Added & Synced!** `{title}` is now live in your website Reel Vault.")
+
+@bot.command(name="removereel")
+@commands.has_permissions(administrator=True)
+async def removereel(ctx, index: int):
+    """
+    Removes a promo reel from the website archive by its list number (1-based).
+    Usage: !removereel 1
+    """
+    file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
+    data = {}
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception:
+            pass
+
+    archive = data.get("video_archive", [])
+    if 0 <= index - 1 < len(archive):
+        removed = archive.pop(index - 1)
+        data["video_archive"] = archive
+        
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+
+        await push_stats_to_github()
+        await ctx.send(f"🗑️ **Reel Removed & Synced:** `{removed['title']}` has been taken off the website archive.")
+    else:
+        await ctx.send(f"❌ Invalid index! Check current reels on your website and try again.")
 
 @bot.command(aliases=["howto", "playbook", "commands", "manual", "about", "whoareyou", "helpme"])
 async def guide(ctx):
