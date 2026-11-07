@@ -461,10 +461,6 @@ def get_music_channel(guild):
 
 # ================= SMART FIGHT SLANG, TYPO & LOSS/WIN/KO PARSER =================
 def parse_fight_caption_intent(caption: str, uploader_id: int = None, opponent_id: int = None) -> dict:
-    """
-    Broadly understands street slang, typos, broken grammar, and explicit loss/win/draw/KO statements.
-    Returns dict: {"outcome": "win"|"loss"|"draw"|None, "is_ko": bool}
-    """
     t = caption.lower().strip()
     t_no_mentions = re.sub(r'<@!?\d+>', ' ', t)
     tokens = re.findall(r"\b[a-z']+\b", t_no_mentions)
@@ -608,11 +604,6 @@ ACTIVE_TOURNAMENT = get_default_tournament_state()
 FIGHTER_RECORDS = {}
 
 def deduplicate_fighter_records(preferred_uid: int = None, preferred_name: str = None):
-    """
-    Ensures no two entries in FIGHTER_RECORDS share the same cleaned fighter name
-    (which causes the website leaderboard to display stale duplicate rows).
-    Also locks Creator Clone_Geek's record to 3W-5L-0D-3K if it was stuck at 3W-3L.
-    """
     if CREATOR_ID in FIGHTER_RECORDS:
         c_rec = FIGHTER_RECORDS[CREATOR_ID]
         c_rec["name"] = "Clone_Geek"
@@ -663,7 +654,6 @@ def sync_tournament_names():
     ACTIVE_TOURNAMENT["updated_at"] = datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d %I:%M:%S %p CST")
 
 def recalculate_tournament_stage():
-    """Ensures ACTIVE_TOURNAMENT['status'] accurately reflects which rounds are finished."""
     if not ACTIVE_TOURNAMENT.get("active"):
         return
     entrants = ACTIVE_TOURNAMENT.get("entrants", [])
@@ -681,10 +671,6 @@ def recalculate_tournament_stage():
         ACTIVE_TOURNAMENT["status"] = "quarterfinals"
 
 def sanitize_turbo_false_advance() -> bool:
-    """
-    Auto-repairs the exact bug where TURBO was falsely advanced in QF2 (vs Hymas)
-    and SF1 (vs Strive) into F1 without fighting them.
-    """
     matches = ACTIVE_TOURNAMENT.get("matches", {})
     if not matches:
         return False
@@ -737,11 +723,6 @@ def initialize_bracket_matchups():
     sync_tournament_names()
 
 def advance_tournament_match(winner_id: int, loser_id: int = None, is_ko: bool = False, allow_single_admin_override: bool = False):
-    """
-    STRICT BRACKET VERIFICATION:
-    For scorecard uploads, BOTH winner_id AND loser_id must match the exact two fighters
-    in an active, undecided bracket slot.
-    """
     if not ACTIVE_TOURNAMENT.get("active"):
         return False, ""
     matches = ACTIVE_TOURNAMENT.get("matches", {})
@@ -820,10 +801,6 @@ def advance_tournament_match(winner_id: int, loser_id: int = None, is_ko: bool =
     return True, summary
 
 def rollback_bracket_slot(slot_key: str, new_p1: int = None, new_p2: int = None) -> str:
-    """
-    Clears the winner of `slot_key` and cascades the reset to any downstream Semifinal/Final slot
-    where that false winner was placed. Optionally sets `new_p1` and `new_p2`.
-    """
     slot_key = slot_key.upper().strip()
     matches = ACTIVE_TOURNAMENT.get("matches", {})
     if slot_key not in matches:
@@ -877,9 +854,6 @@ def rollback_bracket_slot(slot_key: str, new_p1: int = None, new_p2: int = None)
     return f"✅ **Bracket Slot `{slot_key}` Rolled Back & Downstream Falsified Advances Cleared!**"
 
 def swap_fighter_in_tournament(old_uid: int, new_uid: int, new_base_name: str) -> tuple:
-    """
-    Swaps an unresponsive fighter (`old_uid`) with `new_uid` across `entrants` and active undecided `matches`.
-    """
     old_u = int(old_uid)
     new_u = int(new_uid)
     entrants = [int(x) for x in ACTIVE_TOURNAMENT.get("entrants", [])]
@@ -923,10 +897,6 @@ def swap_fighter_in_tournament(old_uid: int, new_uid: int, new_base_name: str) -
 
 # ================= GUARANTEED GITHUB & VERCEL LIVE SYNC ENGINE =================
 async def push_stats_to_github() -> bool:
-    """
-    Serializes pushes with `github_push_lock` and updates stats.json on GitHub 
-    without triggering any Render build loops (since Auto-Deploy is disabled).
-    """
     if not GITHUB_TOKEN or not GITHUB_REPO:
         print("[!] GITHUB_TOKEN or GITHUB_REPO missing—cannot push stats.json to GitHub.")
         return False
@@ -981,6 +951,54 @@ async def push_stats_to_github() -> bool:
                 await asyncio.sleep(0.8)
     return False
 
+# ================= AUTOMATED OUTPUT FOLDER ARCHIVE SYNC =================
+async def sync_output_videos_to_stats():
+    """
+    Scans the local OUTPUT folder for rendered MP4 promo reels 
+    and updates the video_archive array in stats.json automatically.
+    """
+    output_dir = "OUTPUT"
+    if not os.path.exists(output_dir):
+        return
+
+    rendered_files = [f for f in os.listdir(output_dir) if f.lower().endswith(".mp4")]
+    
+    file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
+    data = {}
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception:
+            pass
+
+    current_archive = []
+    for fname in rendered_files:
+        clean_title = fname.replace("CGP_", "").replace(".mp4", "").replace("_", " ").title()
+        current_archive.append({
+            "title": f"CGP Promo — {clean_title}",
+            "filename": fname,
+            "date": datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d"),
+            "platform": "TikTok & YouTube Shorts"
+        })
+
+    data["video_archive"] = current_archive
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4)
+
+    await push_stats_to_github()
+    print(f"[✓] Output Folder Synced: {len(rendered_files)} active promo(s) live on Vercel hub.")
+
+@tasks.loop(minutes=5)
+async def auto_output_folder_watcher():
+    """Background task that runs every 5 minutes to sync /OUTPUT folder changes to Vercel."""
+    await bot.wait_until_ready()
+    try:
+        await sync_output_videos_to_stats()
+    except Exception as e:
+        print(f"[!] Output folder watcher notice: {e}")
+
 def write_records_to_disk():
     sync_tournament_names()
     file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
@@ -1002,7 +1020,6 @@ def save_records():
         print(f"[!] Error saving records: {e}")
 
 async def save_and_sync_records() -> bool:
-    """Writes stats.json to disk and awaits the live GitHub/Vercel push immediately."""
     try:
         write_records_to_disk()
         return await push_stats_to_github()
@@ -1788,10 +1805,6 @@ async def execute_roster_sync_and_announce(guild: discord.Guild, origin_channel:
 
 # ================= AI VISION SCORECARD & AUTOMATIC RECORD + BRACKET UPDATER =================
 async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str, uploader_name: str, caption: str = "", opponent_name: str = "") -> tuple:
-    """
-    Returns (report_text: str, vision_outcome: str|None, vision_ko: bool)
-    where vision_outcome is 'win' (uploader won), 'loss' (uploader lost / opponent won), or 'draw'.
-    """
     global last_ai_call_time
     vision_prompt = (
         f"You are Coach Steward, the legendary Hall of Fame HBO/ESPN ringside boxing analyst for the CGP Mainframe Gym. "
@@ -1863,7 +1876,6 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
     other_mentions = [m for m in message.mentions if m.id != bot.user.id and not m.bot and m.id != uploader.id]
     opponent = other_mentions[0] if other_mentions else None
 
-    # 🚨 STRICT RULE: BLOCK SCORECARDS WITHOUT A TAGGED OPPONENT IN #SCORECARD-SUBMISSIONS
     if require_tag and not opponent:
         try:
             await message.add_reaction("❌")
@@ -1946,7 +1958,6 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
             l_rec["losses"] = l_rec.get("losses", 0) + 1
             l_rec["verified"] = True
 
-        # --- STRICT TOURNAMENT BRACKET PROGRESSION CHECK ---
         if loser_member:
             tourney_advanced, tourney_summary = advance_tournament_match(
                 winner_id=winner_member.id,
@@ -1954,7 +1965,6 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
                 is_ko=is_ko
             )
 
-    # Await live GitHub & Vercel sync immediately!
     await save_and_sync_records()
 
     if tourney_advanced and message.guild:
@@ -2133,6 +2143,8 @@ async def on_ready():
         daily_morning_call.start()
     if not daily_midnight_call.is_running():
         daily_midnight_call.start()
+    if not auto_output_folder_watcher.is_running():
+        auto_output_folder_watcher.start()
 
     asyncio.create_task(rebrand_webpage_on_github())
 
@@ -2230,7 +2242,6 @@ async def on_message(message):
     if message.id in answered_messages:
         return
 
-    # ================= TOP PRIORITY: PROCESS COMMANDS FIRST =================
     if message.content.startswith("!") or message.content.startswith("/"):
         if message.content.startswith("/"):
             message.content = "!" + message.content[1:]
@@ -2242,7 +2253,6 @@ async def on_message(message):
     is_creator = (message.author.id == CREATOR_ID) or message.author.guild_permissions.administrator
     other_mentions = [m for m in message.mentions if m.id != bot.user.id and not m.bot]
 
-    # ================= TOP PRIORITY: NATURAL LANGUAGE COMMISSIONER BRACKET FIX & FIGHTER SWAP =================
     if is_creator and (bot.user in message.mentions or "coach" in msg or "override" in msg or "rollback" in msg):
         if any(w in msg for w in ["swap", "replace", "sub in", "substitute"]) and len(other_mentions) >= 2:
             answered_messages.add(message.id)
@@ -2271,7 +2281,6 @@ async def on_message(message):
             )
             return
 
-    # ================= TOP PRIORITY: ADMIN NATURAL LANGUAGE RECORD UPDATER =================
     if is_creator and any(w in msg for w in ["make", "set", "reflect", "update", "change", "put", "give", "record"]):
         text_without_bot = re.sub(rf'<@!?{bot.user.id}>', '', message.content)
         pattern = r'<@!?(\d+)>[^0-9<>]*?(\d{1,3})\s*(?:[-–to/]+|\s+)\s*(\d{1,3})(?:\s*(?:[-–to/]+|\s+)\s*(\d{1,3}))?(?:\s*(?:[-–to/]+|\s+)\s*(\d{1,3}))?'
@@ -2322,7 +2331,6 @@ async def on_message(message):
             )
             return
 
-    # --- 0. AUTONOMOUS SPAM-WIPING & 3-STRIKE AUTO-TIMEOUT (NON-ADMINS) ---
     if not is_creator:
         now_ts = asyncio.get_event_loop().time()
         history = user_spam_tracker[message.author.id]
@@ -2354,13 +2362,11 @@ async def on_message(message):
     is_mentioned = bot.user in message.mentions
     is_reply_to_bot = message.reference and message.reference.resolved and message.reference.resolved.author == bot.user
 
-    # --- 0.5 AUTOMATIC SCORECARD UPLOAD DETECTOR & STRICT TAG GUARD ---
     if "scorecard" in message.channel.name.lower() and message.attachments:
         answered_messages.add(message.id)
         await process_and_broadcast_scorecard(message, require_tag=True)
         return
 
-    # --- 1A. NATURAL LANGUAGE ADMIN BULK RESET / NICKNAME FIX ---
     if is_creator and (is_mentioned or "coach" in msg):
         if any(phrase in msg for phrase in ["reset everyone", "fix everyone", "sync everyone", "clean everyone", "reset all record", "reset the board", "fix the nick"]):
             answered_messages.add(message.id)
@@ -2368,7 +2374,6 @@ async def on_message(message):
             await execute_roster_sync_and_announce(message.guild, message.channel, force_zero=force_z)
             return
 
-    # --- 1B. NATURAL LANGUAGE ADMIN 8-MAN TOURNAMENT BRACKET LAUNCHER ---
     if is_creator and (is_mentioned or "coach" in msg):
         if any(phrase in msg for phrase in ["open bracket", "start bracket", "open tournament", "start a tournament", "recruit for tournament"]):
             answered_messages.add(message.id)
@@ -2402,7 +2407,6 @@ async def on_message(message):
                 await message.reply(f"🎙️ **Coach Steward:** Done, Boss! Opened and saved the **8-Man Interactive Bracket ({tier.upper()})** inside {target_ch.mention}!")
             return
 
-    # --- 2. AUTOMATIC ANTI-UFC / MMA INTERCEPTION ---
     if any(ufc_word in words_list for ufc_word in ["ufc", "mma", "octagon", "bellator"]):
         answered_messages.add(message.id)
         await message.reply(
@@ -2411,7 +2415,6 @@ async def on_message(message):
         )
         return
 
-    # --- 3. SMART EMOJI REACTIONS ---
     toxic_check = {"trash", "garbage", "suck", "sucks", "ass", "clown", "bitch", "hoe", "stfu", "fuck", "fck", "rigged", "scam", "loser", "bum", "ugly", "hate", "nasty", "gross", "die"}
     has_toxic = any(tw in words_list for tw in toxic_check)
     has_gif_or_img = (
@@ -2430,7 +2433,6 @@ async def on_message(message):
             except Exception:
                 pass
 
-    # --- 4. MUSIC VIDEO / AUDIO LINK INTERCEPTION ---
     media_link_domains = ["youtube.com", "youtu.be", "soundcloud.com", "spotify.com", "music.apple.com", "tiktok.com", "twitch.tv"]
     has_audio_video_file = any(att.filename.lower().endswith((".mp3", ".wav", ".mp4", ".mov")) for att in message.attachments)
     if (any(dom in msg for dom in media_link_domains) or has_audio_video_file) and not is_mentioned:
@@ -2450,7 +2452,6 @@ async def on_message(message):
             await message.reply(random.choice(MUSIC_LINK_INTERCEPTIONS), view=PromoButtons(track["url"]))
         return
 
-    # --- 5. AUTOMATIC MATCH RESULT, DRAW & KO CHAT TRACKER ---
     ko_keywords = ["knocked out", "ko'd", "kod", "stopped", "slept", "beat", "defeated", "won against", "fought to a draw", "split draw", "majority draw"]
     if any(kw in msg for kw in ko_keywords) and other_mentions and not is_mentioned:
         target_other = other_mentions[0]
@@ -2472,7 +2473,6 @@ async def on_message(message):
             )
             return
 
-    # --- 6. DIRECT TAG OR REPLY TO COACH STEWARD ---
     if is_mentioned or is_reply_to_bot:
         answered_messages.add(message.id)
         clean_prompt = message.content.replace(f"<@!{bot.user.id}>", "").replace(f"<@{bot.user.id}>", "").strip()
@@ -2590,7 +2590,6 @@ async def on_message(message):
             await message.reply(ai_reply, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
         return
 
-    # --- 7. TROLL & TOXICITY 3-STRIKE INTERCEPTION ---
     severe_troll_triggers = {"bitch", "hoe", "stfu", "scam", "rigged"}
     mild_troll_triggers = ["trash", "dog", "ass", "suck", "garbage", "easy", "mid", "clown", "fake", "fold", "cry", "wack"]
     if not is_creator and any(trigger in words_list for trigger in mild_troll_triggers + list(severe_troll_triggers)):
@@ -2639,7 +2638,6 @@ async def on_message(message):
         await send_tracks_menu(message.channel)
         return
 
-    # Quieter Organic Chat Chime (25-minute cooldown & 12% chance)
     boxing_chat_triggers = {"mindset", "stamina", "footwork", "jab", "counter", "hook", "uppercut", "undisputed", "round", "rounds", "combo", "ring", "training", "belt", "champion", "heavyweight", "welterweight", "spar", "scorecard"}
     now_t = asyncio.get_event_loop().time()
     if (set(words_list) & boxing_chat_triggers) and len(words_list) >= 6 and (now_t - last_organic_chime > 1500):
