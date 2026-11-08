@@ -442,70 +442,7 @@
         }
         .slot-row.win { color: var(--green); font-weight: 800; }
 
-        /* 6. SWIPEABLE REEL VAULT CAROUSEL */
-        .carousel-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .carousel-container {
-            display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-            width: 100%;
-            padding: 6px 4px 16px 4px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--neon-blue) var(--border-subtle);
-        }
-        .carousel-container::-webkit-scrollbar { height: 6px; }
-        .carousel-container::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
-
-        .carousel-card {
-            flex: 0 0 280px;
-            width: 280px;
-            scroll-snap-align: start;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            overflow: hidden;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: border-color 0.2s ease;
-        }
-        .carousel-card:hover { border-color: var(--neon-blue); }
-
-        .carousel-nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 10;
-            background: rgba(17, 21, 32, 0.85);
-            border: 1px solid var(--neon-blue);
-            color: var(--neon-blue);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 18px;
-            font-weight: 900;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
-            transition: all 0.2s ease;
-        }
-        .carousel-nav-btn:hover { background: var(--neon-blue); color: #000; }
-        .carousel-prev { left: -20px; }
-        .carousel-next { right: -20px; }
-        @media (max-width: 768px) {
-            .carousel-nav-btn { display: none; }
-        }
-
-        /* 7. HOLOGRAPHIC CGP NETWORK BUBBLE CAROUSEL */
+        /* 6. HOLOGRAPHIC SWIPEABLE CGP NETWORK BUBBLE CAROUSEL (NOW ABOVE REEL VAULT) */
         .network-carousel-wrapper {
             position: relative;
             display: flex;
@@ -596,6 +533,69 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-top: auto;
+        }
+
+        /* 7. SWIPEABLE REEL VAULT CAROUSEL (NOW BELOW NETWORK HUBS) */
+        .carousel-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .carousel-container {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            width: 100%;
+            padding: 6px 4px 16px 4px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-blue) var(--border-subtle);
+        }
+        .carousel-container::-webkit-scrollbar { height: 6px; }
+        .carousel-container::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+        .carousel-card {
+            flex: 0 0 280px;
+            width: 280px;
+            scroll-snap-align: start;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: border-color 0.2s ease;
+        }
+        .carousel-card:hover { border-color: var(--neon-blue); }
+
+        .carousel-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background: rgba(17, 21, 32, 0.85);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+            transition: all 0.2s ease;
+        }
+        .carousel-nav-btn:hover { background: var(--neon-blue); color: #000; }
+        .carousel-prev { left: -20px; }
+        .carousel-next { right: -20px; }
+        @media (max-width: 768px) {
+            .carousel-nav-btn { display: none; }
         }
 
         footer {
@@ -747,24 +747,7 @@
             <div class="bracket-columns" id="wire-grid"></div>
         </section>
 
-        <!-- SWIPEABLE MOBILE-OPTIMIZED REEL VAULT CAROUSEL -->
-        <section class="panel" id="cgp-video-archive">
-            <div class="panel-header">
-                <div class="panel-title">
-                    <span class="tag-red">REEL VAULT</span>
-                    <span>Official Rendered Promos & Highlights</span>
-                </div>
-                <span class="status-badge" id="cgp-archive-status">Syncing Vault...</span>
-            </div>
-            
-            <div class="carousel-wrapper">
-                <button class="carousel-nav-btn carousel-prev" onclick="scrollCarousel('cgp-video-grid', -1)">‹</button>
-                <div class="carousel-container" id="cgp-video-grid"></div>
-                <button class="carousel-nav-btn carousel-next" onclick="scrollCarousel('cgp-video-grid', 1)">›</button>
-            </div>
-        </section>
-
-        <!-- HOLOGRAPHIC SWIPEABLE CGP NETWORK BUBBLE CAROUSEL -->
+        <!-- HOLOGRAPHIC SWIPEABLE CGP NETWORK BUBBLE CAROUSEL (NOW ABOVE REEL VAULT) -->
         <section class="panel">
             <div class="panel-header" style="margin-bottom:12px;">
                 <div class="panel-title">
@@ -829,6 +812,23 @@
                 </div>
 
                 <button class="carousel-nav-btn carousel-next" onclick="scrollCarousel('network-bubble-track', 1)">›</button>
+            </div>
+        </section>
+
+        <!-- SWIPEABLE MOBILE-OPTIMIZED REEL VAULT CAROUSEL (NOW BELOW NETWORK HUBS) -->
+        <section class="panel" id="cgp-video-archive">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="tag-red">REEL VAULT</span>
+                    <span>Official Rendered Promos & Highlights</span>
+                </div>
+                <span class="status-badge" id="cgp-archive-status">Syncing Vault...</span>
+            </div>
+            
+            <div class="carousel-wrapper">
+                <button class="carousel-nav-btn carousel-prev" onclick="scrollCarousel('cgp-video-grid', -1)">‹</button>
+                <div class="carousel-container" id="cgp-video-grid"></div>
+                <button class="carousel-nav-btn carousel-next" onclick="scrollCarousel('cgp-video-grid', 1)">›</button>
             </div>
         </section>
 
