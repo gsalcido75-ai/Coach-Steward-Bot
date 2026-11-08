@@ -234,79 +234,7 @@
             text-transform: uppercase;
         }
 
-        /* 4. TOURNAMENT BRACKET WIRE */
-        .tourney-subbar {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            background: var(--bg-card);
-            padding: 12px 14px;
-            border-radius: 6px;
-            margin-bottom: 16px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        .entrants-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .seed-chip {
-            background: #0d111a;
-            border: 1px solid var(--border-subtle);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-        .seed-chip span { color: var(--gold); margin-right: 5px; }
-
-        .bracket-columns {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-        @media (max-width: 900px) {
-            .bracket-columns { grid-template-columns: 1fr; }
-        }
-        .col-title {
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--gold);
-            margin-bottom: 10px;
-            border-bottom: 1px solid var(--border-subtle);
-            padding-bottom: 6px;
-        }
-        .match-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-left: 3px solid var(--gold);
-            border-radius: 6px;
-            padding: 10px 12px;
-            margin-bottom: 10px;
-        }
-        .match-card.done { border-left-color: var(--green); }
-        .match-meta {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-        .slot-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            font-weight: 600;
-            padding: 3px 0;
-            color: var(--text-primary);
-        }
-        .slot-row.win { color: var(--green); font-weight: 800; }
-
-        /* 5. TWO-COLUMN DASHBOARD */
+        /* 4. TWO-COLUMN TOP DASHBOARD (LIVE BOARD & SOUND VAULT PROMINENT) */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1.25fr 1fr;
@@ -442,7 +370,142 @@
         }
         .btn-paypal { background: var(--gold); color: #000; }
 
-        /* 6. SOCIAL NETWORK BAR */
+        /* 5. TOURNAMENT BRACKET WIRE (NOW BELOW DASHBOARD) */
+        .tourney-subbar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: var(--bg-card);
+            padding: 12px 14px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .entrants-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .seed-chip {
+            background: #0d111a;
+            border: 1px solid var(--border-subtle);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .seed-chip span { color: var(--gold); margin-right: 5px; }
+
+        .bracket-columns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 900px) {
+            .bracket-columns { grid-template-columns: 1fr; }
+        }
+        .col-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold);
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 6px;
+        }
+        .match-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--gold);
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+        }
+        .match-card.done { border-left-color: var(--green); }
+        .match-meta {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .slot-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 3px 0;
+            color: var(--text-primary);
+        }
+        .slot-row.win { color: var(--green); font-weight: 800; }
+
+        /* 6. SWIPEABLE MOBILE-OPTIMIZED REEL VAULT CAROUSEL */
+        .carousel-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .carousel-container {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            width: 100%;
+            padding: 6px 4px 16px 4px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-blue) var(--border-subtle);
+        }
+        .carousel-container::-webkit-scrollbar { height: 6px; }
+        .carousel-container::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+        .carousel-card {
+            flex: 0 0 280px;
+            width: 280px;
+            scroll-snap-align: start;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: border-color 0.2s ease;
+        }
+        .carousel-card:hover { border-color: var(--neon-blue); }
+
+        .carousel-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background: rgba(17, 21, 32, 0.85);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+            transition: all 0.2s ease;
+        }
+        .carousel-nav-btn:hover { background: var(--neon-blue); color: #000; }
+        .carousel-prev { left: -20px; }
+        .carousel-next { right: -20px; }
+        @media (max-width: 768px) {
+            .carousel-nav-btn { display: none; } /* Hide arrows on touch screens, swipe naturally */
+        }
+
+        /* 7. SOCIAL NETWORK BAR */
         .social-strip {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -515,37 +578,7 @@
     <!-- 3. MAIN BROADCAST CONTAINER -->
     <div class="main-container">
 
-        <!-- LIVE ESPN COMPUBOX TOURNAMENT WIRE -->
-        <section class="panel" id="espn-tourney-wire">
-            <div class="panel-header">
-                <div class="panel-title">
-                    <span class="tag-red">LIVE WIRE</span>
-                    <span id="wire-title">8-MAN CHAMPIONSHIP BRACKET</span>
-                </div>
-                <span class="status-badge" id="wire-status">SYNCING...</span>
-            </div>
-
-            <div class="tourney-subbar">
-                <div id="wire-meta">Checking active seeds in Mainframe database...</div>
-                <div class="entrants-chips" id="wire-entrants"></div>
-            </div>
-
-            <div class="bracket-columns" id="wire-grid"></div>
-        </section>
-
-        <!-- EMBEDDED REEL VAULT (SMART RESPONSIVE RATIO) -->
-        <section class="panel" id="cgp-video-archive">
-            <div class="panel-header">
-                <div class="panel-title">
-                    <span class="tag-red">REEL VAULT</span>
-                    <span>Official Rendered Promos & Highlights</span>
-                </div>
-                <span class="status-badge" id="cgp-archive-status">Syncing Vault...</span>
-            </div>
-            <div id="cgp-video-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px;"></div>
-        </section>
-
-        <!-- TWO-COLUMN DASHBOARD -->
+        <!-- TWO-COLUMN TOP DASHBOARD: LEADERBOARD & SOUND VAULT (PROMINENT AT TOP) -->
         <div class="dashboard-grid">
 
             <!-- LEFT: LEADERBOARD -->
@@ -625,6 +658,41 @@
 
         </div>
 
+        <!-- TOURNAMENT BRACKET WIRE (NOW FOLLOWS THE DASHBOARD) -->
+        <section class="panel" id="espn-tourney-wire">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="tag-red">LIVE WIRE</span>
+                    <span id="wire-title">8-MAN CHAMPIONSHIP BRACKET</span>
+                </div>
+                <span class="status-badge" id="wire-status">SYNCING...</span>
+            </div>
+
+            <div class="tourney-subbar">
+                <div id="wire-meta">Checking active seeds in Mainframe database...</div>
+                <div class="entrants-chips" id="wire-entrants"></div>
+            </div>
+
+            <div class="bracket-columns" id="wire-grid"></div>
+        </section>
+
+        <!-- SWIPEABLE MOBILE-OPTIMIZED REEL VAULT CAROUSEL -->
+        <section class="panel" id="cgp-video-archive">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="tag-red">REEL VAULT</span>
+                    <span>Official Rendered Promos & Highlights</span>
+                </div>
+                <span class="status-badge" id="cgp-archive-status">Syncing Vault...</span>
+            </div>
+            
+            <div class="carousel-wrapper">
+                <button class="carousel-nav-btn carousel-prev" onclick="scrollCarousel(-1)">‹</button>
+                <div class="carousel-container" id="cgp-video-grid"></div>
+                <button class="carousel-nav-btn carousel-next" onclick="scrollCarousel(1)">›</button>
+            </div>
+        </section>
+
         <!-- 6. SOCIAL NETWORK BAR -->
         <section class="panel">
             <div class="panel-header" style="margin-bottom:12px;">
@@ -648,286 +716,213 @@
     </footer>
 
     <script>
-    (function () {
-        const logoImg = document.getElementById('cgp-brand-logo');
-        const logoPaths = [
-            'CGP.jpg', 'cgp.jpg', 'CGP.JPG', 'CGP.png', 'image.png',
-            'https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/CGP.jpg'
-        ];
-        let pathIdx = 0;
-        logoImg.onerror = function () {
-            pathIdx++;
-            if (pathIdx < logoPaths.length) {
-                logoImg.src = logoPaths[pathIdx];
-            } else {
-                logoImg.style.display = 'none';
+        // Global carousel scrolling helper for desktop arrows
+        function scrollCarousel(direction) {
+            const container = document.getElementById('cgp-video-grid');
+            if (container) {
+                const scrollAmount = 300 * direction;
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
             }
-        };
-
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const slot = document.getElementById('sc-player-slot');
-                if (slot) {
-                    slot.innerHTML = `<iframe width="100%" height="250" scrolling="no" frameborder="no" loading="lazy"
-                        style="border-radius:6px; border:1px solid var(--border-subtle);"
-                        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist&color=%23e61919&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
-                    </iframe>`;
-                }
-            }, 600);
-        });
-
-        let allFighters = [];
-        let filterActiveOnly = false;
-        let isFetching = false;
-
-        const toggleBtn = document.getElementById('toggle-active-btn');
-        toggleBtn.addEventListener('click', () => {
-            filterActiveOnly = !filterActiveOnly;
-            toggleBtn.textContent = filterActiveOnly ? 'Show All Registered Fighters' : 'Show Active Fighters Only';
-            renderLeaderboard();
-        });
-
-        function renderLeaderboard() {
-            const tbody = document.getElementById('lb-tbody');
-            const countEl = document.getElementById('lb-count-text');
-            const list = filterActiveOnly 
-                ? allFighters.filter(f => (f.wins + f.losses + f.kos) > 0)
-                : allFighters;
-
-            countEl.textContent = `Showing ${list.length} of ${allFighters.length} fighters`;
-
-            if (!list.length) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">No matching fighters found.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = list.map((f, i) => {
-                const total = f.wins + f.losses;
-                const pct = total ? Math.round((f.wins / total) * 100) + '%' : '-';
-                return `<tr class="${i === 0 ? 'rank-1' : ''}">
-                    <td>#${i + 1}</td>
-                    <td><strong>${f.name}</strong></td>
-                    <td class="num">${f.wins}</td>
-                    <td class="num">${f.losses}</td>
-                    <td class="num">${f.kos}</td>
-                    <td class="num">${pct}</td>
-                </tr>`;
-            }).join('');
         }
 
-        async function syncMainframe() {
-            if (isFetching) return;
-            isFetching = true;
-            try {
-                const bust = Date.now();
-                const res = await fetch('https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/stats.json?t=' + bust, { cache: 'no-store' });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-
-                // --- 1. EMBEDDED REEL VAULT SYNC (SMART RATIO DETECTOR) ---
-                const archive = data.video_archive || [];
-                const gridEl = document.getElementById('cgp-video-grid');
-                const statusEl = document.getElementById('cgp-archive-status');
-                statusEl.textContent = archive.length + ' Active Reel(s)';
-                if (archive.length === 0) {
-                    gridEl.innerHTML = '<p style="color:#b8c0d4;grid-column:1/-1;text-align:center;padding:20px;">No promo reels linked. Use !addreel in Discord to add YouTube/TikTok embeds!</p>';
+        (function () {
+            const logoImg = document.getElementById('cgp-brand-logo');
+            const logoPaths = [
+                'CGP.jpg', 'cgp.jpg', 'CGP.JPG', 'CGP.png', 'image.png',
+                'https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/CGP.jpg'
+            ];
+            let pathIdx = 0;
+            logoImg.onerror = function () {
+                pathIdx++;
+                if (pathIdx < logoPaths.length) {
+                    logoImg.src = logoPaths[pathIdx];
                 } else {
-                    gridEl.innerHTML = archive.map(vid => {
-                        const isVertical = vid.embed_url?.includes('shorts') || vid.platform === 'TikTok' || vid.platform === 'YouTube Shorts';
-                        const paddingRatio = isVertical ? '177.8%' : '56.25%'; // 9:16 for shorts, 16:9 for widescreen
-                        return `
-                        <div style="background:#1d2233;border:1px solid #2e344d;border-radius:8px;overflow:hidden;padding:12px;">
-                            <div style="position:relative;padding-bottom:${paddingRatio};height:0;background:#000;border-radius:6px;overflow:hidden;">
-                                <iframe src="${vid.embed_url}" title="${vid.title}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe>
-                            </div>
-                            <h3 style="font-size:15px;color:#ffd700;margin:12px 0 6px 0;">${vid.title}</h3>
-                            <p style="font-size:12px;color:#9aa4bf;margin:0;">📅 ${vid.date} &nbsp;|&nbsp; 🎯 ${vid.platform || 'YouTube'}</p>
-                        </div>
-                    `;
-                    }).join('');
+                    logoImg.style.display = 'none';
                 }
+            };
 
-                // --- 2. LEADERBOARD SYNC ---
-                allFighters = Object.entries(data)
-                    .filter(([k, v]) => !k.startsWith('_') && v && typeof v === 'object')
-                    .map(([k, v]) => ({
-                        id: k,
-                        name: v.name || k,
-                        wins: Number(v.wins ?? v.w ?? 0),
-                        losses: Number(v.losses ?? v.l ?? 0),
-                        kos: Number(v.kos ?? v.ko ?? 0)
-                    }))
-                    .sort((a, b) => b.wins - a.wins || b.kos - a.kos || a.losses - b.losses);
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    const slot = document.getElementById('sc-player-slot');
+                    if (slot) {
+                        slot.innerHTML = `<iframe width="100%" height="250" scrolling="no" frameborder="no" loading="lazy"
+                            style="border-radius:6px; border:1px solid var(--border-subtle);"
+                            src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist&color=%23e61919&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
+                        </iframe>`;
+                    }
+                }, 600);
+            });
 
+            let allFighters = [];
+            let filterActiveOnly = false;
+            let isFetching = false;
+
+            const toggleBtn = document.getElementById('toggle-active-btn');
+            toggleBtn.addEventListener('click', () => {
+                filterActiveOnly = !filterActiveOnly;
+                toggleBtn.textContent = filterActiveOnly ? 'Show All Registered Fighters' : 'Show Active Fighters Only';
                 renderLeaderboard();
-                document.getElementById('lb-status-text').textContent = '🟢 LIVE // Updated ' + new Date().toLocaleTimeString();
+            });
 
-                // --- 3. SOUNDCLOUD STATS BINDER ---
-                const sc = data._soundcloud;
-                if (sc && sc.total_plays) {
-                    const scText = sc.total_plays + ' Plays (Goal: ' + (sc.goal || '500K') + ')';
-                    const tickerSc = document.getElementById('ticker-soundcloud');
-                    if (tickerSc) tickerSc.textContent = scText;
-                    const badgeSc = document.getElementById('badge-soundcloud');
-                    if (badgeSc) badgeSc.textContent = '🎵 ' + scText;
+            function renderLeaderboard() {
+                const tbody = document.getElementById('lb-tbody');
+                const countEl = document.getElementById('lb-count-text');
+                const list = filterActiveOnly 
+                    ? allFighters.filter(f => (f.wins + f.losses + f.kos) > 0)
+                    : allFighters;
+
+                countEl.textContent = `Showing ${list.length} of ${allFighters.length} fighters`;
+
+                if (!list.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">No matching fighters found.</td></tr>';
+                    return;
                 }
 
-                // --- 4. ESPN TOURNAMENT WIRE SYNC ---
-                const t = data._tournament;
-                const titleEl = document.getElementById('wire-title');
-                const tWireStatusEl = document.getElementById('wire-status');
-                const metaEl = document.getElementById('wire-meta');
-                const entrantsEl = document.getElementById('wire-entrants');
-                const gridWireEl = document.getElementById('wire-grid');
-                const tickerEl = document.getElementById('ticker-tourney');
+                tbody.innerHTML = list.map((f, i) => {
+                    const total = f.wins + f.losses;
+                    const pct = total ? Math.round((f.wins / total) * 100) + '%' : '-';
+                    return `<tr class="${i === 0 ? 'rank-1' : ''}">
+                        <td>#${i + 1}</td>
+                        <td><strong>${f.name}</strong></td>
+                        <td class="num">${f.wins}</td>
+                        <td class="num">${f.losses}</td>
+                        <td class="num">${f.kos}</td>
+                        <td class="num">${pct}</td>
+                    </tr>`;
+                }).join('');
+            }
 
-                const resolveFighter = (uid) => {
-                    if (!uid) return '⏳ TBD';
-                    const sUid = String(uid);
-                    if (data[sUid] && data[sUid].name) {
-                        const r = data[sUid];
-                        return `${r.name} [${r.wins||0}W-${r.losses||0}L-${r.kos||0}K]`;
-                    }
-                    if (t && t.entrant_names && t.entrant_names[sUid]) {
-                        return t.entrant_names[sUid];
-                    }
-                    return 'Contender #' + sUid.slice(0, 6);
-                };
+            async function syncMainframe() {
+                if (isFetching) return;
+                isFetching = true;
+                try {
+                    const bust = Date.now();
+                    const res = await fetch('https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/stats.json?t=' + bust, { cache: 'no-store' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
 
-                if (t && (t.active || (t.entrants && t.entrants.length > 0) || t.champion)) {
-                    const count = t.entrants ? t.entrants.length : 0;
-                    const tName = (t.title || '8-Man Championship').toUpperCase();
-                    titleEl.textContent = tName;
-                    tWireStatusEl.textContent = t.status === 'completed' ? '👑 COMPLETED' : `🔥 STAGE: ${(t.status || 'REGISTRATION').toUpperCase()} (${count}/8)`;
-                    tickerEl.textContent = `${tName} (${count}/8 Locked)`;
-
-                    metaEl.innerHTML = `<strong>Tier:</strong> ${(t.tier || 'OPEN').toUpperCase()} &nbsp;|&nbsp; <strong>Seeds Locked:</strong> ${count}/8`;
-
-                    if (t.entrants && t.entrants.length) {
-                        entrantsEl.innerHTML = t.entrants.map((uid, idx) => 
-                            `<div class="seed-chip"><span>#${idx + 1}</span>${resolveFighter(uid)}</div>`
-                        ).join('');
+                    // --- 1. EMBEDDED REEL VAULT CAROUSEL SYNC (MOBILE-OPTIMIZED VERTICAL RATIO) ---
+                    const archive = data.video_archive || [];
+                    const gridEl = document.getElementById('cgp-video-grid');
+                    const statusEl = document.getElementById('cgp-archive-status');
+                    statusEl.textContent = archive.length + ' Active Reel(s)';
+                    if (archive.length === 0) {
+                        gridEl.innerHTML = '<p style="color:#b8c0d4;width:100%;text-align:center;padding:20px;">No promo reels linked. Use !addreel in Discord to add YouTube/TikTok embeds!</p>';
                     } else {
-                        entrantsEl.innerHTML = '';
+                        gridEl.innerHTML = archive.map(vid => {
+                            const isVertical = vid.embed_url?.includes('shorts') || vid.platform === 'TikTok' || vid.platform === 'YouTube Shorts';
+                            const paddingRatio = isVertical ? '177.8%' : '56.25%'; // Clean mobile vertical or widescreen ratio
+                            return `
+                            <div class="carousel-card">
+                                <div style="position:relative;padding-bottom:${paddingRatio};height:0;background:#000;border-radius:6px;overflow:hidden;">
+                                    <iframe src="${vid.embed_url}" title="${vid.title}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe>
+                                </div>
+                                <h3 style="font-size:13px;color:#ffd700;margin:10px 0 4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${vid.title}">${vid.title}</h3>
+                                <p style="font-size:11px;color:#9aa4bf;margin:0;">📅 ${vid.date} &nbsp;|&nbsp; 🎯 ${vid.platform || 'YouTube'}</p>
+                            </div>
+                            `;
+                        }).join('');
                     }
 
-                    const m = t.matches || {};
-                    const box = (code, obj) => {
-                        if (!obj) return '';
-                        const p1 = resolveFighter(obj.p1);
-                        const p2 = resolveFighter(obj.p2);
-                        const w = obj.winner;
-                        return `<div class="match-card ${w ? 'done' : ''}">
-                            <div class="match-meta">${code} — ${obj.label || ''}</div>
-                            <div class="slot-row ${w && w == obj.p1 ? 'win' : ''}"><span>🔴 ${p1}</span></div>
-                            <div class="slot-row ${w && w == obj.p2 ? 'win' : ''}"><span>🔵 ${p2}</span></div>
-                        </div>`;
+                    // --- 2. LEADERBOARD SYNC ---
+                    allFighters = Object.entries(data)
+                        .filter(([k, v]) => !k.startsWith('_') && v && typeof v === 'object')
+                        .map(([k, v]) => ({
+                            id: k,
+                            name: v.name || k,
+                            wins: Number(v.wins ?? v.w ?? 0),
+                            losses: Number(v.losses ?? v.l ?? 0),
+                            kos: Number(v.kos ?? v.ko ?? 0)
+                        }))
+                        .sort((a, b) => b.wins - a.wins || b.kos - a.kos || a.losses - b.losses);
+
+                    renderLeaderboard();
+                    document.getElementById('lb-status-text').textContent = '🟢 LIVE // Updated ' + new Date().toLocaleTimeString();
+
+                    // --- 3. SOUNDCLOUD STATS BINDER ---
+                    const sc = data._soundcloud;
+                    if (sc && sc.total_plays) {
+                        const scText = sc.total_plays + ' Plays (Goal: ' + (sc.goal || '500K') + ')';
+                        const tickerSc = document.getElementById('ticker-soundcloud');
+                        if (tickerSc) tickerSc.textContent = scText;
+                        const badgeSc = document.getElementById('badge-soundcloud');
+                        if (badgeSc) badgeSc.textContent = '🎵 ' + scText;
+                    }
+
+                    // --- 4. ESPN TOURNAMENT WIRE SYNC ---
+                    const t = data._tournament;
+                    const titleEl = document.getElementById('wire-title');
+                    const tWireStatusEl = document.getElementById('wire-status');
+                    const metaEl = document.getElementById('wire-meta');
+                    const entrantsEl = document.getElementById('wire-entrants');
+                    const gridWireEl = document.getElementById('wire-grid');
+                    const tickerEl = document.getElementById('ticker-tourney');
+
+                    const resolveFighter = (uid) => {
+                        if (!uid) return '⏳ TBD';
+                        const sUid = String(uid);
+                        if (data[sUid] && data[sUid].name) {
+                            const r = data[sUid];
+                            return `${r.name} [${r.wins||0}W-${r.losses||0}L-${r.kos||0}K]`;
+                        }
+                        if (t && t.entrant_names && t.entrant_names[sUid]) {
+                            return t.entrant_names[sUid];
+                        }
+                        return 'Contender #' + sUid.slice(0, 6);
                     };
 
-                    gridWireEl.innerHTML = `
-                        <div><div class="col-title">Quarterfinals</div>${box('QF1', m.QF1)}${box('QF2', m.QF2)}${box('QF3', m.QF3)}${box('QF4', m.QF4)}</div>
-                        <div><div class="col-title">Semifinals</div>${box('SF1', m.SF1)}${box('SF2', m.SF2)}</div>
-                        <div><div class="col-title">Championship Final</div>${box('F1', m.F1)}</div>
-                    `;
-                } else {
-                    tWireStatusEl.textContent = '🟢 OPEN GYM';
-                    tickerEl.textContent = 'Open Sparring';
-                    metaEl.textContent = 'Awaiting next 8-man bracket lock-in inside #coaches-corner.';
-                    entrantsEl.innerHTML = '';
-                    gridWireEl.innerHTML = '';
+                    if (t && (t.active || (t.entrants && t.entrants.length > 0) || t.champion)) {
+                        const count = t.entrants ? t.entrants.length : 0;
+                        const tName = (t.title || '8-Man Championship').toUpperCase();
+                        titleEl.textContent = tName;
+                        tWireStatusEl.textContent = t.status === 'completed' ? '👑 COMPLETED' : `🔥 STAGE: ${(t.status || 'REGISTRATION').toUpperCase()} (${count}/8)`;
+                        tickerEl.textContent = `${tName} (${count}/8 Locked)`;
+
+                        metaEl.innerHTML = `<strong>Tier:</strong> ${(t.tier || 'OPEN').toUpperCase()} &nbsp;|&nbsp; <strong>Seeds Locked:</strong> ${count}/8`;
+
+                        if (t.entrants && t.entrants.length) {
+                            entrantsEl.innerHTML = t.entrants.map((uid, idx) => 
+                                `<div class="seed-chip"><span>#${idx + 1}</span>${resolveFighter(uid)}</div>`
+                            ).join('');
+                        } else {
+                            entrantsEl.innerHTML = '';
+                        }
+
+                        const m = t.matches || {};
+                        const box = (code, obj) => {
+                            if (!obj) return '';
+                            const p1 = resolveFighter(obj.p1);
+                            const p2 = resolveFighter(obj.p2);
+                            const w = obj.winner;
+                            return `<div class="match-card ${w ? 'done' : ''}">
+                                <div class="match-meta">${code} — ${obj.label || ''}</div>
+                                <div class="slot-row ${w && w == obj.p1 ? 'win' : ''}"><span>🔴 ${p1}</span></div>
+                                <div class="slot-row ${w && w == obj.p2 ? 'win' : ''}"><span>🔵 ${p2}</span></div>
+                            </div>`;
+                        };
+
+                        gridWireEl.innerHTML = `
+                            <div><div class="col-title">Quarterfinals</div>${box('QF1', m.QF1)}${box('QF2', m.QF2)}${box('QF3', m.QF3)}${box('QF4', m.QF4)}</div>
+                            <div><div class="col-title">Semifinals</div>${box('SF1', m.SF1)}${box('SF2', m.SF2)}</div>
+                            <div><div class="col-title">Championship Final</div>${box('F1', m.F1)}</div>
+                        `;
+                    } else {
+                        tWireStatusEl.textContent = '🟢 OPEN GYM';
+                        tickerEl.textContent = 'Open Sparring';
+                        metaEl.textContent = 'Awaiting next 8-man bracket lock-in inside #coaches-corner.';
+                        entrantsEl.innerHTML = '';
+                        gridWireEl.innerHTML = '';
+                    }
+                } catch (e) {
+                    document.getElementById('lb-status-text').textContent = '🔴 Feed offline — retrying...';
+                } finally {
+                    isFetching = false;
                 }
-            } catch (e) {
-                document.getElementById('lb-status-text').textContent = '🔴 Feed offline — retrying...';
-            } finally {
-                isFetching = false;
             }
-        }
 
-        syncMainframe();
-        setInterval(syncMainframe, 30000);
-    })();
+            syncMainframe();
+            setInterval(syncMainframe, 30000);
+        })();
     </script>
-
-
-<!-- CGP_ESPN_TOURNAMENT_WIRE_START -->
-<section id="cgp-espn-tourney-wire" style="max-width:1100px;margin:28px auto;padding:22px;background:linear-gradient(145deg,#0d0d11,#161822);border:2px solid #d4af37;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.75);color:#f5f5f7;font-family:system-ui,-apple-system,sans-serif;">
-  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;border-bottom:2px solid #2b2f42;padding-bottom:12px;margin-bottom:16px;">
-    <div>
-      <span style="background:#e62429;color:#fff;font-weight:800;font-size:12px;padding:4px 10px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;">🥊 LIVE ESPN COMPUBOX TOURNAMENT WIRE</span>
-      <h2 id="cgp-tourney-title" style="margin:8px 0 0 0;font-size:24px;color:#ffd700;text-transform:uppercase;letter-spacing:0.5px;">CGP MAINFRAME GYM 8-MAN BRACKET</h2>
-    </div>
-    <div id="cgp-tourney-status-badge" style="background:#1f2437;border:1px solid #d4af37;padding:8px 14px;border-radius:8px;font-weight:700;font-size:14px;color:#00ff88;">
-      Scanning Mainframe Bracket...
-    </div>
-  </div>
-  <div id="cgp-tourney-meta" style="font-size:14px;color:#b8c0d4;margin-bottom:18px;"></div>
-  <div id="cgp-tourney-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;"></div>
-</section>
-<script>
-(async function loadCGPTourneyWire(){
-  async function fetchFreshStats() {
-    const bust = Date.now();
-    const urls = [
-      'https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/stats.json?t=' + bust,
-      'stats.json?t=' + bust
-    ];
-    for (const u of urls) {
-      try {
-        const r = await fetch(u, { cache: 'no-store' });
-        if (r.ok) return await r.json();
-      } catch (e) {}
-    }
-    return null;
-  }
-  try {
-    const data = await fetchFreshStats();
-    if (!data) return;
-    const t = data._tournament;
-    const titleEl = document.getElementById('cgp-tourney-title');
-    const badgeEl = document.getElementById('cgp-tourney-status-badge');
-    const metaEl = document.getElementById('cgp-tourney-meta');
-    const gridEl = document.getElementById('cgp-tourney-grid');
-    if (!t || (!t.active && (!t.entrants || t.entrants.length === 0) && !t.champion)) {
-      titleEl.textContent = 'CGP MAINFRAME GYM — OPEN GYM & VERIFIED SPARRING';
-      badgeEl.textContent = '🟢 STANDBY FOR NEXT 8-MAN BRACKET';
-      metaEl.textContent = 'All verified scorecards uploaded in #scorecard-submissions count toward official [W-L-D-K] rankings.';
-      gridEl.innerHTML = '';
-      return;
-    }
-    titleEl.textContent = '🏆 ' + (t.title || '8-MAN CHAMPIONSHIP BRACKET');
-    badgeEl.textContent = t.status === 'completed' ? '👑 TOURNAMENT COMPLETED' : ('🔥 STAGE: ' + (t.status || 'ACTIVE').toUpperCase());
-    const resolveName = (uid) => {
-      if (!uid) return 'TBD';
-      const rec = data[String(uid)];
-      if (rec && rec.name) return rec.name + ' [' + (rec.wins||0) + 'W-' + (rec.losses||0) + 'L-' + (rec.draws||0) + 'D-' + (rec.kos||0) + 'K]';
-      if (t.entrant_names && t.entrant_names[String(uid)]) return t.entrant_names[String(uid)];
-      return 'Fighter #' + uid;
-    };
-    metaEl.innerHTML = '<strong>Tier:</strong> ' + (t.tier || 'open').toUpperCase() + ' &nbsp;|&nbsp; <strong>Seeds Locked:</strong> ' + ((t.entrants||[]).length) + '/8' + (t.champion ? ' &nbsp;|&nbsp; 👑 <strong>Champion:</strong> ' + resolveName(t.champion) : '');
-    const m = t.matches || {};
-    const renderCard = (code, obj) => {
-      if (!obj) return '';
-      const p1 = resolveName(obj.p1);
-      const p2 = resolveName(obj.p2);
-      const w = obj.winner ? resolveName(obj.winner) : null;
-      return '<div style="background:#1d2233;border-left:4px solid ' + (w ? '#00ff88' : '#ffd700') + ';padding:10px 12px;border-radius:6px;margin-bottom:10px;">' +
-        '<div style="font-size:11px;color:#9aa4bf;font-weight:700;text-transform:uppercase;">' + code + ' — ' + (obj.label || '') + '</div>' +
-        '<div style="margin-top:6px;font-size:14px;">🔴 ' + p1 + '</div>' +
-        '<div style="margin-top:4px;font-size:14px;">🔵 ' + p2 + '</div>' +
-        (w ? '<div style="margin-top:6px;font-size:12px;color:#00ff88;font-weight:700;">✅ Winner: ' + w + '</div>' : '') +
-      '</div>';
-    };
-    gridEl.innerHTML =
-      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">QUARTERFINALS</h3>' +
-      renderCard('QF1', m.QF1) + renderCard('QF2', m.QF2) + renderCard('QF3', m.QF3) + renderCard('QF4', m.QF4) + '</div>' +
-      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">SEMIFINALS</h3>' +
-      renderCard('SF1', m.SF1) + renderCard('SF2', m.SF2) + '</div>' +
-      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">CHAMPIONSHIP FINALS</h3>' +
-      renderCard('F1', m.F1) + '</div>';
-  } catch (e) { console.warn('CGP Tourney Wire:', e); }
-})();
-</script>
-<!-- CGP_ESPN_TOURNAMENT_WIRE_END -->
-
 </body>
 </html>
