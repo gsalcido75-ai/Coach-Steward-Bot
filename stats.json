@@ -253,9 +253,9 @@
     },
     "1082406658875064400": {
         "name": "\ud81a\udd0d \ud835\udc74\ud835\udc69\ud835\udc6e \ud835\udc6a\ud835\udc93\ud835\udc86\ud835\udc98\ud835\udc86",
-        "wins": 2,
+        "wins": 3,
         "losses": 0,
-        "kos": 0,
+        "kos": 1,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0
@@ -659,7 +659,7 @@
     "1279476207603290197": {
         "name": "Clone_Geek",
         "wins": 3,
-        "losses": 13,
+        "losses": 14,
         "draws": 0,
         "kos": 3,
         "golden_tickets": 0,
@@ -1028,8 +1028,8 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-08 07:50:46 PM CST"
+        "updated_at": "2026-11-08 08:06:41 PM CST"
     },
-    "_last_synced": "2026-11-08T19:50:46.489666-06:00",
+    "_last_synced": "2026-11-08T20:06:41.784891-06:00",
     "video_archive": []
 }
