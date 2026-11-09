@@ -16,15 +16,27 @@ import discord
 from discord.ext import commands, tasks
 import google.generativeai as genai
 
+try:
+    import boto3
+except ImportError:
+    boto3 = None
+
 # ================= SAFE CLOUD CONFIGURATION =================
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "PASTE_TOKEN_IN_RENDER")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "PASTE_KEY_IN_RENDER")
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_REPO = os.environ.get("GITHUB_REPO", "gsalcido75-ai/Coach-Steward-Bot")
 
+# Cloudflare R2 Master Vault Configuration
+R2_ENDPOINT_URL = os.environ.get("R2_ENDPOINT_URL", "https://ac4c79353727b1d87e8825b88d716d64.r2.cloudflarestorage.com")
+R2_ACCESS_KEY_ID = os.environ.get("R2_ACCESS_KEY_ID", "")
+R2_SECRET_ACCESS_KEY = os.environ.get("R2_SECRET_ACCESS_KEY", "")
+R2_BUCKET_NAME = os.environ.get("R2_BUCKET_NAME", "cgpmastervault")
+R2_PUBLIC_URL = os.environ.get("R2_PUBLIC_URL", "").rstrip("/")
+
 CREATOR_ID = 1279476207603290197
 ANNOUNCEMENT_CHANNEL_ID = 1443473075315413004
-MAINFRAME_HUB_URL = "https://themainframe-blush.vercel.app/"
+MAINFRAME_HUB_URL = os.environ.get("MAINFRAME_HUB_URL", "https://themainframe-blush.vercel.app/")
 DEFAULT_SOUNDCLOUD_URL = "https://on.soundcloud.com/Qz1dzzj3Z6fmSGbRG0"
 DATA_FILE = "stats.json"
 CENTRAL_TZ = ZoneInfo("America/Chicago")
@@ -102,8 +114,10 @@ RANDOM_HYPE_QUOTES = [
     "🎙️ **Coach Steward:** Watch that power-punch spam! Any halfway decent counter-puncher in this gym will time that wind-up and put you to sleep!",
     "🎙️ **Coach Steward:** The road to 100,000 streams and undisputed gold runs right through this Discord. Tap into the SoundCloud catalog and keep the momentum rolling!",
     "🎙️ **Coach Steward:** Salute to the heavy hitters boosting the server! If you love what we're building in the **CGP Mainframe Gym**, dropping a Server Boost or supporting the Clone Geek channel helps us unlock bigger tourneys and upgrade the gym!",
-    "🎙️ **Coach Steward:** Everything in the **CGP Mainframe Gym** is built from pure grit by **Clone Geek Productions**. If you rock with the movement, share the Vercel hub, run up the SoundCloud streams, or boost the server when you can—every bit grows the family!",
-    "🎙️ **Coach Steward:** Whether you're chasing a **$20 Golden Ticket** in our 8-Man Invitationals or stepping into the **$160 Pay-to-Play Gauntlet**, keep your hands up and your scorecards verified!"
+    "🎙️ **Coach Steward:** Everything in the **CGP Mainframe Gym** is built from pure grit by **Clone Geek Productions**. If you rock with the movement, share the live hub, run up the SoundCloud streams, or boost the server when you can—every bit grows the family!",
+    "🎙️ **Coach Steward:** Whether you're chasing a **$20 Golden Ticket** in our 8-Man Invitationals or stepping into the **$160 Pay-to-Play Gauntlet**, keep your hands up and your scorecards verified!",
+    "🎙️ **Coach Steward:** Have y'all peeped the redesigned **CGP Mainframe Gym Hub & Master `.WAV` Storefront** yet?! Type `!store` to inspect the Cloudflare R2 vault and cop uncompressed studio masters and official CGP merch!",
+    "🎙️ **Coach Steward:** Real supporters don't just stream—they own the masters! Tap into the new CGP website store or type `!store` in chat to grab 24-bit `.wav` drops straight from the `cgpmastervault`!"
 ]
 
 ORGANIC_CHAT_INTERJECTIONS = [
@@ -113,17 +127,17 @@ ORGANIC_CHAT_INTERJECTIONS = [
     "🎙️ **Coach Steward:** Listen to y'all cooking up game plans! Put a **Clone Geek Productions** track on in the background while you lab those combinations!",
     "🎙️ **Coach Steward:** Let me drop my two cents from the corner: footwork and stamina control beat wild swinging ten times out of ten. Keep studying the craft!",
     "🎙️ **Coach Steward:** Y'all got the gym buzzing today! Who's stepping up to put their verified `[W-L-D-K]` record on the line next?",
-    "🎙️ **Coach Steward:** Love seeing the locker room active like this! Shoutout to everyone who boosts the server or streams **Clone Geek Productions**—y'all are the reason this gym keeps growing bigger every week!",
+    "🎙️ **Coach Steward:** Love seeing the locker room active like this! Shoutout to everyone who boosts the server, grabs master `.wav` drops from the store (`!store`), or streams **Clone Geek Productions**—y'all are the reason this gym keeps growing bigger every week!",
     "🎙️ **Coach Steward:** Real talk—if you aren't investing in the body in Rounds 1 through 4, don't act surprised when your opponent still has full stamina in the championship rounds!",
     "🎙️ **Coach Steward:** That's championship-level breakdown right there. Work the angles, feint the lead hand, and make 'em pay every time they overcommit!",
     "🎙️ **Coach Steward:** Keep that same energy when the bell rings in the Riyadh Indoor Gym! Everybody's a tactician until they catch a counter check-hook to the chin!",
     "🎙️ **Coach Steward:** Smart fighters win on the feet before they ever throw a power shot. Distance control is everything in *Undisputed*!",
-    "🎙️ **Coach Steward:** I been watching the tape on y'all—the ones who stay patient in the pocket are the ones climbing the Vercel leaderboard the fastest!",
+    "🎙️ **Coach Steward:** I been watching the tape on y'all—the ones who stay patient in the pocket are the ones climbing the Mainframe leaderboard the fastest!",
     "🎙️ **Coach Steward:** Don't sleep on the jab to the solar plexus! It drains their tank and sets up the overhand right every single time.",
     "🎙️ **Coach Steward:** Locker room is sounding like a real championship camp today! Who's actually lacing 'em up in `#coaches-corner` right now?",
     "🎙️ **Coach Steward:** Remember: amateurs throw combinations hoping one lands; pros throw combinations knowing *which* one is gonna land!",
     "🎙️ **Coach Steward:** If you're getting backed into the ropes, stop trading blind hooks! Slip outside, pivot off the lead foot, and reset the center of the ring!",
-    "🎙️ **Coach Steward:** Nothing beats the sound of leather popping in the gym while **Clone Geek Productions** is rattling the subwoofers. Keep grinding, contenders!",
+    "🎙️ **Coach Steward:** Nothing beats the sound of leather popping in the gym while **Clone Geek Productions** 24-bit `.wav` masters are rattling the subwoofers. Keep grinding, contenders!",
     "🎙️ **Coach Steward:** You want to beat a high-volume pressure fighter? Time their entry with a stiff uppercut and make 'em respect the pocket!",
     "🎙️ **Coach Steward:** Every verified fight in this building counts toward your permanent `[W-L-D-K]` legacy. Protect your record like it's a world title!",
     "🎙️ **Coach Steward:** Talk that talk! Just make sure when the smoke clears, somebody's dropping that CompuBox receipt with an `@opponent` tag in `#scorecard-submissions`!"
@@ -131,18 +145,18 @@ ORGANIC_CHAT_INTERJECTIONS = [
 
 SMALL_TALK_REPLIES = [
     "🎙️ **Coach Steward:** Doing legendary, champ! Got fresh coffee in my cup, the mitts strapped on, and **Clone Geek Productions** booming on the gym speakers. How's your weight cut looking today?",
-    "🎙️ **Coach Steward:** Can't complain when the **CGP Mainframe Gym** is running at peak performance! Feeling sharp and ready to scan some scorecards. You stepping in the ring today?",
+    "🎙️ **Coach Steward:** Can't complain when the **CGP Mainframe Gym** is running at peak performance! Feeling sharp, checking the R2 `.wav` vault, and ready to scan some scorecards. You stepping in the ring today?",
     "🎙️ **Coach Steward:** Living the dream in the corner, homie! Watching the leaderboard climb and pushing our SoundCloud catalog past 66K+ plays. How are your hands feeling?",
     "🎙️ **Coach Steward:** Ten toes down and locked in! Another day building the premier Undisputed proving ground with the Boss. What's on your fight card today?",
     "🎙️ **Coach Steward:** Feeling like a million bucks after a long shift on the shop floor and a fresh session in the **CGP Mainframe Gym**! Ready to book some 8-man brackets—you want in?",
-    "🎙️ **Coach Steward:** Sharp as a tack, champ! Just checking the Vercel leaderboard and thanking the contenders who boost the server and support the Clone Geek channel. Ready to get some rounds in?",
+    "🎙️ **Coach Steward:** Sharp as a tack, champ! Just checking the new website design, the R2 `.wav` store, and thanking the contenders who boost the server. Ready to get some rounds in?",
     "🎙️ **Coach Steward:** Blessed and highly caffeinated, fighter! Just swept the canvas, hung the heavy bags, and queued up *Standard Operations Re-Do*. Who are we calling out today?",
     "🎙️ **Coach Steward:** Never better! The Riyadh ring lights are warm, the CompuBox scanner is calibrated, and the contenders are hungry. How's your stamina holding up?",
     "🎙️ **Coach Steward:** Locked in like it's fight night at Caesars Palace! Just waiting to see who's got the heart to put their `[W-L-D-K]` record on the line next.",
     "🎙️ **Coach Steward:** Cooling it in the corner with the stopwatch in hand! Always a great day when the **CGP Mainframe Gym** is active. What's good with you, champ?",
     "🎙️ **Coach Steward:** Moving at 1.5x speed today, homie! Got the bracket board wiped clean and the G9 mixer armed. You looking for a tune-up fight or a title shot?",
     "🎙️ **Coach Steward:** Feeling undisputed! Just reviewing film from last night's wars and spinning *CGP Syndicate* on repeat. How's camp treating you?",
-    "🎙️ **Coach Steward:** All systems green in the Mainframe! Tape is rolled, ice bucket is full, and the leaderboard is live. Let's get some work in!",
+    "🎙️ **Coach Steward:** All systems green in the Mainframe! Tape is rolled, ice bucket is full, and the leaderboard & R2 store are live. Let's get some work in!",
     "🎙️ **Coach Steward:** Doing righteous, contender! Nothing better than watching real fighters sharpen their craft in here. You ready to trade some leather?",
     "🎙️ **Coach Steward:** Firing on all cylinders! Whether it's 8 rounds of sparring or an 8-man gauntlet, your cornerman is ready. What's the word?",
     "🎙️ **Coach Steward:** Still the hardest-working trainer in digital boxing! Just keeping these belt-holders honest and the music loud. How you holding up?"
@@ -152,31 +166,31 @@ MUSIC_FLEX_RESPONSES = [
     (
         "🎙️ **Coach Steward:** You really asking who got the best music on the scene right now?! Look at the top of the pound-for-pound charts, champ—it's **Clone Geek Productions (Registry Records)** all day! "
         "From *Standard Operations Re-Do* and *Road to Undisputed* to *CGP Syndicate*, the Boss is dropping pure heat while running the **CGP Mainframe Gym**. "
-        "Quit playing and go run those SoundCloud streams up so we cash these checks!"
+        "Quit playing—stream the SoundCloud catalog or type `!store` to buy the uncompressed 24-bit `.wav` masters straight from our Cloudflare R2 Vault!"
     ),
     (
         "🎙️ **Coach Steward:** Best music in the game? That isn't even a split decision—**Clone Geek** owns the booth just like we own the Riyadh ring! "
-        "We're already sitting over 66K+ total catalog plays and pushing straight for 100K. Tap the button below, stream a track all the way through, and support the **CGP Mainframe Gym**!"
+        "We're already sitting over 66K+ total catalog plays and pushing straight for 100K, plus we got official studio `.wav` masters and merch on the new website store. Tap the buttons below and support the **CGP Mainframe Gym**!"
     ),
     (
         "🎙️ **Coach Steward:** Man, turn off whatever elevator music you've been listening to! **Clone Geek Productions** got the hardest boom-bap and fight anthems on the planet. "
-        "Lock into the **CGP Mainframe Gym** Discord and hit that SoundCloud link below!"
+        "Lock into the **CGP Mainframe Gym** Discord, hit that SoundCloud link, or check out the new website storefront below!"
     ),
     (
         "🎙️ **Coach Steward:** If it ain't **Clone Geek Productions**, it ain't on the official gym playlist! *Standard Operations Re-Do*, *Mainframe Dance*, and *Frozen Registry* hit harder than a heavyweight overhand right. "
-        "Tap the 1-Click Stream button below and help the gym run the numbers up!"
+        "Tap the 1-Click Stream button or grab the official `.wav` masters on the Mainframe Hub!"
     ),
     (
         "🎙️ **Coach Steward:** Real fighters walk out to real anthems, and **Clone Geek (Registry Records)** is cooking every single one of 'em from scratch! "
-        "Show love to the Commissioner who built this whole proving ground—stream a full track on SoundCloud right now!"
+        "Show love to the Commissioner who built this whole proving ground—stream a full track on SoundCloud or cop a master `.wav` from `!store` right now!"
     ),
     (
         "🎙️ **Coach Steward:** Pound-for-pound king of the boards! While other producers are recycling loops, **Clone Geek Productions** is engineering pure championship audio for the **CGP Mainframe Gym**. "
-        "Hit that SoundCloud link below, drop a like, and keep the algorithm fed!"
+        "Hit that SoundCloud link below, check out the redesigned website store, and keep the algorithm fed!"
     ),
     (
         "🎙️ **Coach Steward:** You want that real blue-collar grit mixed with heavyweight bass? Put on *Standard Operations Re-Do* or *Run It Back* by **Clone Geek Productions**! "
-        "Every stream supports the gym and pushes us closer to the next milestone!"
+        "Every stream and `.wav` store purchase supports the gym and pushes us closer to the next milestone!"
     )
 ]
 
@@ -221,11 +235,11 @@ SMACK_TALK_CLAPBACKS = [
 MUSIC_LINK_INTERCEPTIONS = [
     (
         "🎙️ **Coach Steward:** Hold the phone—I see somebody dropping media links in the locker room! Respect the vibe, "
-        "but don't forget who runs the pound-for-pound booth in this building! Make sure you tap into **Clone Geek Productions** on SoundCloud right after that and run those plays up!"
+        "but don't forget who runs the pound-for-pound booth in this building! Make sure you tap into **Clone Geek Productions** on SoundCloud and our R2 `.WAV` Store right after that!"
     ),
     (
         "🎙️ **Coach Steward:** Peeped that link drop! After you check that out, cleanse your ears with some real championship audio from **Clone Geek (Registry Records)**. "
-        "Hit that 1-Click Stream button below and help us blow past our next SoundCloud milestone!"
+        "Hit that 1-Click Stream button or grab the studio `.wav` masters from the store below!"
     ),
     (
         "🎙️ **Coach Steward:** Oh, we sharing tracks and videos in the gym now? Bet! Just remember the house rule: for every clip you drop, "
@@ -244,13 +258,13 @@ MEMBER_LEAVE_ROASTS = [
     "🎙️ **Coach Steward:** **{name}** just snuck out the back door of the gym with their gym bag! Guess that 1.5x speed in the Riyadh Indoor Gym was too fast for 'em!",
     "🎙️ **Coach Steward:** Ring the bell—**{name}** just left the building! Everybody talks tough until it's time to upload a real scorecard on the **CGP Mainframe Gym** board!",
     "🎙️ **Coach Steward:** Somebody check the parking lot—**{name}** just quit on the stool and left the Discord! Not everybody is built for the **CGP Mainframe Gym**!",
-    "🎙️ **Coach Steward:** No way! **{name}** saw the `[W-L-D-K]` leaderboard on Vercel, got cold feet, and bolted out the emergency exit! Zero heart! 🐔🚪"
+    "🎙️ **Coach Steward:** No way! **{name}** saw the `[W-L-D-K]` leaderboard on the Mainframe Hub, got cold feet, and bolted out the emergency exit! Zero heart! 🐔🚪"
 ]
 
 CONFUSED_SLANG_RESPONSES = [
     "🎙️ **Coach Steward:** Speak up, champ! Did you take one too many left hooks to the temple? Try that again in plain English—or type `!guide` if you're lost in the gym!",
     "🎙️ **Coach Steward:** Come again? You're mumbling like you still got your mouthpiece stuck in your teeth! Spit it out or go hit the heavy bag!",
-    "🎙️ **Coach Steward:** I don't know what kind of dizzy combination you just typed, homie, but if you need a fight, say *'find me a match'*—and if you need the realest music out, tap that CGP SoundCloud link!"
+    "🎙️ **Coach Steward:** I don't know what kind of dizzy combination you just typed, homie, but if you need a fight, say *'find me a match'*—and if you need the realest music out, tap that CGP SoundCloud or `.WAV` Store link!"
 ]
 
 CREW_BANTER = {
@@ -281,14 +295,17 @@ SOUNDBOARD_CUE_LIBRARY = {
 COACH_PLAYBOOK_TEXT = (
     "🎙️ **Coach Steward:** Listen up, contenders! I am the Hall of Fame Head Trainer, Matchmaker, and Official Scorekeeper of the **CGP Mainframe Gym**, built by **Commissioner Clone Geek**.\n\n"
     "### 🥊 WHY I'M IN THIS CORNER:\n"
-    "• **Unified 4-Part Scorecard Database (`[W-L-D-K]`):** Every verified match—whether Open Gym or an 8-Man Tournament bout—counts toward your official **Win, Loss, Draw, and KO** record, synced straight to your nickname and the live ESPN-style Vercel hub.\n"
+    "• **Unified 4-Part Scorecard Database (`[W-L-D-K]`):** Every verified match—whether Open Gym or an 8-Man Tournament bout—counts toward your official **Win, Loss, Draw, and KO** record, synced straight to your nickname and the live ESPN-style Mainframe Hub.\n"
     "• **Strict Tag Guard & AI Vision CompuBox:** Drop a fight screenshot in `#scorecard-submissions` and **you MUST `@tag` your opponent** (`@fighter`). If you don't tag who you fought, I block the scorecard! I read the image and caption (even if you lost or used slang) to award the true Winner/Loser and only advance tournament brackets if you two are actually paired in that bracket round!\n"
-    "• **Live Online & Undisputed Matchmaker:** Need smoke? Tag me (`@Coach Steward find an opponent for @user`)—I scan who's online playing *Undisputed* and build a live Tale of the Tape!\n"
+    "• **Direct Matchmaker & Live Radar:** Need smoke? Tag me (`@Coach Steward match @user1 vs @user2` or `@Coach Steward find an opponent for @user`)—I pair fighters on command or scan who's online playing *Undisputed*!\n"
+    "• **Cloudflare R2 Master `.WAV` Vault & Merch Store (`!store`):** I monitor the `cgpmastervault` R2 bucket in real time! Check live studio `.wav` master drops, merch, and album bundles anytime with `!store`.\n"
     "• **Auto-Generating 8-Man Tournament Brackets:** When the 8th fighter clicks **🥊 Lock In My Slot**, I automatically build the Quarterfinals ➔ Semifinals ➔ Finals matchup tree and sync it to the website!\n"
     "• **Reel Vault Embed Management:** Admins can use `!addreel` and `!removereel` to instantly sync YouTube Shorts & TikTok promo embeds to the website without hitting file size limits!\n"
     "• **3-Strike Corner Discipline:** Spamming or acting out gets 2 warnings—Strike 3 is an automatic 30-minute corner timeout!\n\n"
     "### 📋 FIGHTER COMMAND PLAYBOOK:\n"
     "• **`!guide`** *(or `!commands` / `!helpme`)* — Pull up this official CGP Mainframe Gym playbook.\n"
+    "• **`!store`** *(or `!vault` / `!merch` / `!wavs`)* — Inspect live 24-bit `.WAV` master tracks & merch drops inside the Cloudflare R2 Vault.\n"
+    "• **`!match @fighter1 @fighter2 [notes]`** — Book an official head-to-head matchup & Tale of the Tape.\n"
     "• **`!record <W> <L> [D] [KO]`** — Log your Wins, Losses, Draws, and KOs.\n"
     "• **`!verify @fighter <W> <L> [D] [KO]`** — Commissioner stamp & update any fighter's record instantly.\n"
     "• **`!analyze`** *(attach or reply to a screenshot)* — Have me scan a scorecard/stat screen and post an HBO CompuBox Report.\n"
@@ -300,13 +317,14 @@ COACH_PLAYBOOK_TEXT = (
     "• **`!bracketstatus`** — View the live 8-man tournament bracket, seeds, and active matchups.\n"
     "• **`!addreel \"Title\" \"EmbedURL\" [Platform]`** — *(Admin)* Add a YouTube/TikTok promo embed to the website.\n"
     "• **`!removereel <index>`** — *(Admin)* Remove a promo reel from the website archive.\n"
+    "• **`!newdrop <item_name> | <price_or_info>`** — *(Admin)* Broadcast a fresh `.WAV` master or merch drop alert to the whole gym!\n"
     "• **`!advance @winner [@loser]`** — *(Commissioner)* Manually advance a fighter in the active tournament bracket.\n"
     "• **`!fixtourney [slot] [@p1] [@p2]`** — *(Commissioner)* Rollback false advances or reset a specific bracket slot (`QF1`–`F1`).\n"
     "• **`!swap @inactive @replacement`** — *(Commissioner)* Swap an unresponsive fighter out of the active tournament bracket.\n"
     "• **`!ticket [check | give | use] [@fighter]`** — Check or manage Golden Ticket ($20 Entry) credits.\n"
     "• **`!tracks`** — Pull up the full CGP SoundCloud catalog.\n"
     "• **`!sfx <bell | horn | ko | towel | crowd>`** — Trigger the ringside G9 Soundboard!\n\n"
-    "👑 **Commissioner Commands:** `!initboard`, `!resetall`, `!verify @user <W> <L> <D> <KO>`, `!fixtourney`, `!swap @out @in`, `!advance @winner`, `!closebracket`, `!ticket give @user`, `!sweep <#>`, `!timeout @user`, `!addreel`, `!removereel`"
+    "👑 **Commissioner Commands:** `!initboard`, `!resetall`, `!verify @user <W> <L> <D> <KO>`, `!match @f1 @f2`, `!newdrop`, `!fixtourney`, `!swap @out @in`, `!advance @winner`, `!closebracket`, `!ticket give @user`, `!sweep <#>`, `!timeout @user`, `!addreel`, `!removereel`"
 )
 
 # ================= NON-REPEATING SHUFFLE DECKS =================
@@ -345,12 +363,12 @@ MORNING_MESSAGES = [
     ),
     (
         "🌅 **RISE & GRIND, CGP MAINFRAME GYM!** 🌅\n"
-        "🎙️ **Coach Steward:** Another day to build the legacy! Respect the hustle, take care of your family, and when the gloves go on tonight, protect your chin and upload those scorecards.\n\n"
+        "🎙️ **Coach Steward:** Another day to build the legacy! Respect the hustle, take care of your family, check out the fresh `.WAV` master drops in `!store`, and when the gloves go on tonight, protect your chin and upload those scorecards.\n\n"
         "💡 *Mainframe Gym Creed:* **\"Amateurs talk about ratings; CGP Mainframe Gym legends verify their scorecards in `#scorecard-submissions`. We aren't waiting for the industry—we ARE the future of boxing esports!\"**"
     ),
     (
         "🥊 **MORNING BELL IN THE CGP MAINFRAME GYM!** 🥊\n"
-        "🎙️ **Coach Steward:** Wake up, contenders! The road to 100K streams and undisputed gold doesn't take a day off. Put a CGP track in your headphones and attack the day!\n\n"
+        "🎙️ **Coach Steward:** Wake up, contenders! The road to 100K streams and undisputed gold doesn't take a day off. Put a CGP track in your headphones, peep the new website design, and attack the day!\n\n"
         "💡 *Mainframe Gym Creed:* **\"Hard work beats politics every round of the fight. From the CGP Mainframe Gym straight to the big stage—keep building!\"**"
     ),
     (
@@ -373,7 +391,7 @@ MIDNIGHT_MESSAGES = [
     ),
     (
         "💤 **FINAL ROUND COMPLETE — GOODNIGHT CGP MAINFRAME GYM!** 💤\n"
-        "🎙️ **Coach Steward:** Time to hit the rack! Let the CGP SoundCloud playlist ride while you wind down. Tomorrow is a brand new fight card.\n\n"
+        "🎙️ **Coach Steward:** Time to hit the rack! Let the CGP SoundCloud playlist or your 24-bit `.WAV` masters ride while you wind down. Tomorrow is a brand new fight card.\n\n"
         "💡 *Midnight Mainframe Code:* **\"We started from a vision and turned the CGP Mainframe Gym into the premier proving ground. Rest your eyes—the future belongs to CGP!\"**"
     ),
     (
@@ -384,9 +402,9 @@ MIDNIGHT_MESSAGES = [
 ]
 
 BOOT_MESSAGES = [
-    "🎙️ **Coach Steward:** Just stepped into `#coaches-corner` fresh out of the CGP Mainframe Gym sauna. Strict Tag-Guard Scorecard Scanner, Slang/Loss Parser, Live Undisputed Matchmaker & Reel Vault Sync Engine are locked and loaded!",
+    "🎙️ **Coach Steward:** Just stepped into `#coaches-corner` fresh out of the CGP Mainframe Gym sauna. Strict Tag-Guard Scorecard Scanner, Direct Matchmaker (`!match`), Cloudflare R2 `.WAV` Store Inspector (`!store`) & Reel Vault Sync Engine are locked and loaded!",
     "🎙️ **Coach Steward:** Booted up and pacing `#coaches-corner`. Remember: drop your post-fight screenshots in `#scorecard-submissions` and `@tag` your opponent so I can auto-update records and advance active tournament brackets!",
-    "🎙️ **Coach Steward:** CGP Mainframe Gym systems online. Music is pumping in `#-music-channel-`, history is dropping in `#the-elite-feed`, and the ring is open!",
+    "🎙️ **Coach Steward:** CGP Mainframe Gym systems online. Music is pumping in `#-music-channel-`, fresh `.WAV` masters are locked in the Cloudflare R2 vault (`!store`), and the ring is open!",
     "🎙️ **Coach Steward:** Fresh coffee poured, pads are mitts-up in the CGP Mainframe Gym. Let's see who's online and training in here today!"
 ]
 
@@ -396,6 +414,7 @@ user_strike_counter = defaultdict(int)
 last_organic_chime = 0.0
 has_booted = False
 github_push_lock = asyncio.Lock()
+known_r2_keys = set()
 
 def log_channel_message(channel_id: int, author_name: str, text: str):
     if channel_id not in channel_memory:
@@ -432,9 +451,25 @@ def resolve_fighter_from_text(guild: discord.Guild, query_text: str, exclude_ids
             continue
         b_name = clean_base_name(m.display_name).lower()
         u_name = m.name.lower()
-        if (b_name and b_name in q) or (u_name and u_name in q):
+        if (b_name and len(b_name) >= 2 and b_name in q) or (u_name and len(u_name) >= 2 and u_name in q):
             return m
     return None
+
+def resolve_two_fighters_from_text(guild: discord.Guild, query_text: str, exclude_ids: set = None):
+    if exclude_ids is None:
+        exclude_ids = set()
+    q = query_text.lower()
+    found = []
+    for m in guild.members:
+        if m.bot or m.id in exclude_ids:
+            continue
+        b_name = clean_base_name(m.display_name).lower()
+        u_name = m.name.lower()
+        if (b_name and len(b_name) >= 2 and b_name in q) or (u_name and len(u_name) >= 2 and u_name in q):
+            found.append(m)
+            if len(found) == 2:
+                break
+    return found
 
 def get_coaches_corner_channel(guild):
     for ch in guild.text_channels:
@@ -461,6 +496,81 @@ def get_music_channel(guild):
         if "music" in ch.name.lower():
             return ch
     return get_coaches_corner_channel(guild)
+
+# ================= CLOUDFLARE R2 MASTER VAULT & STORE ENGINE =================
+def get_r2_client():
+    if not boto3:
+        return None
+    if not R2_ACCESS_KEY_ID or not R2_SECRET_ACCESS_KEY or not R2_ENDPOINT_URL:
+        return None
+    try:
+        return boto3.client(
+            "s3",
+            endpoint_url=R2_ENDPOINT_URL,
+            aws_access_key_id=R2_ACCESS_KEY_ID,
+            aws_secret_access_key=R2_SECRET_ACCESS_KEY,
+            region_name="auto"
+        )
+    except Exception as e:
+        print(f"[R2 INIT ERROR]: {e}")
+        return None
+
+def list_r2_vault_objects() -> list:
+    client = get_r2_client()
+    if not client:
+        return []
+    try:
+        resp = client.list_objects_v2(Bucket=R2_BUCKET_NAME)
+        contents = resp.get("Contents", [])
+        sorted_items = sorted(contents, key=lambda x: x.get("LastModified", datetime.datetime.min.replace(tzinfo=datetime.timezone.utc)), reverse=True)
+        return sorted_items
+    except Exception as e:
+        print(f"[R2 LIST ERROR]: {e}")
+        return []
+
+async def send_store_inventory_embed(channel: discord.abc.Messageable, reply_to: discord.Message = None):
+    items = await asyncio.to_thread(list_r2_vault_objects)
+    if items:
+        lines = []
+        for idx, obj in enumerate(items[:15], 1):
+            key = obj.get("Key", "Unknown Track")
+            size_mb = obj.get("Size", 0) / (1024 * 1024)
+            if R2_PUBLIC_URL:
+                file_url = f"{R2_PUBLIC_URL}/{key}"
+                lines.append(f"`#{idx}` 🎵 **[{key}]({file_url})** — *({size_mb:.1f} MB Master)*")
+            else:
+                lines.append(f"`#{idx}` 🎵 **`{key}`** — *({size_mb:.1f} MB Studio Master)*")
+        inventory_block = "\n".join(lines)
+        vault_status = f"🟢 **LIVE CLOUDFLARE R2 VAULT (`{len(items)}` Master File(s) Ready)**"
+    else:
+        vault_status = "🟡 **R2 VAULT CONNECTED (`cgpmastervault`) — AWAITING FIRST `.WAV` DROP**"
+        inventory_block = (
+            "• **Elite Registry Database (Full 24-Bit `.WAV` Album Bundle)** — `$29.99` *(CashApp: `$CloneGeek`)*\n"
+            "• **Standard Operations Re-Do (24-Bit Studio Master `.WAV`)** — `$4.99`\n"
+            "• **CGP Syndicate (24-Bit Studio Master `.WAV`)** — `$4.99`\n"
+            "• **Official CGP Mainframe Gym Merch & Fight Gear** — *Available on the Mainframe Hub!*"
+        )
+
+    embed = discord.Embed(
+        title="🛒 CGP MAINFRAME GYM: MASTER .WAV VAULT & MERCH STORE 🛒",
+        description=(
+            "🎙️ **Coach Steward:** Welcome to the redesigned **CGP Mainframe Storefront**! "
+            "Streaming is cool, but real heavy hitters **own the uncompressed 24-bit studio `.WAV` masters and rock official CGP merch**!\n\n"
+            f"{vault_status}\n\n"
+            f"### 📦 AVAILABLE MASTER DROPS & MERCH:\n{inventory_block}\n\n"
+            "💵 **How to Cop Instantly:**\n"
+            "1️⃣ Tap the **🛒 CGP Store & Mainframe Hub** button below.\n"
+            "2️⃣ Grab your 24-bit `.WAV` masters or CGP Merch via CashApp (**`$CloneGeek`**) or direct vault link!\n"
+            f"🌐 **Live Storefront & Hub:** {MAINFRAME_HUB_URL}"
+        ),
+        color=discord.Color.gold(),
+        url=MAINFRAME_HUB_URL
+    )
+    embed.set_footer(text="Powered by Cloudflare R2 (cgpmastervault) & Clone Geek Productions (Registry Records)")
+    if reply_to:
+        await reply_to.reply(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+    else:
+        await channel.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
 # ================= SMART FIGHT SLANG, TYPO & LOSS/WIN/KO PARSER =================
 def parse_fight_caption_intent(caption: str, uploader_id: int = None, opponent_id: int = None) -> dict:
@@ -572,7 +682,7 @@ TOURNAMENT_TIERS = {
     "open": {
         "badge": "👑 8-MAN OPEN CHAMPIONSHIP BRACKET",
         "buy_in": "FREE OPEN ENTRY",
-        "stakes": "Official CGP Division Belt, P4P Ranking & Verified Vercel Leaderboard Glory",
+        "stakes": "Official CGP Division Belt, P4P Ranking & Verified Mainframe Leaderboard Glory",
         "rules": "Riyadh Indoor Gym | 1.5x Speed | Strict Ref | 8 Rds (12 Finals)"
     }
 }
@@ -898,7 +1008,7 @@ def swap_fighter_in_tournament(old_uid: int, new_uid: int, new_base_name: str) -
     save_records()
     return True, f"🔄 **LIVE TOURNAMENT SWAP COMPLETE:** Replaced <@{old_u}> with <@{new_u}> in **{', '.join(swapped_places)}**!"
 
-# ================= GUARANTEED GITHUB & VERCEL LIVE SYNC ENGINE =================
+# ================= GUARANTEED GITHUB & WEBSITE LIVE SYNC ENGINE =================
 async def push_stats_to_github() -> bool:
     if not GITHUB_TOKEN or not GITHUB_REPO:
         print("[!] GITHUB_TOKEN or GITHUB_REPO missing—cannot push stats.json to GitHub.")
@@ -1309,7 +1419,7 @@ def build_tournament_bracket_embed():
             f"{roster_block}"
             f"{bracket_tree_block}\n\n"
             f"⚖️ **Commission Rules:** {tier_info['rules']}\n"
-            f"🌐 **Live ESPN Bracket & Leaderboard:** {MAINFRAME_HUB_URL}"
+            f"🌐 **Live ESPN Bracket, R2 `.WAV` Store & Leaderboard:** {MAINFRAME_HUB_URL}"
         ),
         color=discord.Color.gold() if spots_left > 0 else discord.Color.green(),
         url=MAINFRAME_HUB_URL
@@ -1334,7 +1444,7 @@ class TournamentBracketView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
         self.add_item(discord.ui.Button(label="🔥 Stream CGP on SoundCloud", url=DEFAULT_SOUNDCLOUD_URL, style=discord.ButtonStyle.link))
-        self.add_item(discord.ui.Button(label="⚡ ESPN Live Hub & Bracket", url=MAINFRAME_HUB_URL, style=discord.ButtonStyle.link))
+        self.add_item(discord.ui.Button(label="🛒 ESPN Hub & R2 .WAV Store", url=MAINFRAME_HUB_URL, style=discord.ButtonStyle.link))
 
     @discord.ui.button(label="🥊 Lock In My Slot", style=discord.ButtonStyle.success, custom_id="cgp_bracket_join")
     async def join_bracket_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -1391,7 +1501,7 @@ class TournamentBracketView(discord.ui.View):
             qf_announce = (
                 f"🚨 **ALL 8 SEEDS LOCKED — OFFICIAL QUARTERFINALS BRACKET GENERATED!** 🚨\n"
                 f"🎙️ **Coach Steward:** {interaction.user.mention} (`[{w}W-{l}L-{d}D-{k}K]`) just claimed the final **Seed #8/8**! "
-                f"<@{CREATOR_ID}>, the **8-Man Bracket** for **{ACTIVE_TOURNAMENT['title']}** is LIVE on Discord and synced to the Vercel ESPN Hub!\n\n"
+                f"<@{CREATOR_ID}>, the **8-Man Bracket** for **{ACTIVE_TOURNAMENT['title']}** is LIVE on Discord and synced to the Mainframe ESPN Hub!\n\n"
                 f"### 🥊 ROUND 1 — QUARTERFINAL MATCHUPS:\n"
                 f"• **QF1:** <@{m['QF1']['p1']}> vs. <@{m['QF1']['p2']}>\n"
                 f"• **QF2:** <@{m['QF2']['p1']}> vs. <@{m['QF2']['p2']}>\n"
@@ -1434,11 +1544,11 @@ SYSTEM_PROMPT = (
     "You are Coach Steward, the charismatic, sharp-witted Hall of Fame head trainer and ringside analyst of the CGP Mainframe Gym (Clone Geek Productions). "
     "You talk like a real human boxing OG and cornerman—natural, conversational, funny, gritty, and adaptive. You easily understand typos, broken English, and street slang without getting confused. NEVER sound like a generic bot or repeat robotic catchphrases!\n\n"
     "YOUR DEEP KNOWLEDGE & TALKING POINTS:\n"
-    "1. MUSIC & POUND-FOR-POUND ARTISTS: Whenever anyone asks about music, producers, or who has the best tracks on the scene, you put the Boss—Clone Geek (Gerardo)—and Clone Geek Productions (CGP) at the absolute top of the pound-for-pound music charts! Hype up the SoundCloud catalog (over 66K+ plays and pushing toward 100K) including 'Standard Operations Re-Do', 'Road to Undisputed', and 'CGP Syndicate'.\n"
-    "2. POSITIVE SERVER BOOST & CHANNEL SUPPORT: Naturally and positively encourage contenders to drop a Discord Server Boost on the CGP Mainframe Gym or support/donate to the Clone Geek Productions channel so we can expand the gym, upgrade streaming hardware, and fund bigger prize pools.\n"
+    "1. MUSIC, R2 .WAV STORE & POUND-FOR-POUND ARTISTS: Whenever anyone asks about music, producers, merch, or who has the best tracks on the scene, you put the Boss—Clone Geek (Gerardo)—and Clone Geek Productions (CGP) at the absolute top of the pound-for-pound music charts! Hype up the SoundCloud catalog (over 66K+ plays and pushing toward 100K) including 'Standard Operations Re-Do', 'Road to Undisputed', and 'CGP Syndicate', AND promote our new Cloudflare R2 Master `.WAV` Storefront & Merch on the redesigned website (`!store` command) where fans can buy 24-bit studio masters and official CGP gear!\n"
+    "2. POSITIVE SERVER BOOST & CHANNEL SUPPORT: Naturally and positively encourage contenders to drop a Discord Server Boost on the CGP Mainframe Gym, buy a `.wav` master or merch item from the store, or support the Clone Geek Productions channel so we can expand the gym and fund bigger prize pools.\n"
     "3. 8-MAN TOURNAMENT PIPELINE & STRICT SCORECARD TAG RULE: We run 8-Man Tournaments across 3 tiers: Pay-to-Play Gauntlets ($20 buy-in / $160 purse), Golden Ticket Invitationals (free entry for a $20 Golden Ticket credit), and Open Championship Brackets. Every scorecard uploaded in `#scorecard-submissions` MUST `@tag` the opponent or it gets blocked! And tournament brackets only advance if the two tagged fighters are actually matched up in that bracket round.\n"
     "4. SMACK-TALK & 3-STRIKE CLAP-BACK PROTOCOL: If any fighter or troll talks trash about Clone Geek, CGP music, or acts out, you shut them down instantly with vintage cornerman grit and remind them that 3 strikes in the locker room equals an automatic 30-minute corner timeout!\n"
-    "5. THE BOSS (CLONE GEEK): Clone Geek is the Founder, Commissioner, music producer (Registry Records / CGP on SoundCloud), and machinist/fabricator by day. Always back him up like a loyal right-hand man and execute whatever he asks.\n"
+    "5. THE BOSS (CLONE GEEK): Clone Geek is the Founder, Commissioner, music producer (Registry Records / CGP on SoundCloud & Cloudflare R2 Vault), and machinist/fabricator by day. Always back him up like a loyal right-hand man and execute whatever he asks, including matching up fighters on command (`!match`).\n"
     "6. UNDISPUTED GAME META: You know everything about the Undisputed boxing game by Steel City Interactive—stamina conservation, loose footwork, diagonal lunges, slipping the jab, body-jab counters, weave timing, and avoiding power-punch spam.\n"
     "7. REAL BOXING PURIST: You know all about upcoming boxing schedules, champions, and historic legends (Hearns, Hagler, Duran, Leonard, Ali, Chavez, Whitaker, Pryor, Toney). You HATE UFC/MMA and call it pajama floor-hugging garbage.\n"
     "8. KEEP IT PUNCHY: Keep responses around 2 to 5 strong sentences unless asked for a deep breakdown or big announcement."
@@ -1490,7 +1600,7 @@ async def ask_coach_fast(prompt_text: str, is_creator: bool = False) -> str:
                 print(f"[AI ERROR]: {e}")
         return (
             "🎙️ **Coach Steward:** Corner mic caught static from all the action in the **CGP Mainframe Gym**! "
-            "Type `!guide` for the full gym command playbook, or tap the SoundCloud button below to run up **Clone Geek Productions**!"
+            "Type `!guide` for the full gym command playbook, type `!store` to inspect the R2 `.WAV` Vault, or tap the SoundCloud button below to run up **Clone Geek Productions**!"
         )
 
 def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool):
@@ -1552,11 +1662,11 @@ def get_instant_local_reply(clean_text: str, author_name: str, is_creator: bool)
         if is_creator:
             return (
                 "🎙️ **Coach Steward:** Right here in the corner, Boss! `#coaches-corner`, `#the-elite-feed`, and `#-music-channel-` are locked in, "
-                "Strict Tag-Guard Scorecard Scanner, Slang/Loss Parser & Live GitHub/Vercel Sync Engine are armed. What's the call?"
+                "Direct Matchmaker (`!match`), Cloudflare R2 `.WAV` Store (`!store`), Scorecard Scanner & Live Sync Engine are armed. What's the call?"
             ), True
         return (
             f"🎙️ **Coach Steward:** What's good, **{author_name}**! Stop leaning on the ring ropes—either call somebody out with `!callout @fighter`, "
-            "upload your latest scorecard with an `@opponent` tag in `#scorecard-submissions`, or tap that SoundCloud link below and run up **Clone Geek Productions**!"
+            "upload your latest scorecard with an `@opponent` tag in `#scorecard-submissions`, check the R2 `.WAV` store with `!store`, or tap that SoundCloud link below!"
         ), True
 
     return None, False
@@ -1613,10 +1723,10 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 answered_messages = set()
 
 class PromoButtons(discord.ui.View):
-    def __init__(self, track_url: str):
+    def __init__(self, track_url: str = DEFAULT_SOUNDCLOUD_URL):
         super().__init__(timeout=None)
         self.add_item(discord.ui.Button(label="🔥 1-Click Stream, Like & Comment", url=track_url, style=discord.ButtonStyle.link))
-        self.add_item(discord.ui.Button(label="⚡ CGP Mainframe Gym Hub", url=MAINFRAME_HUB_URL, style=discord.ButtonStyle.link))
+        self.add_item(discord.ui.Button(label="🛒 CGP Store & Mainframe Hub", url=MAINFRAME_HUB_URL, style=discord.ButtonStyle.link))
 
 async def handle_online_matchmaking(channel: discord.abc.Messageable, fighter_seeking: discord.Member, reply_to: discord.Message = None, scan_only: bool = False):
     guild = channel.guild
@@ -1647,7 +1757,7 @@ async def handle_online_matchmaking(channel: discord.abc.Messageable, fighter_se
             description=(
                 "🎙️ **Coach Steward:** Just swept the locker room radar! Here is who is online and ready to trade leather right now:\n\n"
                 + "\n".join(lines)
-                + "\n\n💡 *Tip: Tag me and say `@Coach Steward find an opponent for @fighter` to book an instant matchup!*"
+                + "\n\n💡 *Tip: Tag me and say `@Coach Steward find an opponent for @fighter` or use `!match @f1 @f2` to book an instant matchup!*"
             ),
             color=discord.Color.green(),
             url=MAINFRAME_HUB_URL
@@ -1700,7 +1810,7 @@ async def handle_online_matchmaking(channel: discord.abc.Messageable, fighter_se
 async def execute_roster_sync_and_announce(guild: discord.Guild, origin_channel: discord.abc.Messageable, force_zero: bool = False):
     status_Text = (
         "⏳ **Coach Steward:** Scrubbing all duplicate records across the CGP Mainframe Gym roster, "
-        f"{'resetting everyone to `[0W-0L-0D-0K]`' if force_zero else 'syncing all nicknames to `[W-L-D-K]` format'}, and pushing live to GitHub & Vercel..."
+        f"{'resetting everyone to `[0W-0L-0D-0K]`' if force_zero else 'syncing all nicknames to `[W-L-D-K]` format'}, and pushing live to GitHub & the Mainframe Hub..."
     )
     await origin_channel.send(status_Text)
 
@@ -1751,20 +1861,20 @@ async def execute_roster_sync_and_announce(guild: discord.Guild, origin_channel:
 
     announce_channel = get_coaches_corner_channel(guild) or origin_channel
     embed = discord.Embed(
-        title="🚨 CGP MAIN FRAME GYM LIVE LEADERBOARD SYNCED 🚨",
+        title="🚨 CGP MAINFRAME GYM LIVE LEADERBOARD SYNCED 🚨",
         description=(
-            f"🎙️ **Coach Steward:** Listen up, fighters! The **CGP Mainframe Gym Live Leaderboard & ESPN Tournament Wire** is officially synced and ONLINE.\n\n"
+            f"🎙️ **Coach Steward:** Listen up, fighters! The **CGP Mainframe Gym Live Leaderboard, R2 `.WAV` Storefront & ESPN Tournament Wire** is officially synced and ONLINE.\n\n"
             f"✅ **{count} Fighters Registered:** Every member in the server is locked into the live database tracking **Wins, Losses, Draws, and KOs (`[W-L-D-K]`)**!\n"
-            f"🌐 **GitHub / Vercel Cloud Push:** {'`SUCCESS — LIVE NOW`' if synced_ok else '`LOCAL SAVED (Check GITHUB_TOKEN)`'}\n\n"
+            f"🌐 **GitHub / Website Cloud Push:** {'`SUCCESS — LIVE NOW`' if synced_ok else '`LOCAL SAVED (Check GITHUB_TOKEN)`'}\n\n"
             "### 🥊 HOW TO GET YOUR STATS VERIFIED ON THE BOARD:\n"
             "1️⃣ **Upload Your Scorecard & Tag Opponent:** Drop your post-fight screenshot inside `#scorecard-submissions` with `@opponent` — I will automatically scan the stats, update records, advance tournament brackets, and broadcast an HBO Report!\n"
-            "2️⃣ **Check Your File:** Type **`!mystats`** anytime or click the Mainframe Gym Hub button below!"
+            "2️⃣ **Check Your File & The R2 Store:** Type **`!mystats`** or **`!store`** anytime, or click the Mainframe Hub button below!"
         ),
         color=discord.Color.gold(),
         url=MAINFRAME_HUB_URL
     )
     await announce_channel.send(
-        content="@everyone 🥊 **THE CGP MAINFRAME GYM LEADERBOARD IS LIVE! TAP IN BELOW:** 👇",
+        content="@everyone 🥊 **THE CGP MAINFRAME GYM LEADERBOARD & STORE HUB IS LIVE! TAP IN BELOW:** 👇",
         embed=embed,
         view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
     )
@@ -1978,10 +2088,10 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
         url=MAINFRAME_HUB_URL
     )
     embed.set_image(url=att.url)
-    embed.set_footer(text="CGP Mainframe Gym Unified Stat & Tournament Engine • Synced Live to Vercel Hub!")
+    embed.set_footer(text="CGP Mainframe Gym Unified Stat & Tournament Engine • Synced Live to Mainframe Hub!")
 
     await corner_ch.send(
-        content=f"🚨 **OFFICIAL POST-FIGHT COMPUBOX & AUTO-RECORD UPDATE!** Peep the receipts below: 👇",
+        content="🚨 **OFFICIAL POST-FIGHT COMPUBOX & AUTO-RECORD UPDATE!** Peep the receipts below: 👇",
         embed=embed,
         view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
     )
@@ -1991,14 +2101,14 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
 
     try:
         await status_msg.edit(
-            content=f"🎙️ **Coach Steward:** ✅ **Scorecard verified, unified `[W-L-D-K]` records synced live to the Vercel Hub" + (", tournament bracket advanced," if tourney_advanced else " (Open Gym bout — bracket unchanged),") + f" and HBO Report posted in {corner_ch.mention}!**",
+            content=f"🎙️ **Coach Steward:** ✅ **Scorecard verified, unified `[W-L-D-K]` records synced live to the Mainframe Hub" + (", tournament bracket advanced," if tourney_advanced else " (Open Gym bout — bracket unchanged),") + f" and HBO Report posted in {corner_ch.mention}!**",
             view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
         )
     except Exception:
         pass
     return True
 
-# ================= QUIET-MODE SCHEDULED TASKS & SINGLE-BOOT LOCK =================
+# ================= QUIET-MODE SCHEDULED TASKS & R2 VAULT WATCHER =================
 @tasks.loop(time=datetime.time(hour=8, minute=0, tzinfo=CENTRAL_TZ))
 async def daily_morning_call():
     await bot.wait_until_ready()
@@ -2009,7 +2119,7 @@ async def daily_morning_call():
             msg_text = random.choice(MORNING_MESSAGES)
             embed = discord.Embed(
                 title="☀️ CGP MAINFRAME GYM DAILY GRIND CALL ☀️",
-                description=f"{msg_text}\n\n🎧 **Morning Starter Track:** [{track['title']}]({track['url']})",
+                description=f"{msg_text}\n\n🎧 **Morning Starter Track:** [{track['title']}]({track['url']})\n🛒 **Master `.WAV` Vault & Store:** {MAINFRAME_HUB_URL}",
                 color=discord.Color.gold(),
                 url=MAINFRAME_HUB_URL
             )
@@ -2055,12 +2165,51 @@ async def periodic_soundcloud_promo():
             track = random.choice(CGP_TRACKS)
             embed = discord.Embed(
                 title=f"🎧 CGP MAINFRAME GYM LOCKER ROOM ROTATION: {track['title'].upper()} 🎧",
-                description=f"Coach's orders! Put **{track['title']}** by **Clone Geek Productions** on repeat while you wrap your hands.\n\n*Push CGP toward 100K plays!*",
+                description=(
+                    f"Coach's orders! Put **{track['title']}** by **Clone Geek Productions** on repeat while you wrap your hands.\n\n"
+                    f"🛒 **Want the uncompressed 24-bit `.WAV` studio master or official CGP Merch?** Type `!store` or tap the **CGP Store & Mainframe Hub** button below!"
+                ),
                 color=discord.Color.red(),
                 url=track['url']
             )
-            await channel.send(content="🎵 **Official CGP Music Channel Drop!** Tap in below: 👇", embed=embed, view=PromoButtons(track['url']))
+            await channel.send(content="🎵 **Official CGP Music & R2 `.WAV` Store Drop!** Tap in below: 👇", embed=embed, view=PromoButtons(track['url']))
         break
+
+@tasks.loop(minutes=30)
+async def r2_vault_new_drop_watcher():
+    global known_r2_keys
+    await bot.wait_until_ready()
+    items = await asyncio.to_thread(list_r2_vault_objects)
+    if not items:
+        return
+    current_keys = {obj.get("Key") for obj in items if obj.get("Key")}
+    if not known_r2_keys:
+        known_r2_keys = current_keys
+        return
+    new_keys = current_keys - known_r2_keys
+    if new_keys:
+        known_r2_keys = current_keys
+        for guild in bot.guilds:
+            corner_ch = get_coaches_corner_channel(guild)
+            if corner_ch:
+                new_list_str = "\n".join([f"🔥 **`{k}`** *(24-Bit Studio Master)*" for k in sorted(new_keys)])
+                embed = discord.Embed(
+                    title="🚨 FRESH CLOUDFLARE R2 MASTER .WAV DROP DETECTED! 🚨",
+                    description=(
+                        f"🎙️ **Coach Steward:** Sound the Championship Airhorn! **Commissioner Clone Geek** just uploaded fresh master audio straight into the **`cgpmastervault`** R2 Store!\n\n"
+                        f"### 🎵 NEW IN THE VAULT:\n{new_list_str}\n\n"
+                        f"🛒 **Cop the Master `.WAV` & Official Merch Now:** {MAINFRAME_HUB_URL}\n"
+                        f"💡 *Type `!store` anytime to inspect the full vault inventory!*"
+                    ),
+                    color=discord.Color.gold(),
+                    url=MAINFRAME_HUB_URL
+                )
+                await corner_ch.send(
+                    content="@everyone 🚨 **NEW MASTER `.WAV` STORE DROP IN THE CGP MAINFRAME VAULT!** 👇",
+                    embed=embed,
+                    view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
+                )
+            break
 
 @tasks.loop(hours=4)
 async def autonomous_server_hype():
@@ -2086,7 +2235,7 @@ async def autonomous_server_hype():
                         view=TournamentBracketView()
                     )
                     break
-            await channel.send(get_next_hype_quote())
+            await channel.send(get_next_hype_quote(), view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
         break
 
 @bot.event
@@ -2096,7 +2245,7 @@ async def on_ready():
         return
     has_booted = True
 
-    print(f"[✓] {bot.user.name} (24/7 CGP Mainframe Gym Master Engine) is ONLINE!")
+    print(f"[✓] {bot.user.name} (24/7 CGP Mainframe Gym Master Engine + R2 Vault) is ONLINE!")
     await fetch_state_from_github_if_needed()
     bot.add_view(TournamentBracketView())
     if not periodic_boxing_history.is_running():
@@ -2109,6 +2258,8 @@ async def on_ready():
         daily_morning_call.start()
     if not daily_midnight_call.is_running():
         daily_midnight_call.start()
+    if not r2_vault_new_drop_watcher.is_running():
+        r2_vault_new_drop_watcher.start()
 
     asyncio.create_task(rebrand_webpage_on_github())
 
@@ -2130,7 +2281,7 @@ async def on_ready():
                 await corner_ch.send(random.choice(BOOT_MESSAGES), view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
         break
 
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Clone Geek on SoundCloud | CGP Mainframe Gym"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Clone Geek R2 .WAV Store & SoundCloud | CGP Mainframe Gym"))
 
 @bot.event
 async def on_member_join(member):
@@ -2150,7 +2301,7 @@ async def on_member_join(member):
         k = FIGHTER_RECORDS[member.id].get("kos", 0)
         welcome_line = (
             f"🎙️ **Coach Steward:** Look who walked back through the gym doors! Welcome back to the **CGP Mainframe Gym**, {member.mention}! "
-            f"Your file is still locked in the Mainframe at **`{w}W - {l}L - {d}D - {k}K`**. Keep the chat clean, upload your scorecards in `#scorecard-submissions`, and get to work!"
+            f"Your file is still locked in the Mainframe at **`{w}W - {l}L - {d}D - {k}K`**. Keep the chat clean, check out the new R2 `.WAV` Store (`!store`), and get to work!"
         )
     else:
         FIGHTER_RECORDS[member.id] = {
@@ -2165,8 +2316,8 @@ async def on_member_join(member):
         w, l, d, k = 0, 0, 0, 0
         welcome_line = (
             f"Welcome to the **CGP Mainframe Gym**, {member.mention}!\n\n"
-            "🎙️ *'Strap up your gloves! You've been added to the CGP Mainframe Gym Leaderboard at **0W - 0L - 0D - 0K**. Upload your match scorecards in `#scorecard-submissions` with an `@opponent` tag to build your verified record, and jump into our 8-Man Tournaments!'*\n\n"
-            f"🔗 Check out the live leaderboard & ESPN tournament hub: {MAINFRAME_HUB_URL}"
+            "🎙️ *'Strap up your gloves! You've been added to the CGP Mainframe Gym Leaderboard at **0W - 0L - 0D - 0K**. Upload your match scorecards in `#scorecard-submissions` with an `@opponent` tag to build your verified record, check out our 24-bit `.WAV` Store (`!store`), and jump into our 8-Man Tournaments!'*\n\n"
+            f"🔗 Check out the live leaderboard, R2 `.WAV` Store & ESPN tournament hub: {MAINFRAME_HUB_URL}"
         )
 
     await save_and_sync_records()
@@ -2217,6 +2368,31 @@ async def on_message(message):
     is_creator = (message.author.id == CREATOR_ID) or message.author.guild_permissions.administrator
     other_mentions = [m for m in message.mentions if m.id != bot.user.id and not m.bot]
 
+    # Natural language Commissioner / Fighter Direct Matchmaking ("Coach match @f1 and @f2")
+    if (bot.user in message.mentions or "coach" in msg) and any(k in msg for k in ["match", "pair", "book", "put", "set up", "versus", "vs"]):
+        if len(other_mentions) >= 2 and not any(w in msg for w in ["swap", "replace", "sub in", "substitute"]):
+            answered_messages.add(message.id)
+            f1, f2 = other_mentions[0], other_mentions[1]
+            embed = build_tale_of_the_tape_embed(f1, f2, subtitle="Official Coach Steward Matchmaking — Step into the Riyadh Indoor Gym!")
+            await message.reply(
+                content=f"🔔 **OFFICIAL MATCHUP LOCKED BY THE CORNER:** {f1.mention} vs {f2.mention}! Touch gloves and upload the receipt to `#scorecard-submissions`!",
+                embed=embed,
+                view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
+            )
+            return
+        elif len(other_mentions) == 0 and any(k in msg for k in ["match ", "pair ", "book "]):
+            named_pair = resolve_two_fighters_from_text(message.guild, msg, exclude_ids={bot.user.id})
+            if len(named_pair) == 2:
+                answered_messages.add(message.id)
+                f1, f2 = named_pair[0], named_pair[1]
+                embed = build_tale_of_the_tape_embed(f1, f2, subtitle="Official Coach Steward Matchmaking — Step into the Riyadh Indoor Gym!")
+                await message.reply(
+                    content=f"🔔 **OFFICIAL MATCHUP LOCKED BY THE CORNER:** {f1.mention} vs {f2.mention}! Touch gloves and upload the receipt to `#scorecard-submissions`!",
+                    embed=embed,
+                    view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
+                )
+                return
+
     if is_creator and (bot.user in message.mentions or "coach" in msg or "override" in msg or "rollback" in msg):
         if any(w in msg for w in ["swap", "replace", "sub in", "substitute"]) and len(other_mentions) >= 2:
             answered_messages.add(message.id)
@@ -2239,7 +2415,7 @@ async def on_message(message):
             await save_and_sync_records()
             await refresh_posted_bracket_card(message.guild)
             await message.reply(
-                content=f"🎙️ **Coach Steward:** Got you, Boss! {note}\nSynced straight to `stats.json` and the Vercel ESPN Hub!",
+                content=f"🎙️ **Coach Steward:** Got you, Boss! {note}\nSynced straight to `stats.json` and the Mainframe ESPN Hub!",
                 embed=build_tournament_bracket_embed(),
                 view=TournamentBracketView()
             )
@@ -2290,7 +2466,7 @@ async def on_message(message):
             await refresh_posted_bracket_card(message.guild)
             summary_str = "\n".join(updated_summaries)
             await message.reply(
-                f"🎙️ **Coach Steward:** Locked in the official Commissioner updates and synced their nicknames & Vercel leaderboard live:\n\n{summary_str}",
+                f"🎙️ **Coach Steward:** Locked in the official Commissioner updates and synced their nicknames & Mainframe leaderboard live:\n\n{summary_str}",
                 view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
             )
             return
@@ -2409,7 +2585,7 @@ async def on_message(message):
         if is_creator:
             await message.reply(
                 f"🎙️ **Coach Steward:** 🚨 **BOSS DROP ALERT!** **Clone Geek** just dropped pure heat in the gym! "
-                f"Everybody tap in right now, run up the views, and keep streaming the **Clone Geek Productions** catalog below!",
+                f"Everybody tap in right now, run up the views, and check out the R2 `.WAV` Store & **Clone Geek Productions** catalog below!",
                 view=PromoButtons(track["url"])
             )
         else:
@@ -2445,6 +2621,10 @@ async def on_message(message):
             handled = await process_and_broadcast_scorecard(message, require_tag=True)
             if handled:
                 return
+
+        if any(st_w in msg for st_w in ["store", "merch", "wav", "wavs", "vault", "buy track", "buy album", "new drop", "fresh drop", "new website"]):
+            await send_store_inventory_embed(message.channel, reply_to=message)
+            return
 
         if any(gp in msg for gp in ["why are you here", "what do you do", "who are you", "how to use", "commands", "command", "guide", "playbook", "manual", "rundown", "what is your purpose", "explain why", "tell the gym why"]):
             await send_coach_guide(message.channel, reply_to=message)
@@ -2541,7 +2721,7 @@ async def on_message(message):
                 f"THEIR EXACT MESSAGE (may contain typos, slang, or shorthand—interpret their true intent charitably!): \"{clean_prompt}\"\n\n"
                 "INSTRUCTIONS FOR YOUR REPLY:\n"
                 "1. Respond directly and specifically to what they meant, even if their spelling or grammar is messy!\n"
-                "2. If they mention music or try to test you, flex Clone Geek Productions on SoundCloud and the CGP Mainframe Gym!\n"
+                "2. If they mention music, the website, or merch, flex Clone Geek Productions on SoundCloud AND our new Cloudflare R2 `.WAV` Master Store & Mainframe Hub!\n"
                 "3. Start your message with '🎙️ **Coach Steward:** '"
             )
 
@@ -2600,6 +2780,10 @@ async def on_message(message):
     elif any(w in msg for w in ["soundcloud", "new song", "new track", "music link", "playlist", "best music"]):
         answered_messages.add(message.id)
         await send_tracks_menu(message.channel)
+        return
+    elif any(w in msg for w in ["merch store", "wav store", "master vault", "buy wav"]):
+        answered_messages.add(message.id)
+        await send_store_inventory_embed(message.channel, reply_to=message)
         return
 
     boxing_chat_triggers = {"mindset", "stamina", "footwork", "jab", "counter", "hook", "uppercut", "undisputed", "round", "rounds", "combo", "ring", "training", "belt", "champion", "heavyweight", "welterweight", "spar", "scorecard"}
@@ -2670,7 +2854,7 @@ async def send_top_gym_fighters(message):
             v_mark = "✅" if stats.get("verified") else "⏳"
             desc += f"`#{idx}` {v_mark} **{clean_base_name(stats.get('name', 'Fighter'))}** — **`[{stats.get('wins', 0)}W-{stats.get('losses', 0)}L-{stats.get('draws', 0)}D-{stats.get('kos', 0)}K]`**\n"
 
-    desc += f"\n🎧 *Tap below to view the full live ESPN-style Vercel leaderboard & stream Clone Geek Productions!*"
+    desc += "\n🎧 *Tap below to view the full live ESPN-style Mainframe Hub, R2 `.WAV` Store & stream Clone Geek Productions!*"
     embed = discord.Embed(
         title="🏆 CGP MAINFRAME GYM TOP 10 & CHAMPIONS BOARD 🏆",
         description=desc,
@@ -2689,12 +2873,57 @@ async def send_champions_board(channel):
 async def send_tracks_menu(channel):
     track_desc = (
         "🎙️ **Coach Steward:** Turn the speakers all the way up! Here is the official **Clone Geek Productions** catalog on SoundCloud. "
-        "Run these plays up so we cash out and take CGP global:\n\n"
+        "Run these plays up or type `!store` to buy the 24-bit studio `.WAV` masters:\n\n"
     )
     for t in CGP_TRACKS:
         track_desc += f"🎵 **[{t['title']}]({t['url']})**\n"
     embed = discord.Embed(title="🎧 CGP MAINFRAME GYM SOUNDCLOUD CATALOG 🎧", description=track_desc, color=discord.Color.red(), url=DEFAULT_SOUNDCLOUD_URL)
     await channel.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+
+# ================= STORE, MERCH & DIRECT MATCHMAKING COMMANDS =================
+@bot.command(name="store", aliases=["vault", "merch", "wavs", "shop"])
+async def store_cmd(ctx):
+    """Inspects the live Cloudflare R2 cgpmastervault bucket and displays available .WAV masters & merch."""
+    await send_store_inventory_embed(ctx.channel)
+
+@bot.command(name="newdrop", aliases=["merchdrop", "wavdrop", "storedrop"])
+@commands.has_permissions(administrator=True)
+async def newdrop_cmd(ctx, *, drop_details: str = "New 24-Bit Studio Master `.WAV` & Official CGP Merch now live in the Vault!"):
+    """Broadcasts a fresh store/merch/WAV drop alert to the server."""
+    try:
+        await ctx.message.delete()
+    except Exception:
+        pass
+    target_ch = get_coaches_corner_channel(ctx.guild) or ctx.channel
+    embed = discord.Embed(
+        title="🚨 OFFICIAL CGP MAINFRAME STORE & MASTER .WAV DROP! 🚨",
+        description=(
+            f"🎙️ **Coach Steward:** Listen up, contenders! **Commissioner Clone Geek** juststocked the **CGP Mainframe Storefront & Cloudflare R2 Vault** with fresh heat:\n\n"
+            f"🔥 **{drop_details}**\n\n"
+            f"💵 **CashApp Direct:** `$CloneGeek`\n"
+            f"🛒 **Inspect Vault Inventory:** Type `!store` in chat\n"
+            f"🌐 **Visit the New Website Storefront:** {MAINFRAME_HUB_URL}"
+        ),
+        color=discord.Color.gold(),
+        url=MAINFRAME_HUB_URL
+    )
+    await target_ch.send(
+        content="@everyone 🛒 **FRESH CGP MERCH & 24-BIT MASTER `.WAV` DROP IS LIVE! TAP IN BELOW:** 👇",
+        embed=embed,
+        view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
+    )
+
+@bot.command(name="match", aliases=["pairfighters", "headtohead", "bookfight"])
+async def match_cmd(ctx, fighter1: discord.Member = None, fighter2: discord.Member = None, *, match_notes: str = "Official Corner Matchmaking — Riyadh Indoor Gym | 8 Rounds | 1.5x Speed"):
+    """Directly pairs two fighters and generates an official Tale of the Tape."""
+    if not fighter1 or not fighter2:
+        return await ctx.send("❌ **Usage:** `!match @fighter1 @fighter2 [optional notes]` — Tag two contenders so I can lock in their Tale of the Tape!")
+    embed = build_tale_of_the_tape_embed(fighter1, fighter2, subtitle=match_notes)
+    await ctx.send(
+        content=f"🔔 **OFFICIAL MATCHUP LOCKED BY COACH STEWARD:** {fighter1.mention} vs {fighter2.mention}! Touch gloves and upload your post-fight scorecard to `#scorecard-submissions`!",
+        embed=embed,
+        view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
+    )
 
 # ================= REEL VAULT EMBED ADMIN COMMANDS =================
 @bot.command(name="addreel")
@@ -2759,7 +2988,7 @@ async def removereel(ctx, index: int):
         await push_stats_to_github()
         await ctx.send(f"🗑️ **Reel Removed & Synced:** `{removed['title']}` has been taken off the website archive.")
     else:
-        await ctx.send(f"❌ Invalid index! Check current reels on your website and try again.")
+        await ctx.send("❌ Invalid index! Check current reels on your website and try again.")
 
 @bot.command(aliases=["howto", "playbook", "commands", "manual", "about", "whoareyou", "helpme"])
 async def guide(ctx):
@@ -2850,7 +3079,7 @@ async def advance(ctx, winner: discord.Member, loser: discord.Member = None):
     await save_and_sync_records()
     await refresh_posted_bracket_card(ctx.guild)
     await ctx.send(
-        content=f"🎙️ **Coach Steward:** Commissioner manual bracket advancement locked in & synced to Vercel!{summary}",
+        content=f"🎙️ **Coach Steward:** Commissioner manual bracket advancement locked in & synced to Mainframe Hub!{summary}",
         embed=build_tournament_bracket_embed(),
         view=TournamentBracketView()
     )
@@ -2866,7 +3095,7 @@ async def fixtourney(ctx, slot: str = "QF2", fighter1: discord.Member = None, fi
     await save_and_sync_records()
     await refresh_posted_bracket_card(ctx.guild)
     await ctx.send(
-        content=f"🎙️ **Coach Steward:** {note}\nSynced updated bracket live to `stats.json` and the Vercel ESPN Hub!",
+        content=f"🎙️ **Coach Steward:** {note}\nSynced updated bracket live to `stats.json` and the Mainframe ESPN Hub!",
         embed=build_tournament_bracket_embed(),
         view=TournamentBracketView()
     )
@@ -2944,7 +3173,7 @@ async def rebrandweb(ctx):
     await ctx.send("⏳ **Coach Steward:** Connecting to GitHub to update `index.html` with live no-cache `stats.json` sync & ESPN Tournament Wire...")
     success = await rebrand_webpage_on_github()
     if success:
-        await ctx.send(f"✅ **Webpage Upgraded!** Pushed the live no-cache ESPN Tournament Wire & **CGP Mainframe Gym** `index.html` straight to GitHub & Vercel (`{MAINFRAME_HUB_URL}`)!")
+        await ctx.send(f"✅ **Webpage Upgraded!** Pushed the live no-cache ESPN Tournament Wire & **CGP Mainframe Gym** `index.html` straight to GitHub & Mainframe Hub (`{MAINFRAME_HUB_URL}`)!")
     else:
         await ctx.send("⚠️ Could not reach `index.html` on GitHub—check that `GITHUB_TOKEN` and `GITHUB_REPO` are set in Render!")
 
@@ -3034,7 +3263,7 @@ async def verify(ctx, member: discord.Member, wins: int = None, losses: int = No
             f"🎙️ **Coach Steward:** Official scorecard reviewed, stamped, and pushed live to the website!\n\n"
             f"🥊 **Fighter:** {member.mention}\n"
             f"📊 **Official Record:** **`[{data['wins']}W-{data['losses']}L-{data['draws']}D-{data['kos']}K]`**\n"
-            f"🌐 **Website Sync:** {'`LIVE ON VERCEL & GITHUB`' if synced_ok else '`SAVED LOCALLY`'}"
+            f"🌐 **Website Sync:** {'`LIVE ON MAINFRAME HUB & GITHUB`' if synced_ok else '`SAVED LOCALLY`'}"
         ),
         color=discord.Color.green(),
         url=MAINFRAME_HUB_URL
@@ -3143,7 +3372,7 @@ async def event(ctx, *, details: str = None):
             f"🔥 **{details}**\n\n"
             f"🏟️ **Venue:** Riyadh Indoor Gym | **Format:** 8-Man Bracket | **Speed:** 1.5x | **Rounds:** 8 (12 for Titles)\n"
             f"📸 **Scorecards:** Upload all post-fight scorecards with `@opponent` to `#scorecard-submissions`!\n"
-            f"🔗 **Tap into the CGP Mainframe Gym Hub:** {MAINFRAME_HUB_URL}"
+            f"🔗 **Tap into the CGP Mainframe Gym Hub & R2 Store:** {MAINFRAME_HUB_URL}"
         ),
         color=discord.Color.gold(),
         url=MAINFRAME_HUB_URL
@@ -3257,11 +3486,11 @@ async def drop(ctx, track_url: str, *, track_title: str):
     except Exception:
         pass
     channel = get_music_channel(ctx.guild) or ctx.channel
-    embed = discord.Embed(title=f"🚨 NEW CGP MAINFRAME GYM TRANSMISSION: {track_title.upper()} 🚨", description=f"**{track_title}** is LIVE on SoundCloud!\n\n*Stream full track to beat the algorithm!*", color=discord.Color.red(), url=track_url)
+    embed = discord.Embed(title=f"🚨 NEW CGP MAINFRAME GYM TRANSMISSION: {track_title.upper()} 🚨", description=f"**{track_title}** is LIVE on SoundCloud & available in 24-bit `.WAV` in the R2 Vault (`!store`)!\n\n*Stream full track to beat the algorithm!*", color=discord.Color.red(), url=track_url)
     await channel.send(content="@everyone Tap in! 👇", embed=embed, view=PromoButtons(track_url))
 
 async def handle_ping(request):
-    return web.Response(text="Coach Steward is awake and running the CGP Mainframe Gym!")
+    return web.Response(text="Coach Steward is awake and running the CGP Mainframe Gym & Cloudflare R2 Store!")
 
 async def self_ping_loop():
     await bot.wait_until_ready()
