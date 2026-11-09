@@ -1028,7 +1028,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-09 02:42:55 PM CST"
+        "updated_at": "2026-11-09 04:21:58 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1062,6 +1062,6 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-09T14:42:55.576937-06:00",
+    "_last_synced": "2026-11-09T16:21:58.433853-06:00",
     "video_archive": []
 }
