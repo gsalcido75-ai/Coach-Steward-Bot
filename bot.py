@@ -3037,29 +3037,6 @@ async def store_cmd(ctx):
     """Inspects the live Cloudflare R2 cgpmastervault bucket and displays available .WAV masters & merch."""
     await send_store_inventory_embed(ctx.channel)
 
-@bot.command(name="verifyorder", aliases=["unlocktrack", "confirmwav", "unlockwav"])
-@commands.has_permissions(administrator=True)
-async def verifyorder_cmd(ctx, order_code: str = None):
-    """Commissioner command to verify a Cash App payment and unlock the .WAV download on the website."""
-    if not order_code:
-        return await ctx.send("❌ **Usage:** `!verifyorder CGP-WAV-01` (or `CGP-WAV-02` through `CGP-WAV-05`)")
-    code = order_code.upper().strip()
-    if code not in STORE_ORDERS_DB:
-        return await ctx.send(f"❌ Unknown order code `{code}`. Valid codes: `{', '.join(STORE_ORDERS_DB.keys())}`")
-
-    order = STORE_ORDERS_DB[code]
-    dl_url = await asyncio.to_thread(generate_r2_download_link, order["filename"], 7200)
-    order["verified"] = True
-    order["download_url"] = dl_url
-    order["verified_at"] = datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d %I:%M:%S %p CST")
-
-    await save_and_sync_records()
-    await ctx.send(
-        f"🟢 **PAYMENT VERIFIED & R2 MASTER UNLOCKED!**\n"
-        f"🎙️ **Coach Steward:** Order **`{code}`** (**{order['track']}**) is now **UNLOCKED** on the Mainframe Website! "
-        f"The buyer can click **Check Download Status** on the site right now to grab their 24-bit `.WAV` master!"
-    )
-
 @bot.command(name="lockorder", aliases=["resetorder"])
 @commands.has_permissions(administrator=True)
 async def lockorder_cmd(ctx, order_code: str = None):
