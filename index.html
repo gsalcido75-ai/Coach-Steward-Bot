@@ -293,7 +293,7 @@
             margin-bottom: 12px;
             font-size: 12px;
         }
-        .cashapp-box span { color: var(--text-secondary); display: block; margin-bottom: 3px; }
+        .cashapp-box span { color: var(--text-secondary); display: block; margin-bottom: 4px; }
         .cashapp-box strong { color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: 14px; }
         
         .buy-wav-btn {
@@ -737,7 +737,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.82);
+            background: rgba(0, 0, 0, 0.85);
             z-index: 9999;
             align-items: center;
             justify-content: center;
@@ -747,12 +747,24 @@
             background: var(--bg-panel);
             border: 2px solid var(--neon-blue);
             border-radius: 12px;
-            max-width: 440px;
+            max-width: 460px;
             width: 100%;
             padding: 22px;
             text-align: center;
             box-shadow: 0 0 35px rgba(0, 229, 255, 0.35);
         }
+        .copy-pill-btn {
+            background: #1c2539;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 6px;
+        }
+        .copy-pill-btn:hover { background: var(--neon-blue); color: #000; }
 
         footer {
             text-align: center;
@@ -784,7 +796,7 @@
                     <strong>CGP</strong>
                     <span>MAINFRAME</span>
                 </div>
-                <img id="cgp-brand-logo" src="CGP.jpg" alt="Clone Geek Productions">
+                <img id="cgp-brand-logo" src="https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/CGP.jpg" alt="Clone Geek Productions" onerror="this.style.display='none'">
             </div>
             <div class="brand-overview">
                 <h1>Clone Geek Productions</h1>
@@ -900,8 +912,8 @@
                     <summary>ℹ️ How to Buy & Unlock Your Instant .WAV Master Download (Click to Expand)</summary>
                     <div style="margin-top:12px; font-size:13px; color:var(--text-secondary); line-height:1.6;">
                         <p style="margin-bottom:6px;"><strong>Step 1:</strong> Pick your master track below and click <strong>"Buy via Cash App ($2.00)"</strong> (your track's Note Code will automatically copy and fill into the lookup box below).</p>
-                        <p style="margin-bottom:6px;"><strong>Step 2:</strong> Send <strong>$2.00</strong> on Cash App to <strong style="color:var(--green);">$CloneGeek</strong>[cite: 1] and paste the track's <strong>Note Reference Code</strong> (e.g., <code style="color:var(--neon-blue);">CGP-WAV-01</code>) in the Cash App <strong>Note</strong> line[cite: 1].</p>
-                        <p><strong>Step 3:</strong> As soon as Coach Steward verifies your payment, this page auto-refreshes (or click <strong>Check Download Status</strong> below) to unlock your direct 24-bit Cloudflare R2 <code>.WAV</code> master download!</p>
+                        <p style="margin-bottom:6px;"><strong>Step 2:</strong> Open the Cash App mobile app, send <strong>$2.00</strong> to <strong style="color:var(--green);">$CloneGeek</strong> (or via PayPal), and paste the track's <strong>Note Reference Code</strong> (e.g., <code style="color:var(--neon-blue);">CGP-WAV-01</code>) in the payment note.</p>
+                        <p><strong>Step 3:</strong> Drop your payment screenshot in the CGP Discord (or wait for Coach Steward's instant stamp) and click <strong>Check Download Status</strong> below to grab your 24-bit <code>.WAV</code> master!</p>
                     </div>
                 </details>
 
@@ -922,9 +934,9 @@
                             <div class="store-title">Run It Back (Clone Geek Remix)</div>
                             <div class="store-specs">Format: 24-bit .WAV | 27.43 MB</div>
                             <div class="cashapp-box">
-                                <span>Pay via Cash App: <strong>$CloneGeek</strong>[cite: 1]</span>
-                                <span>Price: <strong>$2.00</strong>[cite: 1]</span>
-                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-01</strong>[cite: 1]</span>
+                                <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
+                                <span>Price: <strong>$2.00</strong></span>
+                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-01</strong></span>
                             </div>
                         </div>
                         <button onclick="openCashAppCheckout('CGP-WAV-01', 'Run It Back (Clone Geek Remix)')" class="buy-wav-btn">
@@ -938,9 +950,9 @@
                             <div class="store-title">The Clock Out Remix</div>
                             <div class="store-specs">Format: 24-bit .WAV | 40.16 MB</div>
                             <div class="cashapp-box">
-                                <span>Pay via Cash App: <strong>$CloneGeek</strong>[cite: 1]</span>
-                                <span>Price: <strong>$2.00</strong>[cite: 1]</span>
-                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-02</strong>[cite: 1]</span>
+                                <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
+                                <span>Price: <strong>$2.00</strong></span>
+                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-02</strong></span>
                             </div>
                         </div>
                         <button onclick="openCashAppCheckout('CGP-WAV-02', 'The Clock Out Remix')" class="buy-wav-btn">
@@ -954,9 +966,9 @@
                             <div class="store-title">The Gilded Curtain</div>
                             <div class="store-specs">Format: 24-bit .WAV | 39.8 MB</div>
                             <div class="cashapp-box">
-                                <span>Pay via Cash App: <strong>$CloneGeek</strong>[cite: 1]</span>
-                                <span>Price: <strong>$2.00</strong>[cite: 1]</span>
-                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-03</strong>[cite: 1]</span>
+                                <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
+                                <span>Price: <strong>$2.00</strong></span>
+                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-03</strong></span>
                             </div>
                         </div>
                         <button onclick="openCashAppCheckout('CGP-WAV-03', 'The Gilded Curtain')" class="buy-wav-btn">
@@ -970,9 +982,9 @@
                             <div class="store-title">The Last Registry</div>
                             <div class="store-specs">Format: 24-bit .WAV | 40.83 MB</div>
                             <div class="cashapp-box">
-                                <span>Pay via Cash App: <strong>$CloneGeek</strong>[cite: 1]</span>
-                                <span>Price: <strong>$2.00</strong>[cite: 1]</span>
-                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-04</strong>[cite: 1]</span>
+                                <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
+                                <span>Price: <strong>$2.00</strong></span>
+                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-04</strong></span>
                             </div>
                         </div>
                         <button onclick="openCashAppCheckout('CGP-WAV-04', 'The Last Registry')" class="buy-wav-btn">
@@ -986,9 +998,9 @@
                             <div class="store-title">Winter Blues</div>
                             <div class="store-specs">Format: 24-bit .WAV | Standard Master</div>
                             <div class="cashapp-box">
-                                <span>Pay via Cash App: <strong>$CloneGeek</strong>[cite: 1]</span>
-                                <span>Price: <strong>$2.00</strong>[cite: 1]</span>
-                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-05</strong>[cite: 1]</span>
+                                <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
+                                <span>Price: <strong>$2.00</strong></span>
+                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-05</strong></span>
                             </div>
                         </div>
                         <button onclick="openCashAppCheckout('CGP-WAV-05', 'Winter Blues')" class="buy-wav-btn">
@@ -1106,29 +1118,32 @@
 
     </div>
 
-    <!-- CASH APP CHECKOUT MODAL (SUPPORTS BOTH MOBILE & DESKTOP QR) -->
+    <!-- CASH APP & PAYPAL CHECKOUT MODAL (BULLETPROOF MOBILE + DESKTOP) -->
     <div class="modal-overlay" id="cashapp-modal" onclick="if(event.target===this)this.style.display='none'">
         <div class="modal-card">
             <div style="font-family:'Orbitron',sans-serif; font-size:16px; font-weight:900; color:var(--neon-blue); margin-bottom:6px;">
-                💵 INSTANT CASH APP CHECKOUT
+                💵 INSTANT MASTER .WAV CHECKOUT
             </div>
             <div id="modal-track-name" style="font-size:14px; font-weight:700; color:#fff; margin-bottom:12px;"></div>
             
-            <!-- Desktop QR Code Scanner (Fixed to pre-load $2.00 payment) -->
+            <!-- Desktop QR Code Scanner -->
             <div style="background:#fff; padding:10px; border-radius:8px; display:inline-block; margin-bottom:12px;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https%3A%2F%2Fcash.app%2F%24CloneGeek%2F2.00" alt="Cash App QR" width="150" height="150" style="display:block;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https%3A%2F%2Fcash.app%2F%24CloneGeek" alt="Cash App QR" width="150" height="150" style="display:block;">
             </div>
 
             <div class="cashapp-box" style="text-align:left;">
-                <span>1. Open Cash App on your phone (or scan QR above)</span>
-                <span>2. Send <strong>$2.00</strong> to Cashtag: <strong>$CloneGeek</strong>[cite: 1]</span>
-                <span>3. Paste Note Code: <strong id="modal-note-code" style="color:var(--neon-blue);"></strong> <em style="color:var(--gold); font-size:11px;">(Copied!)</em>[cite: 1]</span>
+                <span>1. Open <strong>Cash App</strong> on your phone &amp; search Cashtag: <strong>$CloneGeek</strong> <button class="copy-pill-btn" onclick="copyText('$CloneGeek', this)">Copy Cashtag</button></span>
+                <span>2. Send <strong>$2.00</strong> &amp; paste Note Code: <strong id="modal-note-code" style="color:var(--neon-blue);"></strong> <button class="copy-pill-btn" onclick="copyNoteCode(this)">Copy Code</button></span>
+                <span>3. Drop your screenshot in Discord (or wait for Coach Steward's stamp) &amp; click <strong>Check Status</strong>!</span>
             </div>
 
-            <div style="display:flex; gap:10px; margin-top:12px;">
-                <!-- Mobile Direct Deep Link -->
-                <a href="https://cash.app/$CloneGeek/2.00" target="_blank" class="buy-wav-btn" style="flex:1; text-align:center; padding:12px; text-decoration:none;">Open Cash App (Mobile)[cite: 1]</a>
-                <button onclick="document.getElementById('cashapp-modal').style.display='none'" class="filter-btn" style="padding:10px 14px; color:#fff;">Done</button>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;">
+                <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn" style="flex:1; min-width:170px; text-align:center; padding:11px; text-decoration:none;">Open Cash App</a>
+                <a href="https://paypal.me/clonegeek/2" target="_blank" class="buy-wav-btn" style="flex:1; min-width:170px; background:var(--gold); color:#000; text-align:center; padding:11px; text-decoration:none;">Pay $2 via PayPal</a>
+            </div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+                <button onclick="document.getElementById('cashapp-modal').style.display='none'; checkOrderDownload(true);" class="lookup-btn" style="flex:1; background:var(--green); color:#000;">I Sent Payment — Check Status</button>
+                <button onclick="document.getElementById('cashapp-modal').style.display='none'" class="filter-btn" style="padding:10px 14px; color:#fff;">Close</button>
             </div>
         </div>
     </div>
@@ -1139,6 +1154,7 @@
 
     <script>
         let latestStoreOrders = {};
+        let currentModalCode = '';
 
         function scrollCarousel(elementId, direction) {
             const container = document.getElementById(elementId);
@@ -1148,7 +1164,23 @@
             }
         }
 
+        function copyText(txt, btnEl) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(txt).catch(() => {});
+            }
+            if (btnEl) {
+                const orig = btnEl.textContent;
+                btnEl.textContent = 'Copied!';
+                setTimeout(() => { btnEl.textContent = orig; }, 1500);
+            }
+        }
+
+        function copyNoteCode(btnEl) {
+            copyText(currentModalCode, btnEl);
+        }
+
         function openCashAppCheckout(orderCode, trackTitle) {
+            currentModalCode = orderCode;
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(orderCode).catch(() => {});
             }
@@ -1168,7 +1200,7 @@
 
             const code = inputEl.value.trim().toUpperCase();
             if (!code) {
-                if (manualClick) resEl.innerHTML = '<span style="color:var(--espn-red);">❌ Enter your order code first.</span>';
+                if (manualClick) resEl.innerHTML = '<span style="color:var(--espn-red);">❌ Enter your order code (e.g. CGP-WAV-01) first.</span>';
                 return;
             }
 
@@ -1179,7 +1211,7 @@
                 if (data.success && data.verified && data.download_url) {
                     resEl.innerHTML = `🟢 <strong style="color:var(--green);">PAYMENT VERIFIED BY COACH STEWARD!</strong> &nbsp; <a href="${data.download_url}" target="_blank" style="background:var(--green); color:#000; padding:6px 12px; border-radius:4px; font-family:'Orbitron',sans-serif; font-weight:900; text-decoration:none; display:inline-block; margin-top:4px;">📥 DOWNLOAD 24-BIT .WAV MASTER</a>`;
                 } else if (data.success && !data.verified) {
-                    resEl.innerHTML = `<span style="color:var(--gold);">⏳ Order <strong>${code}</strong> awaiting Coach Steward verification. Once you send $2.00 to <strong>$CloneGeek</strong>[cite: 1] with note <strong>${code}</strong>[cite: 1], this box will automatically unlock your download!</span>`;
+                    resEl.innerHTML = `<span style="color:var(--gold);">⏳ Order <strong>${code}</strong> awaiting Coach Steward verification. Send $2.00 to <strong>$CloneGeek</strong> with note <strong>${code}</strong> (or drop screenshot in Discord) to unlock!</span>`;
                 } else {
                     resEl.innerHTML = `<span style="color:var(--espn-red);">❌ ${data.error || 'Order code not found.'}</span>`;
                 }
@@ -1188,27 +1220,12 @@
                 if (orderData && orderData.verified && orderData.download_url) {
                     resEl.innerHTML = `🟢 <strong style="color:var(--green);">PAYMENT VERIFIED BY COACH STEWARD!</strong> &nbsp; <a href="${orderData.download_url}" target="_blank" style="background:var(--green); color:#000; padding:6px 12px; border-radius:4px; font-family:'Orbitron',sans-serif; font-weight:900; text-decoration:none; display:inline-block; margin-top:4px;">📥 DOWNLOAD 24-BIT .WAV MASTER</a>`;
                 } else {
-                    resEl.innerHTML = `<span style="color:var(--espn-red);">⚠️ Connection error reaching verification server.</span>`;
+                    resEl.innerHTML = `<span style="color:var(--gold);">⏳ Order <strong>${code}</strong> queued — awaiting Coach Steward verification!</span>`;
                 }
             }
         }
 
         (function () {
-            const logoImg = document.getElementById('cgp-brand-logo');
-            const logoPaths = [
-                'CGP.jpg', 'cgp.jpg', 'CGP.JPG', 'CGP.png', 'image.png',
-                'https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/CGP.jpg'
-            ];
-            let pathIdx = 0;
-            logoImg.onerror = function () {
-                pathIdx++;
-                if (pathIdx < logoPaths.length) {
-                    logoImg.src = logoPaths[pathIdx];
-                } else {
-                    logoImg.style.display = 'none';
-                }
-            };
-
             window.addEventListener('load', () => {
                 setTimeout(() => {
                     const slot = document.getElementById('sc-player-slot');
