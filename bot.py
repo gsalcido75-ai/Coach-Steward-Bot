@@ -3018,8 +3018,9 @@ async def verifyorder_cmd(ctx, order_code: str = None):
         f"The buyer can click **Check Download Status** on the site right now to grab their 24-bit `.WAV` master!"
     )
 
-@bot.command(name="lockorder", aliases=["resetorder"])
+
 @commands.has_permissions(administrator=True)
+@bot.command(name="lockorder", aliases=["resetorder"])
 async def lockorder_cmd(ctx, order_code: str = None):
     """Resets an order code back to unverified after the buyer downloads their file."""
     if not order_code:
