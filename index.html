@@ -234,13 +234,30 @@
             text-transform: uppercase;
         }
 
-        /* STOREFRONT STYLING */
-        .store-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
+        /* SWIPEABLE AUDIO STORE CAROUSEL */
+        .store-carousel-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
         }
-        .store-card {
+        .store-carousel-container {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            width: 100%;
+            padding: 6px 4px 16px 4px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-blue) var(--border-subtle);
+        }
+        .store-carousel-container::-webkit-scrollbar { height: 6px; }
+        .store-carousel-container::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+        .store-carousel-card {
+            flex: 0 0 280px;
+            width: 280px;
+            scroll-snap-align: start;
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             border-top: 3px solid var(--neon-blue);
@@ -249,7 +266,11 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: border-color 0.2s ease;
         }
+        .store-carousel-card:hover { border-color: var(--neon-blue); }
+
         .store-title {
             font-family: 'Orbitron', sans-serif;
             font-size: 14px;
@@ -785,100 +806,106 @@
 
         </div>
 
-        <!-- CGP MASTER AUDIO STORE (.WAV) -->
+        <!-- CGP MASTER AUDIO STORE (.WAV) - SWIPEABLE CAROUSEL -->
         <section class="panel">
             <div class="panel-header">
                 <div class="panel-title">
                     <span class="tag-red">DIRECT STORE</span>
                     <span>CGP Master Audio Store (.WAV Downloads)</span>
                 </div>
-                <span class="status-badge" style="background:rgba(0, 229, 255, 0.1); border-color:var(--neon-blue); color:var(--neon-blue);">Cloudflare R2 Linked</span>
+                <span style="font-size:11px; color:var(--neon-blue); font-family:'Share Tech Mono',monospace;">// SWIPE OR CLICK TO BROWSE //</span>
             </div>
             
             <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">
                 Purchase uncompressed 24-bit master audio tracks directly via Cash App ($2.00 standard pricing). Include your generated order reference code in your Cash App notes for instant verification & secure R2 download delivery.
             </p>
 
-            <div class="store-grid">
-                <!-- Track 1 -->
-                <div class="store-card">
-                    <div>
-                        <div class="store-title">Run It Back (Clone Geek Remix)</div>
-                        <div class="store-specs">Format: 24-bit .WAV | 27.43 MB</div>
-                        <div class="cashapp-box">
-                            <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
-                            <span>Price: <strong>$2.00</strong></span>
-                            <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-01</strong></span>
+            <div class="store-carousel-wrapper">
+                <button class="carousel-nav-btn carousel-prev" onclick="scrollCarousel('store-carousel-track', -1)">‹</button>
+                
+                <div class="store-carousel-container" id="store-carousel-track">
+                    <!-- Track 1 -->
+                    <div class="store-carousel-card">
+                        <div>
+                            <div class="store-title">Run It Back (Clone Geek Remix)</div>
+                            <div class="store-specs">Format: 24-bit .WAV | 27.43 MB</div>
+                            <div class="cashapp-box">
+                                <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
+                                <span>Price: <strong>$2.00</strong></span>
+                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-01</strong></span>
+                            </div>
                         </div>
+                        <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn">
+                            Buy via Cash App ($2.00)
+                        </a>
                     </div>
-                    <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn">
-                        Buy via Cash App ($2.00)
-                    </a>
+
+                    <!-- Track 2 -->
+                    <div class="store-carousel-card">
+                        <div>
+                            <div class="store-title">The Clock Out Remix</div>
+                            <div class="store-specs">Format: 24-bit .WAV | 40.16 MB</div>
+                            <div class="cashapp-box">
+                                <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
+                                <span>Price: <strong>$2.00</strong></span>
+                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-02</strong></span>
+                            </div>
+                        </div>
+                        <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn">
+                            Buy via Cash App ($2.00)
+                        </a>
+                    </div>
+
+                    <!-- Track 3 -->
+                    <div class="store-carousel-card">
+                        <div>
+                            <div class="store-title">The Gilded Curtain</div>
+                            <div class="store-specs">Format: 24-bit .WAV | 39.8 MB</div>
+                            <div class="cashapp-box">
+                                <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
+                                <span>Price: <strong>$2.00</strong></span>
+                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-03</strong></span>
+                            </div>
+                        </div>
+                        <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn">
+                            Buy via Cash App ($2.00)
+                        </a>
+                    </div>
+
+                    <!-- Track 4 -->
+                    <div class="store-carousel-card">
+                        <div>
+                            <div class="store-title">The Last Registry</div>
+                            <div class="store-specs">Format: 24-bit .WAV | 40.83 MB</div>
+                            <div class="cashapp-box">
+                                <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
+                                <span>Price: <strong>$2.00</strong></span>
+                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-04</strong></span>
+                            </div>
+                        </div>
+                        <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn">
+                            Buy via Cash App ($2.00)
+                        </a>
+                    </div>
+
+                    <!-- Track 5 -->
+                    <div class="store-carousel-card">
+                        <div>
+                            <div class="store-title">Winter Blues</div>
+                            <div class="store-specs">Format: 24-bit .WAV | Standard Master</div>
+                            <div class="cashapp-box">
+                                <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
+                                <span>Price: <strong>$2.00</strong></span>
+                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-05</strong></span>
+                            </div>
+                        </div>
+                        <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn">
+                            Buy via Cash App ($2.00)
+                        </a>
+                    </div>
                 </div>
 
-                <!-- Track 2 -->
-                <div class="store-card">
-                    <div>
-                        <div class="store-title">The Clock Out Remix</div>
-                        <div class="store-specs">Format: 24-bit .WAV | 40.16 MB</div>
-                        <div class="cashapp-box">
-                            <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
-                            <span>Price: <strong>$2.00</strong></span>
-                            <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-02</strong></span>
-                        </div>
-                    </div>
-                    <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn">
-                        Buy via Cash App ($2.00)
-                    </a>
-                </div>
-
-                <!-- Track 3 -->
-                <div class="store-card">
-                    <div>
-                        <div class="store-title">The Gilded Curtain</div>
-                        <div class="store-specs">Format: 24-bit .WAV | 39.8 MB</div>
-                        <div class="cashapp-box">
-                            <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
-                            <span>Price: <strong>$2.00</strong></span>
-                            <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-03</strong></span>
-                        </div>
-                    </div>
-                    <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn">
-                        Buy via Cash App ($2.00)
-                    </a>
-                </div>
-
-                <!-- Track 4 -->
-                <div class="store-card">
-                    <div>
-                        <div class="store-title">The Last Registry</div>
-                        <div class="store-specs">Format: 24-bit .WAV | 40.83 MB</div>
-                        <div class="cashapp-box">
-                            <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
-                            <span>Price: <strong>$2.00</strong></span>
-                            <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-04</strong></span>
-                        </div>
-                    </div>
-                    <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn">
-                        Buy via Cash App ($2.00)
-                    </a>
-                </div>
-
-                <!-- Track 5 -->
-                <div class="store-card">
-                    <div>
-                        <div class="store-title">Winter Blues</div>
-                        <div class="store-specs">Format: 24-bit .WAV | Standard Master</div>
-                        <div class="cashapp-box">
-                            <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
-                            <span>Price: <strong>$2.00</strong></span>
-                            <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-05</strong></span>
-                        </div>
-                    </div>
-                    <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn">
-                        Buy via Cash App ($2.00)
-                    </a>
-                </div>
+                <button class="carousel-nav-btn carousel-next" onclick="scrollCarousel('store-carousel-track', 1)">›</button>
             </div>
         </section>
 
