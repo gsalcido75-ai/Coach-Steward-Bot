@@ -53,6 +53,29 @@ CGP_TRACKS = [
     {"title": "Road to Undisputed", "url": "https://on.soundcloud.com/Qz1dzzj3Z6fmSGbRG0"}
 ]
 
+STORE_ORDERS_DB = {
+    "CGP-WAV-01": {"track": "Run It Back (Clone Geek Remix)", "filename": "Run It Back Clone Geek Remix.wav", "verified": False, "download_url": ""},
+    "CGP-WAV-02": {"track": "The Clock Out Remix", "filename": "The Clock out Remix.wav", "verified": False, "download_url": ""},
+    "CGP-WAV-03": {"track": "Frequency Forever", "filename": "Frequency Forever.wav", "verified": False, "download_url": ""},
+    "CGP-WAV-04": {"track": "The Last Registry", "filename": "The Last Registry.wav", "verified": False, "download_url": ""},
+    "CGP-WAV-05": {"track": "Winter Blues", "filename": "Winter Blues (1).wav", "verified": False, "download_url": ""}
+}
+
+def generate_r2_download_link(filename: str, expires_in: int = 3600) -> str:
+    client = get_r2_client()
+    if client:
+        try:
+            return client.generate_presigned_url(
+                "get_object",
+                Params={"Bucket": R2_BUCKET_NAME, "Key": filename},
+                ExpiresIn=expires_in
+            )
+        except Exception as e:
+            print(f"[R2 PRESIGN ERROR]: {e}")
+    if R2_PUBLIC_URL:
+        return f"{R2_PUBLIC_URL}/{filename}"
+    return ""
+
 CHAMPIONS_DATA = {
     "Heavyweight": {"fighter": "Roy🇲🇽🇲🇽🇲🇽", "record": "14W - 0L - 0D - 0K"},
     "Cruiserweight": {"fighter": "f150-_-t", "record": "11W - 2L - 0D - 0K"},
@@ -2971,6 +2994,44 @@ async def send_tracks_menu(channel):
     await channel.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
 # ================= STORE, MERCH & DIRECT MATCHMAKING COMMANDS =================
+
+@bot.command(name="verifyorder", aliases=["unlocktrack", "confirmwav", "unlockwav"])
+@commands.has_permissions(administrator=True)
+async def verifyorder_cmd(ctx, order_code: str = None):
+    """Commissioner command to verify a Cash App payment and unlock the .WAV download on the website."""
+    if not order_code:
+        return await ctx.send("❌ **Usage:** `!verifyorder CGP-WAV-01` (or `CGP-WAV-02` through `CGP-WAV-05`)")
+    code = order_code.upper().strip()
+    if code not in STORE_ORDERS_DB:
+        return await ctx.send(f"❌ Unknown order code `{code}`. Valid codes: `{', '.join(STORE_ORDERS_DB.keys())}`")
+
+    order = STORE_ORDERS_DB[code]
+    dl_url = await asyncio.to_thread(generate_r2_download_link, order["filename"], 7200)
+    order["verified"] = True
+    order["download_url"] = dl_url
+    order["verified_at"] = datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d %I:%M:%S %p CST")
+
+    await save_and_sync_records()
+    await ctx.send(
+        f"🟢 **PAYMENT VERIFIED & R2 MASTER UNLOCKED!**\n"
+        f"🎙️ **Coach Steward:** Order **`{code}`** (**{order['track']}**) is now **UNLOCKED** on the Mainframe Website! "
+        f"The buyer can click **Check Download Status** on the site right now to grab their 24-bit `.WAV` master!"
+    )
+
+@bot.command(name="lockorder", aliases=["resetorder"])
+@commands.has_permissions(administrator=True)
+async def lockorder_cmd(ctx, order_code: str = None):
+    """Resets an order code back to unverified after the buyer downloads their file."""
+    if not order_code:
+        return await ctx.send("❌ **Usage:** `!lockorder CGP-WAV-01`")
+    code = order_code.upper().strip()
+    if code not in STORE_ORDERS_DB:
+        return await ctx.send(f"❌ Unknown order code `{code}`.")
+    STORE_ORDERS_DB[code]["verified"] = False
+    STORE_ORDERS_DB[code]["download_url"] = ""
+    await save_and_sync_records()
+    await ctx.send(f"🔒 **Order `{code}` Reset:** Locked and ready for the next buyer!")
+
 @bot.command(name="store", aliases=["vault", "merch", "wavs", "shop"])
 async def store_cmd(ctx):
     """Inspects the live Cloudflare R2 cgpmastervault bucket and displays available .WAV masters & merch."""
