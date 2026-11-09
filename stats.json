@@ -83,7 +83,7 @@
     "1487227892340621384": {
         "name": "KnuckleUpFoo",
         "wins": 3,
-        "losses": 5,
+        "losses": 6,
         "kos": 3,
         "verified": true,
         "draws": 0,
@@ -595,9 +595,9 @@
     },
     "1409789020971470909": {
         "name": "Roy\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd",
-        "wins": 6,
+        "wins": 7,
         "losses": 0,
-        "kos": 6,
+        "kos": 7,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0
@@ -1028,8 +1028,8 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-08 07:14:01 PM CST"
+        "updated_at": "2026-11-08 07:28:14 PM CST"
     },
-    "_last_synced": "2026-11-08T19:14:01.670710-06:00",
+    "_last_synced": "2026-11-08T19:28:14.540456-06:00",
     "video_archive": []
 }
