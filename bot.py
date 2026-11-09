@@ -3649,6 +3649,8 @@ CORS_HEADERS = {
     "Access-Control-Allow-Headers": "Content-Type"
 }
 
+last_order_ping_time = {}
+
 async def handle_ping(request):
     return web.Response(text="Coach Steward is awake and running the CGP Mainframe Gym & Cloudflare R2 Store!", headers=CORS_HEADERS)
 
@@ -3657,6 +3659,22 @@ async def handle_check_order(request):
     order = STORE_ORDERS_DB.get(code)
     if not order:
         return web.json_response({"success": False, "error": "Invalid order reference code."}, status=404, headers=CORS_HEADERS)
+
+    # If the buyer clicked "I Sent Payment — Check Status" (?notify=1), alert Clone Geek in Discord!
+    if request.query.get("notify") == "1" and not order.get("verified"):
+        now_ts = asyncio.get_event_loop().time()
+        if now_ts - last_order_ping_time.get(code, 0) > 60:
+            last_order_ping_time[code] = now_ts
+            for guild in bot.guilds:
+                corner_ch = get_coaches_corner_channel(guild)
+                if corner_ch:
+                    asyncio.create_task(corner_ch.send(
+                        f"🚨 **LIVE WEBSITE STORE CHECKOUT ALERT!** 🚨\n"
+                        f"🎙️ **Coach Steward:** <@{CREATOR_ID}>, a buyer on the Mainframe Website just clicked **'I Sent Payment'** for Order **`{code}`** (**{order['track']}** — `$2.00`)!\n"
+                        f"👉 Check your **PayPal / Cash App** notifications—if the $2.00 is in, type **`!verifyorder {code}`** right here (or have them drop their screenshot) to unlock their `.WAV` download instantly!"
+                    ))
+                break
+
     if not order.get("verified"):
         return web.json_response({"success": True, "verified": False, "track": order["track"]}, headers=CORS_HEADERS)
 
