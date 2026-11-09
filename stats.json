@@ -595,9 +595,9 @@
     },
     "1409789020971470909": {
         "name": "Roy\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd",
-        "wins": 4,
+        "wins": 5,
         "losses": 0,
-        "kos": 4,
+        "kos": 5,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0
@@ -659,7 +659,7 @@
     "1279476207603290197": {
         "name": "Clone_Geek",
         "wins": 3,
-        "losses": 10,
+        "losses": 11,
         "draws": 0,
         "kos": 3,
         "golden_tickets": 0,
@@ -1028,8 +1028,8 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-07 04:02:48 PM CST"
+        "updated_at": "2026-11-08 06:48:49 PM CST"
     },
-    "_last_synced": "2026-11-07T16:02:48.121061-06:00",
+    "_last_synced": "2026-11-08T18:48:49.725165-06:00",
     "video_archive": []
 }
