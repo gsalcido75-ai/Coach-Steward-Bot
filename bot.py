@@ -308,6 +308,7 @@ COACH_PLAYBOOK_TEXT = (
     "• **`!match @fighter1 @fighter2 [notes]`** — Book an official head-to-head matchup & Tale of the Tape.\n"
     "• **`!record <W> <L> [D] [KO]`** — Log your Wins, Losses, Draws, and KOs.\n"
     "• **`!verify @fighter <W> <L> [D] [KO]`** — Commissioner stamp & update any fighter's record instantly.\n"
+    "• **`!verifyorder <Code>`** — *(Admin)* Verify a Cash App payment screenshot or code and unlock Website .WAV download instantly.\n"
     "• **`!analyze`** *(attach or reply to a screenshot)* — Have me scan a scorecard/stat screen and post an HBO CompuBox Report.\n"
     "• **`!mystats [@fighter]`** — Pull up any fighter's verified scorecard & Golden Ticket balance.\n"
     "• **`!findfight [@fighter]`** — Scan online players & book a live matchup.\n"
@@ -324,7 +325,7 @@ COACH_PLAYBOOK_TEXT = (
     "• **`!ticket [check | give | use] [@fighter]`** — Check or manage Golden Ticket ($20 Entry) credits.\n"
     "• **`!tracks`** — Pull up the full CGP SoundCloud catalog.\n"
     "• **`!sfx <bell | horn | ko | towel | crowd>`** — Trigger the ringside G9 Soundboard!\n\n"
-    "👑 **Commissioner Commands:** `!initboard`, `!resetall`, `!verify @user <W> <L> <D> <KO>`, `!match @f1 @f2`, `!newdrop`, `!fixtourney`, `!swap @out @in`, `!advance @winner`, `!closebracket`, `!ticket give @user`, `!sweep <#>`, `!timeout @user`, `!addreel`, `!removereel`"
+    "👑 **Commissioner Commands:** `!initboard`, `!resetall`, `!verify @user <W> <L> <D> <KO>`, `!verifyorder <Code>`, `!match @f1 @f2`, `!newdrop`, `!fixtourney`, `!swap @out @in`, `!advance @winner`, `!closebracket`, `!ticket give @user`, `!sweep <#>`, `!timeout @user`, `!addreel`, `!removereel`"
 )
 
 # ================= NON-REPEATING SHUFFLE DECKS =================
@@ -528,6 +529,21 @@ def list_r2_vault_objects() -> list:
         print(f"[R2 LIST ERROR]: {e}")
         return []
 
+def generate_r2_download_link(filename: str, expires_in: int = 3600) -> str:
+    client = get_r2_client()
+    if client:
+        try:
+            return client.generate_presigned_url(
+                "get_object",
+                Params={"Bucket": R2_BUCKET_NAME, "Key": filename},
+                ExpiresIn=expires_in
+            )
+        except Exception as e:
+            print(f"[R2 PRESIGN ERROR]: {e}")
+    if R2_PUBLIC_URL:
+        return f"{R2_PUBLIC_URL}/{filename}"
+    return ""
+
 async def send_store_inventory_embed(channel: discord.abc.Messageable, reply_to: discord.Message = None):
     items = await asyncio.to_thread(list_r2_vault_objects)
     if items:
@@ -715,6 +731,14 @@ def get_default_tournament_state() -> dict:
 
 ACTIVE_TOURNAMENT = get_default_tournament_state()
 FIGHTER_RECORDS = {}
+
+STORE_ORDERS_DB = {
+    "CGP-WAV-01": {"track": "Run It Back (Clone Geek Remix)", "filename": "Run It Back Clone Geek Remix.wav", "verified": False, "download_url": ""},
+    "CGP-WAV-02": {"track": "The Clock Out Remix", "filename": "The Clock out Remix.wav", "verified": False, "download_url": ""},
+    "CGP-WAV-03": {"track": "The Gilded Curtain", "filename": "The Gilded Curtain.wav", "verified": False, "download_url": ""},
+    "CGP-WAV-04": {"track": "The Last Registry", "filename": "The Last Registry.wav", "verified": False, "download_url": ""},
+    "CGP-WAV-05": {"track": "Winter Blues", "filename": "Winter Blues (1).wav", "verified": False, "download_url": ""}
+}
 
 def deduplicate_fighter_records(preferred_uid: int = None, preferred_name: str = None):
     if CREATOR_ID in FIGHTER_RECORDS:
@@ -1069,9 +1093,9 @@ def write_records_to_disk():
     file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
     export_payload = {str(k): v for k, v in FIGHTER_RECORDS.items()}
     export_payload["_tournament"] = ACTIVE_TOURNAMENT
+    export_payload["_store_orders"] = STORE_ORDERS_DB
     export_payload["_last_synced"] = datetime.datetime.now(CENTRAL_TZ).isoformat()
     
-    # Preserve existing video_archive if present
     if os.path.exists(file_path):
         try:
             with open(file_path, "r", encoding="utf-8") as f:
@@ -1104,7 +1128,7 @@ async def save_and_sync_records() -> bool:
         return False
 
 def load_records():
-    global ACTIVE_TOURNAMENT
+    global ACTIVE_TOURNAMENT, STORE_ORDERS_DB
     file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
     if os.path.exists(file_path):
         try:
@@ -1116,6 +1140,10 @@ def load_records():
                     default_t.update(data["_tournament"])
                     default_t["entrants"] = [int(x) for x in default_t.get("entrants", [])]
                     ACTIVE_TOURNAMENT = default_t
+                if "_store_orders" in data and isinstance(data["_store_orders"], dict):
+                    for k, v in data["_store_orders"].items():
+                        if k in STORE_ORDERS_DB and isinstance(v, dict):
+                            STORE_ORDERS_DB[k].update(v)
                 for k, v in data.items():
                     if str(k).isdigit() and isinstance(v, dict):
                         v.setdefault("wins", 0)
@@ -1133,7 +1161,7 @@ def load_records():
     return {}
 
 async def fetch_state_from_github_if_needed():
-    global FIGHTER_RECORDS, ACTIVE_TOURNAMENT
+    global FIGHTER_RECORDS, ACTIVE_TOURNAMENT, STORE_ORDERS_DB
     if not GITHUB_TOKEN or not GITHUB_REPO:
         return
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{DATA_FILE}"
@@ -1156,6 +1184,10 @@ async def fetch_state_from_github_if_needed():
                             default_t.update(data["_tournament"])
                             default_t["entrants"] = [int(x) for x in default_t.get("entrants", [])]
                             ACTIVE_TOURNAMENT = default_t
+                        if "_store_orders" in data and isinstance(data["_store_orders"], dict):
+                            for k, v in data["_store_orders"].items():
+                                if k in STORE_ORDERS_DB and isinstance(v, dict):
+                                    STORE_ORDERS_DB[k].update(v)
                         for k, v in data.items():
                             if str(k).isdigit() and isinstance(v, dict):
                                 v.setdefault("wins", 0)
@@ -1937,6 +1969,38 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
     )
     return fallback_txt, None, False
 
+# ================= GEMINI VISION CASH APP RECEIPT SCANNER (100% HANDS-FREE WORKFLOW) =================
+async def scan_cashapp_receipt_with_vision(image_bytes: bytes, mime_type: str) -> tuple:
+    global last_ai_call_time
+    vision_prompt = (
+        "You are Coach Steward, the strict automated cashier and cornerman for the CGP Mainframe Store. "
+        "Analyze this payment receipt screenshot (Cash App, PayPal, or Bank Transfer). "
+        "Find the transaction amount (should be around $2.00) AND find any Note, Memo, or Reference code (such as CGP-WAV-01, CGP-WAV-02, CGP-WAV-03, CGP-WAV-04, or CGP-WAV-05).\n\n"
+        "Output your findings strictly in this format:\n"
+        "STATUS: VALID (or INVALID)\n"
+        "AMOUNT: [Found Amount or UNKNOWN]\n"
+        "CODE: [Found Note Code or NONE]"
+    )
+    image_part = {"mime_type": mime_type or "image/jpeg", "data": image_bytes}
+    async with ai_lock:
+        now = asyncio.get_event_loop().time()
+        elapsed = now - last_ai_call_time
+        if elapsed < 2.2:
+            await asyncio.sleep(2.2 - elapsed)
+        try:
+            response = await primary_model.generate_content_async([vision_prompt, image_part])
+            last_ai_call_time = asyncio.get_event_loop().time()
+            if response and response.text:
+                txt = response.text.strip()
+                valid = "STATUS: VALID" in txt.upper()
+                code_match = re.search(r'CGP-WAV-0[1-5]', txt, re.IGNORECASE)
+                code = code_match.group(0).upper() if code_match else None
+                return valid, code, txt
+        except Exception as e:
+            print(f"[CASHAPP VISION SCAN ERROR]: {e}")
+            last_ai_call_time = asyncio.get_event_loop().time()
+    return False, None, "AI Scanner Error"
+
 async def process_and_broadcast_scorecard(message: discord.Message, require_tag: bool = True):
     image_attachments = [
         att for att in message.attachments
@@ -2368,6 +2432,32 @@ async def on_message(message):
     is_creator = (message.author.id == CREATOR_ID) or message.author.guild_permissions.administrator
     other_mentions = [m for m in message.mentions if m.id != bot.user.id and not m.bot]
 
+    # Cash App Receipt Auto-Scanner in #store-receipts or any channel
+    if message.attachments and any(k in message.channel.name.lower() for k in ["receipt", "store", "cashapp", "payment", "orders"]):
+        att = message.attachments[0]
+        if (att.content_type and "image" in att.content_type) or att.filename.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
+            try:
+                ibytes = await att.read()
+                valid, found_code, ai_raw = await scan_cashapp_receipt_with_vision(ibytes, att.content_type or "image/jpeg")
+                if valid and found_code and found_code in STORE_ORDERS_DB:
+                    answered_messages.add(message.id)
+                    order = STORE_ORDERS_DB[found_code]
+                    dl_url = await asyncio.to_thread(generate_r2_download_link, order["filename"], 7200)
+                    order["verified"] = True
+                    order["download_url"] = dl_url
+                    order["verified_at"] = datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d %I:%M:%S %p CST")
+                    await save_and_sync_records()
+                    
+                    await message.reply(
+                        f"🟢 **AUTOMATED CASH APP PAYMENT VERIFIED!**\n"
+                        f"🎙️ **Coach Steward:** I scanned your receipt screenshot via Gemini Vision and matched code **`{found_code}`** (**{order['track']}**)! "
+                        f"Your direct 24-bit R2 `.WAV` master download is now **UNLOCKED** on the Mainframe website!",
+                        view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
+                    )
+                    return
+            except Exception as e:
+                print(f"[RECEIPT AUTO-SCAN ERROR]: {e}")
+
     # Natural language Commissioner / Fighter Direct Matchmaking ("Coach match @f1 and @f2")
     if (bot.user in message.mentions or "coach" in msg) and any(k in msg for k in ["match", "pair", "book", "put", "set up", "versus", "vs"]):
         if len(other_mentions) >= 2 and not any(w in msg for w in ["swap", "replace", "sub in", "substitute"]):
@@ -2680,7 +2770,7 @@ async def on_message(message):
                     f"⏱️ **Bout Length:** 8 Rounds (12 for Titles)\n"
                     f"⚡ **Speed:** 1.5x | **Ref:** Strict\n"
                     f"🏆 **Tournaments:** Strict 8-Man Brackets (Pay-to-Play Gauntlets, Golden Ticket Invitationals & Open Belts)\n"
-                    f"📸 **Scorecard Verification Rule:** Upload your post-fight scorecard in `#scorecard-submissions` and **`@tag` your opponent** — Coach Steward will auto-update unified records, advance active tournament brackets, and broadcast an HBO CompuBox Report!\n"
+                    f"📸 **Scorecards:** Upload match proof in `#scorecard-submissions` with an `@opponent` tag so I can auto-update records, advance tournament brackets, and post an HBO report!\n"
                     f"🔗 {MAINFRAME_HUB_URL}"
                 ),
                 color=discord.Color.gold()
@@ -2886,6 +2976,43 @@ async def store_cmd(ctx):
     """Inspects the live Cloudflare R2 cgpmastervault bucket and displays available .WAV masters & merch."""
     await send_store_inventory_embed(ctx.channel)
 
+@bot.command(name="verifyorder", aliases=["unlocktrack", "confirmwav", "unlockwav"])
+@commands.has_permissions(administrator=True)
+async def verifyorder_cmd(ctx, order_code: str = None):
+    """Commissioner command to verify a Cash App payment and unlock the .WAV download on the website."""
+    if not order_code:
+        return await ctx.send("❌ **Usage:** `!verifyorder CGP-WAV-01` (or `CGP-WAV-02` through `CGP-WAV-05`)")
+    code = order_code.upper().strip()
+    if code not in STORE_ORDERS_DB:
+        return await ctx.send(f"❌ Unknown order code `{code}`. Valid codes: `{', '.join(STORE_ORDERS_DB.keys())}`")
+
+    order = STORE_ORDERS_DB[code]
+    dl_url = await asyncio.to_thread(generate_r2_download_link, order["filename"], 7200)
+    order["verified"] = True
+    order["download_url"] = dl_url
+    order["verified_at"] = datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d %I:%M:%S %p CST")
+
+    await save_and_sync_records()
+    await ctx.send(
+        f"🟢 **PAYMENT VERIFIED & R2 MASTER UNLOCKED!**\n"
+        f"🎙️ **Coach Steward:** Order **`{code}`** (**{order['track']}**) is now **UNLOCKED** on the Mainframe Website! "
+        f"The buyer can click **Check Download Status** on the site right now to grab their 24-bit `.WAV` master!"
+    )
+
+@bot.command(name="lockorder", aliases=["resetorder"])
+@commands.has_permissions(administrator=True)
+async def lockorder_cmd(ctx, order_code: str = None):
+    """Resets an order code back to unverified after the buyer downloads their file."""
+    if not order_code:
+        return await ctx.send("❌ **Usage:** `!lockorder CGP-WAV-01`")
+    code = order_code.upper().strip()
+    if code not in STORE_ORDERS_DB:
+        return await ctx.send(f"❌ Unknown order code `{code}`.")
+    STORE_ORDERS_DB[code]["verified"] = False
+    STORE_ORDERS_DB[code]["download_url"] = ""
+    await save_and_sync_records()
+    await ctx.send(f"🔒 **Order `{code}` Reset:** Locked and ready for the next buyer!")
+
 @bot.command(name="newdrop", aliases=["merchdrop", "wavdrop", "storedrop"])
 @commands.has_permissions(administrator=True)
 async def newdrop_cmd(ctx, *, drop_details: str = "New 24-Bit Studio Master `.WAV` & Official CGP Merch now live in the Vault!"):
@@ -2898,7 +3025,7 @@ async def newdrop_cmd(ctx, *, drop_details: str = "New 24-Bit Studio Master `.WA
     embed = discord.Embed(
         title="🚨 OFFICIAL CGP MAINFRAME STORE & MASTER .WAV DROP! 🚨",
         description=(
-            f"🎙️ **Coach Steward:** Listen up, contenders! **Commissioner Clone Geek** juststocked the **CGP Mainframe Storefront & Cloudflare R2 Vault** with fresh heat:\n\n"
+            f"🎙️ **Coach Steward:** Listen up, contenders! **Commissioner Clone Geek** just stocked the **CGP Mainframe Storefront & Cloudflare R2 Vault** with fresh heat:\n\n"
             f"🔥 **{drop_details}**\n\n"
             f"💵 **CashApp Direct:** `$CloneGeek`\n"
             f"🛒 **Inspect Vault Inventory:** Type `!store` in chat\n"
@@ -3489,8 +3616,31 @@ async def drop(ctx, track_url: str, *, track_title: str):
     embed = discord.Embed(title=f"🚨 NEW CGP MAINFRAME GYM TRANSMISSION: {track_title.upper()} 🚨", description=f"**{track_title}** is LIVE on SoundCloud & available in 24-bit `.WAV` in the R2 Vault (`!store`)!\n\n*Stream full track to beat the algorithm!*", color=discord.Color.red(), url=track_url)
     await channel.send(content="@everyone Tap in! 👇", embed=embed, view=PromoButtons(track_url))
 
+# ================= AIOHTTP WEB SERVER + LIVE ORDER VERIFICATION API =================
+CORS_HEADERS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type"
+}
+
 async def handle_ping(request):
-    return web.Response(text="Coach Steward is awake and running the CGP Mainframe Gym & Cloudflare R2 Store!")
+    return web.Response(text="Coach Steward is awake and running the CGP Mainframe Gym & Cloudflare R2 Store!", headers=CORS_HEADERS)
+
+async def handle_check_order(request):
+    code = request.match_info.get("order_code", "").upper().strip()
+    order = STORE_ORDERS_DB.get(code)
+    if not order:
+        return web.json_response({"success": False, "error": "Invalid order reference code."}, status=404, headers=CORS_HEADERS)
+    if not order.get("verified"):
+        return web.json_response({"success": True, "verified": False, "track": order["track"]}, headers=CORS_HEADERS)
+
+    dl_url = await asyncio.to_thread(generate_r2_download_link, order["filename"], 3600)
+    return web.json_response({
+        "success": True,
+        "verified": True,
+        "track": order["track"],
+        "download_url": dl_url or order.get("download_url", "")
+    }, headers=CORS_HEADERS)
 
 async def self_ping_loop():
     await bot.wait_until_ready()
@@ -3508,6 +3658,7 @@ async def self_ping_loop():
 async def start_web_server():
     app = web.Application()
     app.router.add_get('/', handle_ping)
+    app.router.add_get('/api/check-order/{order_code}', handle_check_order)
     runner = web.AppRunner(app)
     await runner.setup()
     port = int(os.environ.get("PORT", 8080))
