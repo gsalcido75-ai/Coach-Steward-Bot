@@ -3038,19 +3038,6 @@ async def store_cmd(ctx):
     """Inspects the live Cloudflare R2 cgpmastervault bucket and displays available .WAV masters & merch."""
     await send_store_inventory_embed(ctx.channel)
 
-@bot.command(name="lockorder", aliases=["resetorder"])
-@commands.has_permissions(administrator=True)
-async def lockorder_cmd(ctx, order_code: str = None):
-    """Resets an order code back to unverified after the buyer downloads their file."""
-    if not order_code:
-        return await ctx.send("❌ **Usage:** `!lockorder CGP-WAV-01`")
-    code = order_code.upper().strip()
-    if code not in STORE_ORDERS_DB:
-        return await ctx.send(f"❌ Unknown order code `{code}`.")
-    STORE_ORDERS_DB[code]["verified"] = False
-    STORE_ORDERS_DB[code]["download_url"] = ""
-    await save_and_sync_records()
-    await ctx.send(f"🔒 **Order `{code}` Reset:** Locked and ready for the next buyer!")
 
 @bot.command(name="newdrop", aliases=["merchdrop", "wavdrop", "storedrop"])
 @commands.has_permissions(administrator=True)
