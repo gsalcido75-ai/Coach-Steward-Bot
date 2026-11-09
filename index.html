@@ -1106,7 +1106,7 @@
 
     </div>
 
-    <!-- CASH APP CHECKOUT MODAL -->
+    <!-- CASH APP CHECKOUT MODAL (SUPPORTS BOTH MOBILE & DESKTOP QR) -->
     <div class="modal-overlay" id="cashapp-modal" onclick="if(event.target===this)this.style.display='none'">
         <div class="modal-card">
             <div style="font-family:'Orbitron',sans-serif; font-size:16px; font-weight:900; color:var(--neon-blue); margin-bottom:6px;">
@@ -1114,6 +1114,7 @@
             </div>
             <div id="modal-track-name" style="font-size:14px; font-weight:700; color:#fff; margin-bottom:12px;"></div>
             
+            <!-- Desktop QR Code Scanner -->
             <div style="background:#fff; padding:10px; border-radius:8px; display:inline-block; margin-bottom:12px;">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://cash.app/%24CloneGeek" alt="Cash App QR" width="150" height="150" style="display:block;">
             </div>
@@ -1125,6 +1126,7 @@
             </div>
 
             <div style="display:flex; gap:10px; margin-top:12px;">
+                <!-- Mobile Direct Deep Link -->
                 <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn" style="flex:1; text-align:center; padding:12px; text-decoration:none;">Open Cash App (Mobile)[cite: 1]</a>
                 <button onclick="document.getElementById('cashapp-modal').style.display='none'" class="filter-btn" style="padding:10px 14px; color:#fff;">Done</button>
             </div>
