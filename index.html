@@ -732,7 +732,7 @@
             .carousel-nav-btn { display: none; }
         }
 
-        /* CASH APP CHECKOUT MODAL (FIXES DESKTOP 404) */
+        /* CASH APP CHECKOUT MODAL */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -885,7 +885,7 @@
 
         </div>
 
-        <!-- CGP MASTER AUDIO STORE (.WAV) - SWIPEABLE CAROUSEL + AUTOMATED DOWNLOAD LOOKUP -->
+        <!-- CGP MASTER AUDIO STORE (.WAV) -->
         <section class="panel">
             <div class="panel-header">
                 <div class="panel-title">
@@ -895,7 +895,6 @@
                 <span style="font-size:11px; color:var(--neon-blue); font-family:'Share Tech Mono',monospace;">// SWIPE OR CLICK TO BROWSE //</span>
             </div>
 
-            <!-- EXPANDABLE BUYER STEP-BY-STEP DRAWER & LIVE ORDER UNLOCK BOX -->
             <div class="store-helper-box">
                 <details>
                     <summary>ℹ️ How to Buy & Unlock Your Instant .WAV Master Download (Click to Expand)</summary>
@@ -1020,7 +1019,7 @@
             <div class="bracket-columns" id="wire-grid"></div>
         </section>
 
-        <!-- HOLOGRAPHIC SWIPEABLE CGP NETWORK BUBBLE CAROUSEL -->
+        <!-- NETWORK BUBBLE CAROUSEL -->
         <section class="panel">
             <div class="panel-header" style="margin-bottom:12px;">
                 <div class="panel-title">
@@ -1088,7 +1087,7 @@
             </div>
         </section>
 
-        <!-- SWIPEABLE REEL VAULT CAROUSEL -->
+        <!-- REEL VAULT CAROUSEL -->
         <section class="panel" id="cgp-video-archive">
             <div class="panel-header">
                 <div class="panel-title">
@@ -1107,7 +1106,7 @@
 
     </div>
 
-    <!-- CASH APP CHECKOUT MODAL (ZERO 404 ON DESKTOP + AUTO QR CODE) -->
+    <!-- CASH APP CHECKOUT MODAL -->
     <div class="modal-overlay" id="cashapp-modal" onclick="if(event.target===this)this.style.display='none'">
         <div class="modal-card">
             <div style="font-family:'Orbitron',sans-serif; font-size:16px; font-weight:900; color:var(--neon-blue); margin-bottom:6px;">
@@ -1167,12 +1166,11 @@
 
             const code = inputEl.value.trim().toUpperCase();
             if (!code) {
-                if (manualClick) resEl.innerHTML = '<span style="color:var(--espn-red);">❌ Enter your order code (e.g. CGP-WAV-01) first.</span>';
+                if (manualClick) resEl.innerHTML = '<span style="color:var(--espn-red);">❌ Enter your order code first.</span>';
                 return;
             }
 
             try {
-                // FIXED: Now queries your live Render backend API directly
                 const res = await fetch(`https://coach-steward-bot-1.onrender.com/api/check-order/${code}`, { cache: 'no-store' });
                 const data = await res.json();
 
@@ -1184,12 +1182,11 @@
                     resEl.innerHTML = `<span style="color:var(--espn-red);">❌ ${data.error || 'Order code not found.'}</span>`;
                 }
             } catch (e) {
-                // Fallback to stats.json cache if backend request fails
                 const orderData = latestStoreOrders[code];
                 if (orderData && orderData.verified && orderData.download_url) {
                     resEl.innerHTML = `🟢 <strong style="color:var(--green);">PAYMENT VERIFIED BY COACH STEWARD!</strong> &nbsp; <a href="${orderData.download_url}" target="_blank" style="background:var(--green); color:#000; padding:6px 12px; border-radius:4px; font-family:'Orbitron',sans-serif; font-weight:900; text-decoration:none; display:inline-block; margin-top:4px;">📥 DOWNLOAD 24-BIT .WAV MASTER</a>`;
                 } else {
-                    resEl.innerHTML = `<span style="color:var(--espn-red);">⚠️ Connection error reaching verification server. Make sure your order code is valid.</span>`;
+                    resEl.innerHTML = `<span style="color:var(--espn-red);">⚠️ Connection error reaching verification server.</span>`;
                 }
             }
         }
@@ -1305,7 +1302,7 @@
                             wins: Number(v.wins ?? v.w ?? 0),
                             losses: Number(v.losses ?? v.l ?? 0),
                             kos: Number(v.kos ?? v.ko ?? 0)
-                        ))
+                        }))
                         .sort((a, b) => b.wins - a.wins || b.kos - a.kos || a.losses - b.losses);
 
                     renderLeaderboard();
