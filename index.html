@@ -234,7 +234,65 @@
             text-transform: uppercase;
         }
 
-        /* 4. TWO-COLUMN TOP DASHBOARD */
+        /* STOREFRONT STYLING */
+        .store-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .store-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-top: 3px solid var(--neon-blue);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .store-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .store-specs {
+            font-size: 11px;
+            color: var(--gold);
+            font-family: 'Share Tech Mono', monospace;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+        .cashapp-box {
+            background: #0b0e17;
+            border: 1px dashed var(--border-subtle);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 12px;
+        }
+        .cashapp-box span { color: var(--text-secondary); display: block; margin-bottom: 2px; }
+        .cashapp-box strong { color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: 14px; }
+        
+        .buy-wav-btn {
+            display: block;
+            text-align: center;
+            background: linear-gradient(90deg, #00e5ff, #0088cc);
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+            padding: 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+            transition: all 0.2s ease;
+        }
+        .buy-wav-btn:hover { background: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.4); }
+
+        /* TWO-COLUMN TOP DASHBOARD */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1.25fr 1fr;
@@ -370,7 +428,7 @@
         }
         .btn-paypal { background: var(--gold); color: #000; }
 
-        /* 5. TOURNAMENT BRACKET WIRE */
+        /* TOURNAMENT BRACKET WIRE */
         .tourney-subbar {
             display: flex;
             flex-direction: column;
@@ -442,7 +500,7 @@
         }
         .slot-row.win { color: var(--green); font-weight: 800; }
 
-        /* 6. HOLOGRAPHIC SWIPEABLE CGP NETWORK BUBBLE CAROUSEL (NOW ABOVE REEL VAULT) */
+        /* NETWORK CAROUSEL */
         .network-carousel-wrapper {
             position: relative;
             display: flex;
@@ -478,8 +536,6 @@
             text-align: center;
             box-shadow: 0 8px 25px rgba(0,0,0,0.4);
             transition: all 0.25s ease;
-            position: relative;
-            overflow: hidden;
         }
         .network-bubble:hover {
             transform: translateY(-4px);
@@ -535,7 +591,7 @@
             margin-top: auto;
         }
 
-        /* 7. SWIPEABLE REEL VAULT CAROUSEL (NOW BELOW NETWORK HUBS) */
+        /* REEL VAULT CAROUSEL */
         .carousel-wrapper {
             position: relative;
             display: flex;
@@ -729,6 +785,55 @@
 
         </div>
 
+        <!-- NEW: CGP MASTER AUDIO STORE (.WAV) -->
+        <section class="panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="tag-red">DIRECT STORE</span>
+                    <span>CGP Master Audio Store (.WAV Downloads)</span>
+                </div>
+                <span class="status-badge" style="background:rgba(0, 229, 255, 0.1); border-color:var(--neon-blue); color:var(--neon-blue);">Cloudflare R2 Linked</span>
+            </div>
+            
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">
+                Purchase uncompressed 24-bit master audio tracks directly via Cash App. Include your generated order reference code in your Cash App notes for instant verification & secure R2 download delivery.
+            </p>
+
+            <div class="store-grid">
+                <!-- Track 1 -->
+                <div class="store-card">
+                    <div>
+                        <div class="store-title">Elite Registry Database (Full Album)</div>
+                        <div class="store-specs">Format: 24-bit .WAV | Master Vault</div>
+                        <div class="cashapp-box">
+                            <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
+                            <span>Price: <strong>$29.99</strong></span>
+                            <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-ALBUM-01</strong></span>
+                        </div>
+                    </div>
+                    <a href="https://cash.app/$CloneGeek/29.99?note=CGP-ALBUM-01" target="_blank" class="buy-wav-btn">
+                        Buy via Cash App ($29.99)
+                    </a>
+                </div>
+
+                <!-- Track 2 -->
+                <div class="store-card">
+                    <div>
+                        <div class="store-title">Pavement Philosophies (Single Master)</div>
+                        <div class="store-specs">Format: 24-bit .WAV | Single</div>
+                        <div class="cashapp-box">
+                            <span>Pay via Cash App: <strong>$CloneGeek</strong></span>
+                            <span>Price: <strong>$9.99</strong></span>
+                            <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-TRACK-02</strong></span>
+                        </div>
+                    </div>
+                    <a href="https://cash.app/$CloneGeek/9.99?note=CGP-TRACK-02" target="_blank" class="buy-wav-btn">
+                        Buy via Cash App ($9.99)
+                    </a>
+                </div>
+            </div>
+        </section>
+
         <!-- TOURNAMENT BRACKET WIRE -->
         <section class="panel" id="espn-tourney-wire">
             <div class="panel-header">
@@ -747,7 +852,7 @@
             <div class="bracket-columns" id="wire-grid"></div>
         </section>
 
-        <!-- HOLOGRAPHIC SWIPEABLE CGP NETWORK BUBBLE CAROUSEL (NOW ABOVE REEL VAULT) -->
+        <!-- HOLOGRAPHIC SWIPEABLE CGP NETWORK BUBBLE CAROUSEL -->
         <section class="panel">
             <div class="panel-header" style="margin-bottom:12px;">
                 <div class="panel-title">
@@ -815,7 +920,7 @@
             </div>
         </section>
 
-        <!-- SWIPEABLE MOBILE-OPTIMIZED REEL VAULT CAROUSEL (NOW BELOW NETWORK HUBS) -->
+        <!-- SWIPEABLE REEL VAULT CAROUSEL -->
         <section class="panel" id="cgp-video-archive">
             <div class="panel-header">
                 <div class="panel-title">
@@ -835,11 +940,10 @@
     </div>
 
     <footer>
-        &copy; 2026 Clone Geek Productions (CGP) • Powered by Coach Steward & Vercel Broadcast Hub
+        &copy; 2026 Clone Geek Productions (CGP) • Powered by Coach Steward & Cloudflare Pages Hub
     </footer>
 
     <script>
-        // Universal smooth carousel scrolling helper for desktop arrows
         function scrollCarousel(elementId, direction) {
             const container = document.getElementById(elementId);
             if (container) {
@@ -924,7 +1028,6 @@
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     const data = await res.json();
 
-                    // --- 1. EMBEDDED REEL VAULT CAROUSEL SYNC ---
                     const archive = data.video_archive || [];
                     const gridEl = document.getElementById('cgp-video-grid');
                     const statusEl = document.getElementById('cgp-archive-status');
@@ -947,7 +1050,6 @@
                         }).join('');
                     }
 
-                    // --- 2. LEADERBOARD SYNC ---
                     allFighters = Object.entries(data)
                         .filter(([k, v]) => !k.startsWith('_') && v && typeof v === 'object')
                         .map(([k, v]) => ({
@@ -962,7 +1064,6 @@
                     renderLeaderboard();
                     document.getElementById('lb-status-text').textContent = '🟢 LIVE // Updated ' + new Date().toLocaleTimeString();
 
-                    // --- 3. SOUNDCLOUD STATS BINDER ---
                     const sc = data._soundcloud;
                     if (sc && sc.total_plays) {
                         const scText = sc.total_plays + ' Plays (Goal: ' + (sc.goal || '500K') + ')';
@@ -972,7 +1073,6 @@
                         if (badgeSc) badgeSc.textContent = '🎵 ' + scText;
                     }
 
-                    // --- 4. ESPN TOURNAMENT WIRE SYNC ---
                     const t = data._tournament;
                     const titleEl = document.getElementById('wire-title');
                     const tWireStatusEl = document.getElementById('wire-status');
