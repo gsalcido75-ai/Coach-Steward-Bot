@@ -1028,8 +1028,40 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-09 01:18:34 AM CST"
+        "updated_at": "2026-11-09 12:31:41 PM CST"
     },
-    "_last_synced": "2026-11-09T01:18:34.554116-06:00",
+    "_store_orders": {
+        "CGP-WAV-01": {
+            "track": "Run It Back (Clone Geek Remix)",
+            "filename": "Run It Back Clone Geek Remix.wav",
+            "verified": false,
+            "download_url": ""
+        },
+        "CGP-WAV-02": {
+            "track": "The Clock Out Remix",
+            "filename": "The Clock out Remix.wav",
+            "verified": false,
+            "download_url": ""
+        },
+        "CGP-WAV-03": {
+            "track": "The Gilded Curtain",
+            "filename": "The Gilded Curtain.wav",
+            "verified": false,
+            "download_url": ""
+        },
+        "CGP-WAV-04": {
+            "track": "The Last Registry",
+            "filename": "The Last Registry.wav",
+            "verified": false,
+            "download_url": ""
+        },
+        "CGP-WAV-05": {
+            "track": "Winter Blues",
+            "filename": "Winter Blues (1).wav",
+            "verified": false,
+            "download_url": ""
+        }
+    },
+    "_last_synced": "2026-11-09T12:31:41.164296-06:00",
     "video_archive": []
 }
