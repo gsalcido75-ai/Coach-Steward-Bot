@@ -659,7 +659,7 @@
     "1279476207603290197": {
         "name": "Clone_Geek",
         "wins": 3,
-        "losses": 14,
+        "losses": 15,
         "draws": 0,
         "kos": 3,
         "golden_tickets": 0,
@@ -944,15 +944,6 @@
         "golden_tickets": 0,
         "verified": true
     },
-    "1331017630747725877": {
-        "name": "TURBO\u2604",
-        "wins": 0,
-        "losses": 0,
-        "draws": 0,
-        "kos": 0,
-        "golden_tickets": 0,
-        "verified": true
-    },
     "1276002637749162080": {
         "name": "Scrappycoco",
         "wins": 0,
@@ -968,6 +959,15 @@
         "losses": 0,
         "draws": 0,
         "kos": 0,
+        "golden_tickets": 0,
+        "verified": true
+    },
+    "1546624124829302786": {
+        "name": "TURBO",
+        "wins": 1,
+        "losses": 0,
+        "draws": 0,
+        "kos": 1,
         "golden_tickets": 0,
         "verified": true
     },
@@ -1032,7 +1032,7 @@
         "history_log": [],
         "channel_id": 1565566398137114786,
         "message_id": 1569538458546995321,
-        "updated_at": "2026-11-09 09:14:11 PM CST"
+        "updated_at": "2026-11-09 10:34:14 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1066,6 +1066,6 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-09T21:14:11.273819-06:00",
+    "_last_synced": "2026-11-09T22:34:14.824822-06:00",
     "video_archive": []
 }
