@@ -42,23 +42,23 @@ DATA_FILE = "stats.json"
 CENTRAL_TZ = ZoneInfo("America/Chicago")
 
 CGP_TRACKS = [
-    {"title": "Standard Operations Re-Do", "url": "https://on.soundcloud.com/6G6iHIeQKZZkHPoASg"},
-    {"title": "Mainframe Dance", "url": "https://on.soundcloud.com/TczQK8AHZMy7ivp0US"},
-    {"title": "Frequency Forever", "url": "https://on.soundcloud.com/IGo7yUXFLAnFXVtsIN"},
-    {"title": "Frozen Registry", "url": "https://on.soundcloud.com/Qz1dzzj3Z6fmSGbRG0"},
-    {"title": "Run It Back", "url": "https://on.soundcloud.com/Ghli1lsXMAIeIx4Flc"},
-    {"title": "CGP Syndicate", "url": "https://on.soundcloud.com/9NGOePJOrjdaMfpTpB"},
-    {"title": "Amber Nights", "url": "https://on.soundcloud.com/jfZPLXvLWTDeSw4ddi"},
-    {"title": "The Clock Out", "url": "https://on.soundcloud.com/TczQK8AHZMy7ivp0US"},
-    {"title": "Road to Undisputed", "url": "https://on.soundcloud.com/Qz1dzzj3Z6fmSGbRG0"}
+    {"title": "Standard Operations Re-Do", "url": "https://on.soundcloud.com/6G6iHIeQKZZkHPoASg"},
+    {"title": "Mainframe Dance", "url": "https://on.soundcloud.com/TczQK8AHZMy7ivp0US"},
+    {"title": "Frequency Forever", "url": "https://on.soundcloud.com/IGo7yUXFLAnFXVtsIN"},
+    {"title": "Frozen Registry", "url": "https://on.soundcloud.com/Qz1dzzj3Z6fmSGbRG0"},
+    {"title": "Run It Back", "url": "https://on.soundcloud.com/Ghli1lsXMAIeIx4Flc"},
+    {"title": "CGP Syndicate", "url": "https://on.soundcloud.com/9NGOePJOrjdaMfpTpB"},
+    {"title": "Amber Nights", "url": "https://on.soundcloud.com/jfZPLXvLWTDeSw4ddi"},
+    {"title": "The Clock Out", "url": "https://on.soundcloud.com/TczQK8AHZMy7ivp0US"},
+    {"title": "Road to Undisputed", "url": "https://on.soundcloud.com/Qz1dzzj3Z6fmSGbRG0"}
 ]
 
 STORE_ORDERS_DB = {
-    "CGP-WAV-01": {"track": "Run It Back (Clone Geek Remix)", "filename": "Run It Back Clone Geek Remix.wav", "verified": False, "download_url": ""},
-    "CGP-WAV-02": {"track": "The Clock Out Remix", "filename": "The Clock out Remix.wav", "verified": False, "download_url": ""},
-    "CGP-WAV-03": {"track": "Frequency Forever", "filename": "Frequency Forever.wav", "verified": False, "download_url": ""},
-    "CGP-WAV-04": {"track": "The Last Registry", "filename": "The Last Registry.wav", "verified": False, "download_url": ""},
-    "CGP-WAV-05": {"track": "Winter Blues", "filename": "Winter Blues (1).wav", "verified": False, "download_url": ""}
+    "CGP-WAV-01": {"track": "Run It Back (Clone Geek Remix)", "filename": "Run It Back Clone Geek Remix.wav", "verified": False, "download_url": ""},
+    "CGP-WAV-02": {"track": "The Clock Out Remix", "filename": "The Clock out Remix.wav", "verified": False, "download_url": ""},
+    "CGP-WAV-03": {"track": "Frequency Forever", "filename": "Frequency Forever.wav", "verified": False, "download_url": ""},
+    "CGP-WAV-04": {"track": "The Last Registry", "filename": "The Last Registry.wav", "verified": False, "download_url": ""},
+    "CGP-WAV-05": {"track": "Winter Blues", "filename": "Winter Blues (1).wav", "verified": False, "download_url": ""}
 }
 
 def generate_r2_download_link(filename: str, expires_in: int = 3600) -> str:
