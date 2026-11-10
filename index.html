@@ -1,1071 +1,1095 @@
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-        background-color: var(--bg-base);
-        background-image: 
-            radial-gradient(circle at 15% 15%, rgba(0, 229, 255, 0.06) 0%, transparent 35%),
-            radial-gradient(circle at 85% 25%, rgba(230, 25, 25, 0.06) 0%, transparent 35%);
-        color: var(--text-primary);
-        font-family: 'Inter', system-ui, sans-serif;
-        line-height: 1.5;
-    }
-
-    footer ~ * { display: none !important; }
-
-    /* 1. TOP ESPN SCOREBOARD TICKER */
-    .broadcast-ticker {
-        background: #000;
-        border-bottom: 2px solid var(--espn-red);
-        padding: 9px 20px;
-        display: flex;
-        align-items: center;
-        gap: 28px;
-        overflow-x: auto;
-        white-space: nowrap;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.6px;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-    .broadcast-ticker::-webkit-scrollbar { display: none; }
-    .ticker-tag {
-        background: var(--espn-red);
-        color: #fff;
-        padding: 3px 10px;
-        border-radius: 3px;
-        font-weight: 900;
-        font-size: 11px;
-        letter-spacing: 1px;
-        flex-shrink: 0;
-    }
-    .ticker-stat { color: var(--text-secondary); flex-shrink: 0; }
-    .ticker-stat strong { color: var(--gold); margin-left: 5px; }
-
-    /* 2. PROFESSIONAL HERO HEADER + TOP BIO */
-    .site-header {
-        background: linear-gradient(180deg, #121726 0%, var(--bg-base) 100%);
-        border-bottom: 1px solid var(--border-subtle);
-        padding: 28px 20px;
-    }
-    .header-inner {
-        max-width: 1240px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 28px;
-        align-items: center;
-    }
-    @media (max-width: 820px) {
-        .header-inner { grid-template-columns: 1fr; text-align: center; justify-items: center; }
-    }
-
-    .logo-ring {
-        width: 128px;
-        height: 128px;
-        border-radius: 50%;
-        padding: 4px;
-        background: linear-gradient(135deg, var(--neon-blue), var(--espn-red));
-        box-shadow: 0 0 25px rgba(0, 229, 255, 0.35);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        position: relative;
-        overflow: hidden;
-    }
-    .logo-ring img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-        object-position: center;
-        display: block;
-        background: #0a0d14;
-        z-index: 2;
-    }
-    .logo-fallback {
-        position: absolute;
-        inset: 4px;
-        border-radius: 50%;
-        background: radial-gradient(circle, #1a2238 0%, #07090e 100%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        font-family: 'Orbitron', sans-serif;
-        text-align: center;
-        z-index: 1;
-    }
-    .logo-fallback strong {
-        font-size: 26px;
-        font-weight: 900;
-        color: #fff;
-        letter-spacing: 2px;
-        text-shadow: 0 0 10px var(--neon-blue);
-    }
-    .logo-fallback span {
-        font-size: 9px;
-        color: var(--espn-red);
-        font-weight: 800;
-        letter-spacing: 1.5px;
-    }
-
-    .brand-overview h1 {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 28px;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: #fff;
-        margin-bottom: 6px;
-    }
-    .brand-subtitle {
-        color: var(--neon-blue);
-        font-family: 'Share Tech Mono', monospace;
-        font-size: 13px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        margin-bottom: 12px;
-    }
-    .brand-bio {
-        color: var(--text-secondary);
-        font-size: 14px;
-        max-width: 900px;
-        margin-bottom: 14px;
-    }
-    .protocol-pills {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-    @media (max-width: 820px) {
-        .protocol-pills { justify-content: center; }
-    }
-    .proto-badge {
-        background: var(--bg-card);
-        border: 1px solid var(--border-subtle);
-        border-left: 3px solid var(--gold);
-        padding: 5px 12px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--text-primary);
-    }
-
-    /* 3. MAIN BROADCAST CONTAINER */
-    .main-container {
-        max-width: 1240px;
-        margin: 24px auto;
-        padding: 0 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-    }
-
-    .panel {
-        background: var(--bg-panel);
-        border: 1px solid var(--border-subtle);
-        border-radius: 10px;
-        padding: 22px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.45);
-    }
-    .panel-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        border-bottom: 2px solid var(--border-subtle);
-        padding-bottom: 12px;
-        margin-bottom: 16px;
-    }
-    .panel-title {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 16px;
-        font-weight: 800;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    .tag-red {
-        background: var(--espn-red);
-        color: #fff;
-        font-family: 'Inter', sans-serif;
-        font-size: 10px;
-        font-weight: 900;
-        padding: 3px 8px;
-        border-radius: 4px;
-        letter-spacing: 0.8px;
-    }
-    .status-badge {
-        background: rgba(0, 230, 118, 0.1);
-        border: 1px solid var(--green);
-        color: var(--green);
-        font-size: 12px;
-        font-weight: 800;
-        padding: 4px 12px;
-        border-radius: 20px;
-        text-transform: uppercase;
-    }
-
-    /* EXCLUSIVE SINGLE ALBUM STORE CARD */
-    .store-single-wrapper {
-        display: flex;
-        justify-content: center;
-        padding: 10px 0;
-    }
-    .store-single-card {
-        width: 100%;
-        max-width: 520px;
-        background: var(--bg-card);
-        border: 1px solid var(--border-subtle);
-        border-top: 4px solid var(--gold);
-        border-radius: 10px;
-        padding: 24px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.45);
-        text-align: center;
-    }
-    .store-title {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 20px;
-        font-weight: 900;
-        color: #fff;
-        margin-bottom: 6px;
-        letter-spacing: 0.8px;
-    }
-    .store-specs {
-        font-size: 12px;
-        color: var(--gold);
-        font-family: 'Share Tech Mono', monospace;
-        margin-bottom: 16px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    .stripe-info-box {
-        background: #0b0e17;
-        border: 1px dashed var(--border-subtle);
-        padding: 14px;
-        border-radius: 8px;
-        margin-bottom: 18px;
-        font-size: 13px;
-    }
-    .stripe-info-box span {
-        color: var(--text-secondary);
-        display: block;
-        margin-bottom: 6px;
-    }
-    .stripe-info-box strong {
-        color: var(--green);
-        font-family: 'Share Tech Mono', monospace;
-        font-size: 18px;
-    }
-    .buy-stripe-btn {
-        display: block;
-        width: 100%;
-        text-align: center;
-        background: linear-gradient(90deg, var(--gold), #ff8800);
-        color: #000;
-        font-family: 'Orbitron', sans-serif;
-        font-size: 13px;
-        font-weight: 900;
-        padding: 14px 18px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        text-decoration: none;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        box-shadow: 0 0 20px rgba(255, 204, 0, 0.25);
-        transition: all 0.2s ease;
-    }
-    .buy-stripe-btn:hover {
-        background: #fff;
-        box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
-        transform: translateY(-2px);
-    }
-
-    /* TWO-COLUMN TOP DASHBOARD */
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: 1.25fr 1fr;
-        gap: 24px;
-        align-items: start;
-    }
-    @media (max-width: 960px) {
-        .dashboard-grid { grid-template-columns: 1fr; }
-    }
-
-    .lb-controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        font-size: 12px;
-        color: var(--text-secondary);
-    }
-    .filter-btn {
-        background: var(--bg-card);
-        border: 1px solid var(--border-subtle);
-        color: var(--neon-blue);
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-size: 11px;
-        font-weight: 700;
-        cursor: pointer;
-    }
-    .filter-btn:hover { background: #1f273d; }
-
-    .leaderboard-scroll-box {
-        max-height: 380px;
-        overflow-y: auto;
-        border: 1px solid var(--border-subtle);
-        border-radius: 6px;
-        background: #0b0e17;
-    }
-    .leaderboard-scroll-box::-webkit-scrollbar { width: 6px; }
-    .leaderboard-scroll-box::-webkit-scrollbar-thumb { background: #2e3852; border-radius: 3px; }
-
-    table.lb-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 13px;
-    }
-    table.lb-table thead th {
-        position: sticky;
-        top: 0;
-        background: #161b29;
-        color: var(--neon-blue);
-        font-family: 'Orbitron', sans-serif;
-        font-size: 11px;
-        text-transform: uppercase;
-        padding: 10px 12px;
-        text-align: left;
-        border-bottom: 1px solid var(--border-subtle);
-        z-index: 2;
-    }
-    table.lb-table td {
-        padding: 8px 12px;
-        border-bottom: 1px solid #151a28;
-    }
-    table.lb-table td.num, table.lb-table th.num {
-        text-align: right;
-        font-variant-numeric: tabular-nums;
-    }
-    table.lb-table tr.rank-1 td { color: var(--gold); font-weight: 800; }
-    table.lb-table tr:hover { background: rgba(255,255,255,0.03); }
-
-    .vault-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        margin-bottom: 14px;
-    }
-    .vault-item {
-        background: var(--bg-card);
-        border: 1px solid var(--border-subtle);
-        border-left: 3px solid var(--espn-red);
-        padding: 10px 12px;
-        border-radius: 6px;
-        text-decoration: none;
-        transition: transform 0.15s ease;
-    }
-    .vault-item:hover { transform: translateY(-2px); border-color: var(--neon-blue); }
-    .vault-item span { font-size: 10px; color: var(--espn-red); font-weight: 800; display: block; }
-    .vault-item h4 { font-family: 'Orbitron', sans-serif; font-size: 12px; color: #fff; margin-top: 2px; }
-
-    .sc-app-btn {
-        display: block;
-        text-align: center;
-        background: #1c2234;
-        border: 1px solid #ff5500;
-        color: #ff5500;
-        font-family: 'Orbitron', sans-serif;
-        font-size: 11px;
-        font-weight: 800;
-        padding: 8px 12px;
-        border-radius: 6px;
-        text-decoration: none;
-        text-transform: uppercase;
-        margin-top: 10px;
-        transition: all 0.2s ease;
-    }
-    .sc-app-btn:hover { background: #ff5500; color: #fff; }
-
-    /* TOURNAMENT BRACKET WIRE */
-    .tourney-subbar {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background: var(--bg-card);
-        padding: 12px 14px;
-        border-radius: 6px;
-        margin-bottom: 16px;
-        font-size: 13px;
-        color: var(--text-secondary);
-    }
-    .entrants-chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-    .seed-chip {
-        background: #0d111a;
-        border: 1px solid var(--border-subtle);
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--text-primary);
-    }
-    .seed-chip span { color: var(--gold); margin-right: 5px; }
-
-    .bracket-columns {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-    }
-    @media (max-width: 900px) {
-        .bracket-columns { grid-template-columns: 1fr; }
-    }
-    .col-title {
-        font-size: 12px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: var(--gold);
-        margin-bottom: 10px;
-        border-bottom: 1px solid var(--border-subtle);
-        padding-bottom: 6px;
-    }
-    .match-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-subtle);
-        border-left: 3px solid var(--gold);
-        border-radius: 6px;
-        padding: 10px 12px;
-        margin-bottom: 10px;
-    }
-    .match-card.done { border-left-color: var(--green); }
-    .match-meta {
-        font-size: 10px;
-        font-weight: 700;
-        color: var(--text-secondary);
-        text-transform: uppercase;
-        margin-bottom: 6px;
-    }
-    .slot-row {
-        display: flex;
-        justify-content: space-between;
-        font-size: 13px;
-        font-weight: 600;
-        padding: 3px 0;
-        color: var(--text-primary);
-    }
-    .slot-row.win { color: var(--green); font-weight: 800; }
-
-    /* NETWORK CAROUSEL */
-    .network-carousel-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-    }
-    .network-carousel-container {
-        display: flex;
-        gap: 16px;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        scroll-behavior: smooth;
-        width: 100%;
-        padding: 8px 4px 16px 4px;
-        scrollbar-width: thin;
-        scrollbar-color: var(--espn-red) var(--border-subtle);
-    }
-    .network-carousel-container::-webkit-scrollbar { height: 6px; }
-    .network-carousel-container::-webkit-scrollbar-thumb { background: var(--espn-red); border-radius: 3px; }
-
-    .network-bubble {
-        flex: 0 0 220px;
-        width: 220px;
-        scroll-snap-align: start;
-        background: linear-gradient(135deg, #131929 0%, #0d111a 100%);
-        border: 1px solid var(--border-subtle);
-        border-top: 3px solid var(--neon-blue);
-        border-radius: 12px;
-        padding: 16px;
-        text-decoration: none;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-        transition: all 0.25s ease;
-    }
-    .network-bubble:hover {
-        transform: translateY(-4px);
-        border-color: var(--neon-blue);
-        box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
-    }
-    .network-bubble.discord { border-top-color: #5865F2; }
-    .network-bubble.soundcloud { border-top-color: #ff5500; }
-    .network-bubble.twitch { border-top-color: #9146FF; }
-    .network-bubble.kick { border-top-color: #53FC18; }
-    .network-bubble.youtube { border-top-color: #FF0000; }
-    .network-bubble.tiktok { border-top-color: #00f2fe; }
-    .network-bubble.suno { border-top-color: var(--gold); }
-
-    .net-icon-ring {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        background: var(--bg-card);
-        border: 1px solid var(--border-subtle);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        margin-bottom: 10px;
-        box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-    }
-    .net-name {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 13px;
-        font-weight: 800;
-        color: #fff;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 4px;
-    }
-    .net-desc {
-        font-size: 11px;
-        color: var(--text-secondary);
-        margin-bottom: 12px;
-        line-height: 1.3;
-    }
-    .net-preview-pill {
-        background: rgba(0, 229, 255, 0.08);
-        border: 1px solid rgba(0, 229, 255, 0.2);
-        color: var(--neon-blue);
-        font-family: 'Share Tech Mono', monospace;
-        font-size: 10px;
-        padding: 3px 8px;
-        border-radius: 20px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-top: auto;
-    }
-
-    /* REEL VAULT CAROUSEL */
-    .carousel-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-    }
-    .carousel-container {
-        display: flex;
-        gap: 16px;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        scroll-behavior: smooth;
-        width: 100%;
-        padding: 6px 4px 16px 4px;
-        scrollbar-width: thin;
-        scrollbar-color: var(--neon-blue) var(--border-subtle);
-    }
-    .carousel-container::-webkit-scrollbar { height: 6px; }
-    .carousel-container::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
-
-    .carousel-card {
-        flex: 0 0 280px;
-        width: 280px;
-        scroll-snap-align: start;
-        background: var(--bg-card);
-        border: 1px solid var(--border-subtle);
-        border-radius: 8px;
-        overflow: hidden;
-        padding: 12px;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        transition: border-color 0.2s ease;
-    }
-    .carousel-card:hover { border-color: var(--neon-blue); }
-
-    .carousel-nav-btn {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 10;
-        background: rgba(17, 21, 32, 0.85);
-        border: 1px solid var(--neon-blue);
-        color: var(--neon-blue);
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        font-size: 18px;
-        font-weight: 900;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
-        transition: all 0.2s ease;
-    }
-    .carousel-nav-btn:hover { background: var(--neon-blue); color: #000; }
-    .carousel-prev { left: -20px; }
-    .carousel-next { right: -20px; }
-    @media (max-width: 768px) {
-        .carousel-nav-btn { display: none; }
-    }
-
-    footer {
-        text-align: center;
-        padding: 24px;
-        border-top: 1px solid var(--border-subtle);
-        color: var(--text-secondary);
-        font-size: 12px;
-        font-family: 'Orbitron', sans-serif;
-        margin-top: 20px;
-    }
-</style>
-
-
-<!-- 1. ESPN-STYLE TOP BROADCAST TICKER -->
-<div class="broadcast-ticker">
-    <span class="ticker-tag">CGP NETWORK</span>
-    <div class="ticker-stat">Active Bracket: <strong id="ticker-tourney">Entry Welterweight (7/8 Locked)</strong></div>
-    <div class="ticker-stat">SoundCloud Catalog: <strong id="ticker-soundcloud">66,576+ Plays (Goal: 500K)</strong></div>
-    <div class="ticker-stat">Commission Rules: <strong>Riyadh Gym • 1.5x Speed • Strict Ref</strong></div>
-    <div class="ticker-stat">Sunday Spar Wars: <strong>Sundays @ 6 PM CT</strong></div>
-</div>
-
-<!-- 2. HERO HEADER -->
-<header class="site-header">
-    <div class="header-inner">
-        <div class="logo-ring">
-            <div class="logo-fallback">
-                <strong>CGP</strong>
-                <span>MAINFRAME</span>
-            </div>
-            <img id="cgp-brand-logo" src="https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/CGP.jpg" alt="Clone Geek Productions" onerror="this.style.display='none'">
-        </div>
-        <div class="brand-overview">
-            <h1>Clone Geek Productions</h1>
-            <div class="brand-subtitle">// Official CGP Mainframe Broadcast & Esports Hub //</div>
-            <p class="brand-bio">
-                Welcome to the <strong>CGP Mainframe</strong>—where raw boom-bap production meets high-stakes virtual boxing. Built on blue-collar discipline, strict winner-take-all brackets, and verified CompuBox scorecards.
-            </p>
-            <div class="protocol-pills">
-                <div class="proto-badge">🏆 Winner-Takes-All 8-Man Brackets</div>
-                <div class="proto-badge">🥊 Sunday Spar Wars (6 PM CT)</div>
-                <div class="proto-badge">📊 AI-Verified [W-L-D-K] Records</div>
-                <div class="proto-badge" id="badge-soundcloud">🎵 66.5K+ SoundCloud Streams</div>
-            </div>
-        </div>
-    </div>
-</header>
-
-<!-- 3. MAIN BROADCAST CONTAINER -->
-<div class="main-container">
-
-    <!-- TWO-COLUMN TOP DASHBOARD: LEADERBOARD & SOUND VAULT -->
-    <div class="dashboard-grid">
-
-        <!-- LEFT: LEADERBOARD -->
-        <section class="panel">
-            <div class="panel-header">
-                <div class="panel-title">📊 Official P4P Leaderboard</div>
-                <button class="filter-btn" id="toggle-active-btn">Show Active Fighters Only</button>
-            </div>
-
-            <div class="lb-controls">
-                <span id="lb-status-text">Syncing fighter database...</span>
-                <span id="lb-count-text"></span>
-            </div>
-
-            <div class="leaderboard-scroll-box">
-                <table class="lb-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Fighter</th>
-                            <th class="num">W</th>
-                            <th class="num">L</th>
-                            <th class="num">KOs</th>
-                            <th class="num">Win %</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lb-tbody">
-                        <tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">Loading records...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- RIGHT: SOUND VAULT -->
-        <section class="panel">
-            <div class="panel-header">
-                <div class="panel-title">🎧 CGP Sound Vault</div>
-                <span style="font-size:12px; color:var(--gold); font-weight:700;" id="vault-goal-text">Road to 500K Plays</span>
-            </div>
-
-            <div class="vault-grid">
-                <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" class="vault-item">
-                    <span>// RELEASE 001</span>
-                    <h4>Elite Registry DB</h4>
-                </a>
-                <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" class="vault-item">
-                    <span>// RELEASE 002</span>
-                    <h4>Concrete Logic</h4>
-                </a>
-                <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" class="vault-item">
-                    <span>// RELEASE 003</span>
-                    <h4>Strikes Silence</h4>
-                </a>
-                <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" class="vault-item">
-                    <span>// RELEASE 004</span>
-                    <h4>Kryptonite</h4>
-                </a>
-            </div>
-
-            <div id="sc-player-slot"></div>
-
-            <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" class="sc-app-btn">
-                🔊 Open in SoundCloud App (Lock-Screen Background Play)
-            </a>
-        </section>
-
-    </div>
-
-    <!-- CGP OFFICIAL MASTER ALBUM STORE (STRIPE EXCLUSIVE) -->
-    <section class="panel">
-        <div class="panel-header">
-            <div class="panel-title">
-                <span class="tag-red">OFFICIAL RELEASE</span>
-                <span>CGP Master Album Vault (.ZIP Archive)</span>
-            </div>
-            <span style="font-size:11px; color:var(--neon-blue); font-family:'Share Tech Mono',monospace;">// SECURE STRIPE CHECKOUT //</span>
-        </div>
-
-        <div class="store-single-wrapper">
-            <div class="store-single-card">
-                <div>
-                    <div class="store-title">Night Shift Album Master (.zip)</div>
-                    <div class="store-specs">Format: Full Studio Master Archive | .ZIP</div>
-                    <div class="stripe-info-box">
-                        <span>Official CGP Master Vault Release • Instant Stripe Checkout</span>
-                        <strong>\$25.00</strong>
-                    </div>
-                </div>
-                <a href="https://buy.stripe.com/28E6oH8vCcXU4Qy2jhejK01" target="_blank" rel="noopener noreferrer" class="buy-stripe-btn">
-                    💳 Purchase Album Master via Stripe (\$25.00)
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- TOURNAMENT BRACKET WIRE -->
-    <section class="panel" id="espn-tourney-wire">
-        <div class="panel-header">
-            <div class="panel-title">
-                <span class="tag-red">LIVE WIRE</span>
-                <span id="wire-title">8-MAN CHAMPIONSHIP BRACKET</span>
-            </div>
-            <span class="status-badge" id="wire-status">SYNCING...</span>
-        </div>
-
-        <div class="tourney-subbar">
-            <div id="wire-meta">Checking active seeds in Mainframe database...</div>
-            <div class="entrants-chips" id="wire-entrants"></div>
-        </div>
-
-        <div class="bracket-columns" id="wire-grid"></div>
-    </section>
-
-    <!-- NETWORK BUBBLE CAROUSEL -->
-    <section class="panel">
-        <div class="panel-header" style="margin-bottom:12px;">
-            <div class="panel-title">
-                <span class="tag-red">MAINFRAME</span>
-                <span>Official CGP Network Hubs</span>
-            </div>
-            <span style="font-size:11px; color:var(--neon-blue); font-family:'Share Tech Mono',monospace;">// SWIPE OR CLICK TO NAVIGATE //</span>
-        </div>
-
-        <div class="network-carousel-wrapper">
-            <button class="carousel-nav-btn carousel-prev" onclick="scrollCarousel('network-bubble-track', -1)">‹</button>
-            
-            <div class="network-carousel-container" id="network-bubble-track">
-                <a href="https://discord.gg/yrpgBB7sJp" target="_blank" class="network-bubble discord">
-                    <div class="net-icon-ring">💬</div>
-                    <div class="net-name">Discord</div>
-                    <div class="net-desc">Spar Wars & Brackets</div>
-                    <div class="net-preview-pill">Secure Feed &rarr;</div>
-                </a>
-
-                <a href="https://soundcloud.com/gerardo-salcido-230608914" target="_blank" class="network-bubble soundcloud">
-                    <div class="net-icon-ring">🎵</div>
-                    <div class="net-name">SoundCloud</div>
-                    <div class="net-desc">66.5K+ Boom-Bap Plays</div>
-                    <div class="net-preview-pill">Audio Vault &rarr;</div>
-                </a>
-
-                <a href="https://www.twitch.tv/clone_geek" target="_blank" class="network-bubble twitch">
-                    <div class="net-icon-ring">📺</div>
-                    <div class="net-name">Twitch</div>
-                    <div class="net-desc">Live Fight Broadcasts</div>
-                    <div class="net-preview-pill">Tune In &rarr;</div>
-                </a>
-
-                <a href="https://kick.com/clone-geek" target="_blank" class="network-bubble kick">
-                    <div class="net-icon-ring">⚡</div>
-                    <div class="net-name">Kick</div>
-                    <div class="net-desc">High-Stakes Undisputed</div>
-                    <div class="net-preview-pill">Watch Live &rarr;</div>
-                </a>
-
-                <a href="https://youtube.com/@clone_geek" target="_blank" class="network-bubble youtube">
-                    <div class="net-icon-ring">▶️</div>
-                    <div class="net-name">YouTube</div>
-                    <div class="net-desc">Full Fights & Replays</div>
-                    <div class="net-preview-pill">Channel &rarr;</div>
-                </a>
-
-                <a href="https://www.tiktok.com/@clone_geek" target="_blank" class="network-bubble tiktok">
-                    <div class="net-icon-ring">🔥</div>
-                    <div class="net-name">TikTok</div>
-                    <div class="net-desc">Viral KO Highlights</div>
-                    <div class="net-preview-pill">Shorts &rarr;</div>
-                </a>
-
-                <a href="https://suno.com/@clone_geek" target="_blank" class="network-bubble suno">
-                    <div class="net-icon-ring">🎧</div>
-                    <div class="net-name">Suno Studio</div>
-                    <div class="net-desc">AI Track Production</div>
-                    <div class="net-preview-pill">Beats &rarr;</div>
-                </a>
-            </div>
-
-            <button class="carousel-nav-btn carousel-next" onclick="scrollCarousel('network-bubble-track', 1)">›</button>
-        </div>
-    </section>
-
-    <!-- REEL VAULT CAROUSEL -->
-    <section class="panel" id="cgp-video-archive">
-        <div class="panel-header">
-            <div class="panel-title">
-                <span class="tag-red">REEL VAULT</span>
-                <span>Official Rendered Promos & Highlights</span>
-            </div>
-            <span class="status-badge" id="cgp-archive-status">Syncing Vault...</span>
-        </div>
-        
-        <div class="carousel-wrapper">
-            <button class="carousel-nav-btn carousel-prev" onclick="scrollCarousel('cgp-video-grid', -1)">‹</button>
-            <div class="carousel-container" id="cgp-video-grid"></div>
-            <button class="carousel-nav-btn carousel-next" onclick="scrollCarousel('cgp-video-grid', 1)">›</button>
-        </div>
-    </section>
-
-</div>
-
-<footer>
-    &copy; 2026 Clone Geek Productions (CGP) • Powered by Coach Steward & Cloudflare Pages Hub
-</footer>
-
-<script>
-    function scrollCarousel(elementId, direction) {
-        const container = document.getElementById(elementId);
-        if (container) {
-            const scrollAmount = 260 * direction;
-            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGP Mainframe | Official Broadcast & Esports Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #07090e;
+            --bg-panel: #111520;
+            --bg-card: #171c2b;
+            --border-subtle: #232a3e;
+            --neon-blue: #00e5ff;
+            --espn-red: #e61919;
+            --gold: #ffcc00;
+            --green: #00e676;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
         }
-    }
 
-    (function () {
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const slot = document.getElementById('sc-player-slot');
-                if (slot) {
-                    slot.innerHTML = `<iframe width="100%" height="250" scrolling="no" frameborder="no" loading="lazy"
-                        style="border-radius:6px; border:1px solid var(--border-subtle);"
-                        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist&color=%23e61919&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
-                    </iframe>`;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 229, 255, 0.06) 0%, transparent 35%),
+                radial-gradient(circle at 85% 25%, rgba(230, 25, 25, 0.06) 0%, transparent 35%);
+            color: var(--text-primary);
+            font-family: 'Inter', system-ui, sans-serif;
+            line-height: 1.5;
+        }
+
+        footer ~ * { display: none !important; }
+
+        /* 1. TOP ESPN SCOREBOARD TICKER */
+        .broadcast-ticker {
+            background: #000;
+            border-bottom: 2px solid var(--espn-red);
+            padding: 9px 20px;
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            overflow-x: auto;
+            white-space: nowrap;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .broadcast-ticker::-webkit-scrollbar { display: none; }
+        .ticker-tag {
+            background: var(--espn-red);
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-weight: 900;
+            font-size: 11px;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+        .ticker-stat { color: var(--text-secondary); flex-shrink: 0; }
+        .ticker-stat strong { color: var(--gold); margin-left: 5px; }
+
+        /* 2. PROFESSIONAL HERO HEADER + TOP BIO */
+        .site-header {
+            background: linear-gradient(180deg, #121726 0%, var(--bg-base) 100%);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 28px 20px;
+        }
+        .header-inner {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 28px;
+            align-items: center;
+        }
+        @media (max-width: 820px) {
+            .header-inner { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+        }
+
+        .logo-ring {
+            width: 128px;
+            height: 128px;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--espn-red));
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .logo-ring img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            background: #0a0d14;
+            z-index: 2;
+        }
+        .logo-fallback {
+            position: absolute;
+            inset: 4px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #1a2238 0%, #07090e 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            z-index: 1;
+        }
+        .logo-fallback strong {
+            font-size: 26px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        .logo-fallback span {
+            font-size: 9px;
+            color: var(--espn-red);
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        .brand-overview h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .brand-subtitle {
+            color: var(--neon-blue);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .brand-bio {
+            color: var(--text-secondary);
+            font-size: 14px;
+            max-width: 900px;
+            margin-bottom: 14px;
+        }
+        .protocol-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        @media (max-width: 820px) {
+            .protocol-pills { justify-content: center; }
+        }
+        .proto-badge {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--gold);
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* 3. MAIN BROADCAST CONTAINER */
+        .main-container {
+            max-width: 1240px;
+            margin: 24px auto;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 22px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 2px solid var(--border-subtle);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tag-red {
+            background: var(--espn-red);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.8px;
+        }
+        .status-badge {
+            background: rgba(0, 230, 118, 0.1);
+            border: 1px solid var(--green);
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        /* EXCLUSIVE SINGLE ALBUM STORE CARD */
+        .store-single-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+        }
+        .store-single-card {
+            width: 100%;
+            max-width: 520px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-top: 4px solid var(--gold);
+            border-radius: 10px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.45);
+            text-align: center;
+        }
+        .store-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 6px;
+            letter-spacing: 0.8px;
+        }
+        .store-specs {
+            font-size: 12px;
+            color: var(--gold);
+            font-family: 'Share Tech Mono', monospace;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stripe-info-box {
+            background: #0b0e17;
+            border: 1px dashed var(--border-subtle);
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-size: 13px;
+        }
+        .stripe-info-box span {
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .stripe-info-box strong {
+            color: var(--green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 18px;
+        }
+        .buy-stripe-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background: linear-gradient(90deg, var(--gold), #ff8800);
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 900;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.25);
+            transition: all 0.2s ease;
+        }
+        .buy-stripe-btn:hover {
+            background: #fff;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* TWO-COLUMN TOP DASHBOARD */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.25fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 960px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        .lb-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .filter-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--neon-blue);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .filter-btn:hover { background: #1f273d; }
+
+        .leaderboard-scroll-box {
+            max-height: 380px;
+            overflow-y: auto;
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            background: #0b0e17;
+        }
+        .leaderboard-scroll-box::-webkit-scrollbar { width: 6px; }
+        .leaderboard-scroll-box::-webkit-scrollbar-thumb { background: #2e3852; border-radius: 3px; }
+
+        table.lb-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        table.lb-table thead th {
+            position: sticky;
+            top: 0;
+            background: #161b29;
+            color: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-subtle);
+            z-index: 2;
+        }
+        table.lb-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #151a28;
+        }
+        table.lb-table td.num, table.lb-table th.num {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        table.lb-table tr.rank-1 td { color: var(--gold); font-weight: 800; }
+        table.lb-table tr:hover { background: rgba(255,255,255,0.03); }
+
+        .vault-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .vault-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--espn-red);
+            padding: 10px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: transform 0.15s ease;
+        }
+        .vault-item:hover { transform: translateY(-2px); border-color: var(--neon-blue); }
+        .vault-item span { font-size: 10px; color: var(--espn-red); font-weight: 800; display: block; }
+        .vault-item h4 { font-family: 'Orbitron', sans-serif; font-size: 12px; color: #fff; margin-top: 2px; }
+
+        .sc-app-btn {
+            display: block;
+            text-align: center;
+            background: #1c2234;
+            border: 1px solid #ff5500;
+            color: #ff5500;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            text-transform: uppercase;
+            margin-top: 10px;
+            transition: all 0.2s ease;
+        }
+        .sc-app-btn:hover { background: #ff5500; color: #fff; }
+
+        /* TOURNAMENT BRACKET WIRE */
+        .tourney-subbar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: var(--bg-card);
+            padding: 12px 14px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .entrants-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .seed-chip {
+            background: #0d111a;
+            border: 1px solid var(--border-subtle);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .seed-chip span { color: var(--gold); margin-right: 5px; }
+
+        .bracket-columns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 900px) {
+            .bracket-columns { grid-template-columns: 1fr; }
+        }
+        .col-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold);
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 6px;
+        }
+        .match-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--gold);
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+        }
+        .match-card.done { border-left-color: var(--green); }
+        .match-meta {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .slot-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 3px 0;
+            color: var(--text-primary);
+        }
+        .slot-row.win { color: var(--green); font-weight: 800; }
+
+        /* NETWORK CAROUSEL */
+        .network-carousel-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .network-carousel-container {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            width: 100%;
+            padding: 8px 4px 16px 4px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--espn-red) var(--border-subtle);
+        }
+        .network-carousel-container::-webkit-scrollbar { height: 6px; }
+        .network-carousel-container::-webkit-scrollbar-thumb { background: var(--espn-red); border-radius: 3px; }
+
+        .network-bubble {
+            flex: 0 0 220px;
+            width: 220px;
+            scroll-snap-align: start;
+            background: linear-gradient(135deg, #131929 0%, #0d111a 100%);
+            border: 1px solid var(--border-subtle);
+            border-top: 3px solid var(--neon-blue);
+            border-radius: 12px;
+            padding: 16px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            transition: all 0.25s ease;
+        }
+        .network-bubble:hover {
+            transform: translateY(-4px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
+        }
+        .network-bubble.discord { border-top-color: #5865F2; }
+        .network-bubble.soundcloud { border-top-color: #ff5500; }
+        .network-bubble.twitch { border-top-color: #9146FF; }
+        .network-bubble.kick { border-top-color: #53FC18; }
+        .network-bubble.youtube { border-top-color: #FF0000; }
+        .network-bubble.tiktok { border-top-color: #00f2fe; }
+        .network-bubble.suno { border-top-color: var(--gold); }
+
+        .net-icon-ring {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .net-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .net-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+        .net-preview-pill {
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            color: var(--neon-blue);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: auto;
+        }
+
+        /* REEL VAULT CAROUSEL */
+        .carousel-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .carousel-container {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            width: 100%;
+            padding: 6px 4px 16px 4px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-blue) var(--border-subtle);
+        }
+        .carousel-container::-webkit-scrollbar { height: 6px; }
+        .carousel-container::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+        .carousel-card {
+            flex: 0 0 280px;
+            width: 280px;
+            scroll-snap-align: start;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: border-color 0.2s ease;
+        }
+        .carousel-card:hover { border-color: var(--neon-blue); }
+
+        .carousel-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background: rgba(17, 21, 32, 0.85);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+            transition: all 0.2s ease;
+        }
+        .carousel-nav-btn:hover { background: var(--neon-blue); color: #000; }
+        .carousel-prev { left: -20px; }
+        .carousel-next { right: -20px; }
+        @media (max-width: 768px) {
+            .carousel-nav-btn { display: none; }
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-family: 'Orbitron', sans-serif;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. ESPN-STYLE TOP BROADCAST TICKER -->
+    <div class="broadcast-ticker">
+        <span class="ticker-tag">CGP NETWORK</span>
+        <div class="ticker-stat">Active Bracket: <strong id="ticker-tourney">Entry Welterweight (7/8 Locked)</strong></div>
+        <div class="ticker-stat">SoundCloud Catalog: <strong id="ticker-soundcloud">66,576+ Plays (Goal: 500K)</strong></div>
+        <div class="ticker-stat">Commission Rules: <strong>Riyadh Gym • 1.5x Speed • Strict Ref</strong></div>
+        <div class="ticker-stat">Sunday Spar Wars: <strong>Sundays @ 6 PM CT</strong></div>
+    </div>
+
+    <!-- 2. HERO HEADER -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="logo-ring">
+                <div class="logo-fallback">
+                    <strong>CGP</strong>
+                    <span>MAINFRAME</span>
+                </div>
+                <img id="cgp-brand-logo" src="https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/CGP.jpg" alt="Clone Geek Productions" onerror="this.style.display='none'">
+            </div>
+            <div class="brand-overview">
+                <h1>Clone Geek Productions</h1>
+                <div class="brand-subtitle">// Official CGP Mainframe Broadcast & Esports Hub //</div>
+                <p class="brand-bio">
+                    Welcome to the <strong>CGP Mainframe</strong>—where raw boom-bap production meets high-stakes virtual boxing. Built on blue-collar discipline, strict winner-take-all brackets, and verified CompuBox scorecards.
+                </p>
+                <div class="protocol-pills">
+                    <div class="proto-badge">🏆 Winner-Takes-All 8-Man Brackets</div>
+                    <div class="proto-badge">🥊 Sunday Spar Wars (6 PM CT)</div>
+                    <div class="proto-badge">📊 AI-Verified [W-L-D-K] Records</div>
+                    <div class="proto-badge" id="badge-soundcloud">🎵 66.5K+ SoundCloud Streams</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. MAIN BROADCAST CONTAINER -->
+    <div class="main-container">
+
+        <!-- TWO-COLUMN TOP DASHBOARD: LEADERBOARD & SOUND VAULT -->
+        <div class="dashboard-grid">
+
+            <!-- LEFT: LEADERBOARD -->
+            <section class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">📊 Official P4P Leaderboard</div>
+                    <button class="filter-btn" id="toggle-active-btn">Show Active Fighters Only</button>
+                </div>
+
+                <div class="lb-controls">
+                    <span id="lb-status-text">Syncing fighter database...</span>
+                    <span id="lb-count-text"></span>
+                </div>
+
+                <div class="leaderboard-scroll-box">
+                    <table class="lb-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Fighter</th>
+                                <th class="num">W</th>
+                                <th class="num">L</th>
+                                <th class="num">KOs</th>
+                                <th class="num">Win %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lb-tbody">
+                            <tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">Loading records...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- RIGHT: SOUND VAULT -->
+            <section class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">🎧 CGP Sound Vault</div>
+                    <span style="font-size:12px; color:var(--gold); font-weight:700;" id="vault-goal-text">Road to 500K Plays</span>
+                </div>
+
+                <div class="vault-grid">
+                    <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" class="vault-item">
+                        <span>// RELEASE 001</span>
+                        <h4>Elite Registry DB</h4>
+                    </a>
+                    <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" class="vault-item">
+                        <span>// RELEASE 002</span>
+                        <h4>Concrete Logic</h4>
+                    </a>
+                    <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" class="vault-item">
+                        <span>// RELEASE 003</span>
+                        <h4>Strikes Silence</h4>
+                    </a>
+                    <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" class="vault-item">
+                        <span>// RELEASE 004</span>
+                        <h4>Kryptonite</h4>
+                    </a>
+                </div>
+
+                <div id="sc-player-slot"></div>
+
+                <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" class="sc-app-btn">
+                    🔊 Open in SoundCloud App (Lock-Screen Background Play)
+                </a>
+            </section>
+
+        </div>
+
+        <!-- CGP OFFICIAL MASTER ALBUM STORE (STRIPE EXCLUSIVE) -->
+        <section class="panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="tag-red">OFFICIAL RELEASE</span>
+                    <span>CGP Master Album Vault (.ZIP Archive)</span>
+                </div>
+                <span style="font-size:11px; color:var(--neon-blue); font-family:'Share Tech Mono',monospace;">// SECURE STRIPE CHECKOUT //</span>
+            </div>
+
+            <div class="store-single-wrapper">
+                <div class="store-single-card">
+                    <div>
+                        <div class="store-title">Night Shift Album Master (.zip)</div>
+                        <div class="store-specs">Format: Full Studio Master Archive | .ZIP</div>
+                        <div class="stripe-info-box">
+                            <span>Official CGP Master Vault Release • Instant Stripe Checkout</span>
+                            <strong>$25.00</strong>
+                        </div>
+                    </div>
+                    <a href="https://buy.stripe.com/28E6oH8vCcXU4Qy2jhejK01" target="_blank" rel="noopener noreferrer" class="buy-stripe-btn">
+                        💳 Purchase Album Master via Stripe
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOURNAMENT BRACKET WIRE -->
+        <section class="panel" id="espn-tourney-wire">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="tag-red">LIVE WIRE</span>
+                    <span id="wire-title">8-MAN CHAMPIONSHIP BRACKET</span>
+                </div>
+                <span class="status-badge" id="wire-status">SYNCING...</span>
+            </div>
+
+            <div class="tourney-subbar">
+                <div id="wire-meta">Checking active seeds in Mainframe database...</div>
+                <div class="entrants-chips" id="wire-entrants"></div>
+            </div>
+
+            <div class="bracket-columns" id="wire-grid"></div>
+        </section>
+
+        <!-- NETWORK BUBBLE CAROUSEL -->
+        <section class="panel">
+            <div class="panel-header" style="margin-bottom:12px;">
+                <div class="panel-title">
+                    <span class="tag-red">MAINFRAME</span>
+                    <span>Official CGP Network Hubs</span>
+                </div>
+                <span style="font-size:11px; color:var(--neon-blue); font-family:'Share Tech Mono',monospace;">// SWIPE OR CLICK TO NAVIGATE //</span>
+            </div>
+
+            <div class="network-carousel-wrapper">
+                <button class="carousel-nav-btn carousel-prev" onclick="scrollCarousel('network-bubble-track', -1)">‹</button>
+                
+                <div class="network-carousel-container" id="network-bubble-track">
+                    <a href="https://discord.gg/yrpgBB7sJp" target="_blank" class="network-bubble discord">
+                        <div class="net-icon-ring">💬</div>
+                        <div class="net-name">Discord</div>
+                        <div class="net-desc">Spar Wars & Brackets</div>
+                        <div class="net-preview-pill">Secure Feed &rarr;</div>
+                    </a>
+
+                    <a href="https://soundcloud.com/gerardo-salcido-230608914" target="_blank" class="network-bubble soundcloud">
+                        <div class="net-icon-ring">🎵</div>
+                        <div class="net-name">SoundCloud</div>
+                        <div class="net-desc">66.5K+ Boom-Bap Plays</div>
+                        <div class="net-preview-pill">Audio Vault &rarr;</div>
+                    </a>
+
+                    <a href="https://www.twitch.tv/clone_geek" target="_blank" class="network-bubble twitch">
+                        <div class="net-icon-ring">📺</div>
+                        <div class="net-name">Twitch</div>
+                        <div class="net-desc">Live Fight Broadcasts</div>
+                        <div class="net-preview-pill">Tune In &rarr;</div>
+                    </a>
+
+                    <a href="https://kick.com/clone-geek" target="_blank" class="network-bubble kick">
+                        <div class="net-icon-ring">⚡</div>
+                        <div class="net-name">Kick</div>
+                        <div class="net-desc">High-Stakes Undisputed</div>
+                        <div class="net-preview-pill">Watch Live &rarr;</div>
+                    </a>
+
+                    <a href="https://youtube.com/@clone_geek" target="_blank" class="network-bubble youtube">
+                        <div class="net-icon-ring">▶️</div>
+                        <div class="net-name">YouTube</div>
+                        <div class="net-desc">Full Fights & Replays</div>
+                        <div class="net-preview-pill">Channel &rarr;</div>
+                    </a>
+
+                    <a href="https://www.tiktok.com/@clone_geek" target="_blank" class="network-bubble tiktok">
+                        <div class="net-icon-ring">🔥</div>
+                        <div class="net-name">TikTok</div>
+                        <div class="net-desc">Viral KO Highlights</div>
+                        <div class="net-preview-pill">Shorts &rarr;</div>
+                    </a>
+
+                    <a href="https://suno.com/@clone_geek" target="_blank" class="network-bubble suno">
+                        <div class="net-icon-ring">🎧</div>
+                        <div class="net-name">Suno Studio</div>
+                        <div class="net-desc">AI Track Production</div>
+                        <div class="net-preview-pill">Beats &rarr;</div>
+                    </a>
+                </div>
+
+                <button class="carousel-nav-btn carousel-next" onclick="scrollCarousel('network-bubble-track', 1)">›</button>
+            </div>
+        </section>
+
+        <!-- REEL VAULT CAROUSEL -->
+        <section class="panel" id="cgp-video-archive">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="tag-red">REEL VAULT</span>
+                    <span>Official Rendered Promos & Highlights</span>
+                </div>
+                <span class="status-badge" id="cgp-archive-status">Syncing Vault...</span>
+            </div>
+            
+            <div class="carousel-wrapper">
+                <button class="carousel-nav-btn carousel-prev" onclick="scrollCarousel('cgp-video-grid', -1)">‹</button>
+                <div class="carousel-container" id="cgp-video-grid"></div>
+                <button class="carousel-nav-btn carousel-next" onclick="scrollCarousel('cgp-video-grid', 1)">›</button>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        &copy; 2026 Clone Geek Productions (CGP) • Powered by Coach Steward & Cloudflare Pages Hub
+    </footer>
+
+    <script>
+        function scrollCarousel(elementId, direction) {
+            const container = document.getElementById(elementId);
+            if (container) {
+                const scrollAmount = 260 * direction;
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        (function () {
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    const slot = document.getElementById('sc-player-slot');
+                    if (slot) {
+                        slot.innerHTML = `<iframe width="100%" height="250" scrolling="no" frameborder="no" loading="lazy"
+                            style="border-radius:6px; border:1px solid var(--border-subtle);"
+                            src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist&color=%23e61919&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
+                        </iframe>`;
+                    }
+                }, 600);
+            });
+
+            let allFighters = [];
+            let filterActiveOnly = false;
+            let isFetching = false;
+
+            const toggleBtn = document.getElementById('toggle-active-btn');
+            toggleBtn.addEventListener('click', () => {
+                filterActiveOnly = !filterActiveOnly;
+                toggleBtn.textContent = filterActiveOnly ? 'Show All Registered Fighters' : 'Show Active Fighters Only';
+                renderLeaderboard();
+            });
+
+            function renderLeaderboard() {
+                const tbody = document.getElementById('lb-tbody');
+                const countEl = document.getElementById('lb-count-text');
+                const list = filterActiveOnly 
+                    ? allFighters.filter(f => (f.wins + f.losses + f.kos) > 0)
+                    : allFighters;
+
+                countEl.textContent = `Showing ${list.length} of ${allFighters.length} fighters`;
+
+                if (!list.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">No matching fighters found.</td></tr>';
+                    return;
                 }
-            }, 600);
-        });
 
-        let allFighters = [];
-        let filterActiveOnly = false;
-        let isFetching = false;
-
-        const toggleBtn = document.getElementById('toggle-active-btn');
-        toggleBtn.addEventListener('click', () => {
-            filterActiveOnly = !filterActiveOnly;
-            toggleBtn.textContent = filterActiveOnly ? 'Show All Registered Fighters' : 'Show Active Fighters Only';
-            renderLeaderboard();
-        });
-
-        function renderLeaderboard() {
-            const tbody = document.getElementById('lb-tbody');
-            const countEl = document.getElementById('lb-count-text');
-            const list = filterActiveOnly 
-                ? allFighters.filter(f => (f.wins + f.losses + f.kos) > 0)
-                : allFighters;
-
-            countEl.textContent = `Showing ${list.length} of ${allFighters.length} fighters`;
-
-            if (!list.length) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">No matching fighters found.</td></tr>';
-                return;
+                tbody.innerHTML = list.map((f, i) => {
+                    const total = f.wins + f.losses;
+                    const pct = total ? Math.round((f.wins / total) * 100) + '%' : '-';
+                    return `<tr class="${i === 0 ? 'rank-1' : ''}">
+                        <td>#${i + 1}</td>
+                        <td><strong>${f.name}</strong></td>
+                        <td class="num">${f.wins}</td>
+                        <td class="num">${f.losses}</td>
+                        <td class="num">${f.kos}</td>
+                        <td class="num">${pct}</td>
+                    </tr>`;
+                }).join('');
             }
 
-            tbody.innerHTML = list.map((f, i) => {
-                const total = f.wins + f.losses;
-                const pct = total ? Math.round((f.wins / total) * 100) + '%' : '-';
-                return `<tr class="${i === 0 ? 'rank-1' : ''}">
-                    <td>#${i + 1}</td>
-                    <td><strong>${f.name}</strong></td>
-                    <td class="num">${f.wins}</td>
-                    <td class="num">${f.losses}</td>
-                    <td class="num">${f.kos}</td>
-                    <td class="num">${pct}</td>
-                </tr>`;
-            }).join('');
-        }
+            async function syncMainframe() {
+                if (isFetching) return;
+                isFetching = true;
+                try {
+                    const bust = Date.now();
+                    const res = await fetch('https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/stats.json?t=' + bust, { cache: 'no-store' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
 
-        async function syncMainframe() {
-            if (isFetching) return;
-            isFetching = true;
-            try {
-                const bust = Date.now();
-                const res = await fetch('https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/stats.json?t=' + bust, { cache: 'no-store' });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-
-                const archive = data.video_archive || [];
-                const gridEl = document.getElementById('cgp-video-grid');
-                const statusEl = document.getElementById('cgp-archive-status');
-                statusEl.textContent = archive.length + ' Active Reel(s)';
-                if (archive.length === 0) {
-                    gridEl.innerHTML = '<p style="color:#b8c0d4;width:100%;text-align:center;padding:20px;">No promo reels linked. Use !addreel in Discord to add YouTube/TikTok embeds!</p>';
-                } else {
-                    gridEl.innerHTML = archive.map(vid => {
-                        const isVertical = vid.embed_url?.includes('shorts') || vid.platform === 'TikTok' || vid.platform === 'YouTube Shorts';
-                        const paddingRatio = isVertical ? '177.8%' : '56.25%';
-                        return `
-                        <div class="carousel-card">
-                            <div style="position:relative;padding-bottom:${paddingRatio};height:0;background:#000;border-radius:6px;overflow:hidden;">
-                                <iframe src="${vid.embed_url}" title="${vid.title}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe>
-                            </div>
-                            <h3 style="font-size:13px;color:#ffd700;margin:10px 0 4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${vid.title}">${vid.title}</h3>
-                            <p style="font-size:11px;color:#9aa4bf;margin:0;">📅 ${vid.date} &nbsp;|&nbsp; 🎯 ${vid.platform || 'YouTube'}</p>
-                        </div>
-                        `;
-                    }).join('');
-                }
-
-                allFighters = Object.entries(data)
-                    .filter(([k, v]) => !k.startsWith('_') && v && typeof v === 'object')
-                    .map(([k, v]) => ({
-                        id: k,
-                        name: v.name || k,
-                        wins: Number(v.wins ?? v.w ?? 0),
-                        losses: Number(v.losses ?? v.l ?? 0),
-                        kos: Number(v.kos ?? v.ko ?? 0)
-                    }))
-                    .sort((a, b) => b.wins - a.wins || b.kos - a.kos || a.losses - b.losses);
-
-                renderLeaderboard();
-                document.getElementById('lb-status-text').textContent = '🟢 LIVE // Updated ' + new Date().toLocaleTimeString();
-
-                const sc = data._soundcloud;
-                if (sc && sc.total_plays) {
-                    const scText = sc.total_plays + ' Plays (Goal: ' + (sc.goal || '500K') + ')';
-                    const tickerSc = document.getElementById('ticker-soundcloud');
-                    if (tickerSc) tickerSc.textContent = scText;
-                    const badgeSc = document.getElementById('badge-soundcloud');
-                    if (badgeSc) badgeSc.textContent = '🎵 ' + scText;
-                }
-
-                const t = data._tournament;
-                const titleEl = document.getElementById('wire-title');
-                const tWireStatusEl = document.getElementById('wire-status');
-                const metaEl = document.getElementById('wire-meta');
-                const entrantsEl = document.getElementById('wire-entrants');
-                const gridWireEl = document.getElementById('wire-grid');
-                const tickerEl = document.getElementById('ticker-tourney');
-
-                const resolveFighter = (uid) => {
-                    if (!uid) return '⏳ TBD';
-                    const sUid = String(uid);
-                    if (data[sUid] && data[sUid].name) {
-                        const r = data[sUid];
-                        return `${r.name} [${r.wins||0}W-${r.losses||0}L-${r.kos||0}K]`;
-                    }
-                    if (t && t.entrant_names && t.entrant_names[sUid]) {
-                        return t.entrant_names[sUid];
-                    }
-                    return 'Contender #' + sUid.slice(0, 6);
-                };
-
-                if (t && (t.active || (t.entrants && t.entrants.length > 0) || t.champion)) {
-                    const count = t.entrants ? t.entrants.length : 0;
-                    const tName = (t.title || '8-Man Championship').toUpperCase();
-                    titleEl.textContent = tName;
-                    tWireStatusEl.textContent = t.status === 'completed' ? '👑 COMPLETED' : `🔥 STAGE: ${(t.status || 'REGISTRATION').toUpperCase()} (${count}/8)`;
-                    tickerEl.textContent = `${tName} (${count}/8 Locked)`;
-
-                    metaEl.innerHTML = `<strong>Tier:</strong> ${(t.tier || 'OPEN').toUpperCase()} &nbsp;|&nbsp; <strong>Seeds Locked:</strong> ${count}/8`;
-
-                    if (t.entrants && t.entrants.length) {
-                        entrantsEl.innerHTML = t.entrants.map((uid, idx) => 
-                            `<div class="seed-chip"><span>#${idx + 1}</span>${resolveFighter(uid)}</div>`
-                        ).join('');
+                    const archive = data.video_archive || [];
+                    const gridEl = document.getElementById('cgp-video-grid');
+                    const statusEl = document.getElementById('cgp-archive-status');
+                    statusEl.textContent = archive.length + ' Active Reel(s)';
+                    if (archive.length === 0) {
+                        gridEl.innerHTML = '<p style="color:#b8c0d4;width:100%;text-align:center;padding:20px;">No promo reels linked. Use !addreel in Discord to add YouTube/TikTok embeds!</p>';
                     } else {
-                        entrantsEl.innerHTML = '';
+                        gridEl.innerHTML = archive.map(vid => {
+                            const isVertical = vid.embed_url?.includes('shorts') || vid.platform === 'TikTok' || vid.platform === 'YouTube Shorts';
+                            const paddingRatio = isVertical ? '177.8%' : '56.25%';
+                            return `
+                            <div class="carousel-card">
+                                <div style="position:relative;padding-bottom:${paddingRatio};height:0;background:#000;border-radius:6px;overflow:hidden;">
+                                    <iframe src="${vid.embed_url}" title="${vid.title}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe>
+                                </div>
+                                <h3 style="font-size:13px;color:#ffd700;margin:10px 0 4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${vid.title}">${vid.title}</h3>
+                                <p style="font-size:11px;color:#9aa4bf;margin:0;">📅 ${vid.date} &nbsp;|&nbsp; 🎯 ${vid.platform || 'YouTube'}</p>
+                            </div>
+                            `;
+                        }).join('');
                     }
 
-                    const m = t.matches || {};
-                    const box = (code, obj) => {
-                        if (!obj) return '';
-                        const p1 = resolveFighter(obj.p1);
-                        const p2 = resolveFighter(obj.p2);
-                        const w = obj.winner;
-                        return `<div class="match-card ${w ? 'done' : ''}">
-                            <div class="match-meta">${code} — ${obj.label || ''}</div>
-                            <div class="slot-row ${w && w == obj.p1 ? 'win' : ''}"><span>🔴 ${p1}</span></div>
-                            <div class="slot-row ${w && w == obj.p2 ? 'win' : ''}"><span>🔵 ${p2}</span></div>
-                        </div>`;
+                    allFighters = Object.entries(data)
+                        .filter(([k, v]) => !k.startsWith('_') && v && typeof v === 'object')
+                        .map(([k, v]) => ({
+                            id: k,
+                            name: v.name || k,
+                            wins: Number(v.wins ?? v.w ?? 0),
+                            losses: Number(v.losses ?? v.l ?? 0),
+                            kos: Number(v.kos ?? v.ko ?? 0)
+                        }))
+                        .sort((a, b) => b.wins - a.wins || b.kos - a.kos || a.losses - b.losses);
+
+                    renderLeaderboard();
+                    document.getElementById('lb-status-text').textContent = '🟢 LIVE // Updated ' + new Date().toLocaleTimeString();
+
+                    const sc = data._soundcloud;
+                    if (sc && sc.total_plays) {
+                        const scText = sc.total_plays + ' Plays (Goal: ' + (sc.goal || '500K') + ')';
+                        const tickerSc = document.getElementById('ticker-soundcloud');
+                        if (tickerSc) tickerSc.textContent = scText;
+                        const badgeSc = document.getElementById('badge-soundcloud');
+                        if (badgeSc) badgeSc.textContent = '🎵 ' + scText;
+                    }
+
+                    const t = data._tournament;
+                    const titleEl = document.getElementById('wire-title');
+                    const tWireStatusEl = document.getElementById('wire-status');
+                    const metaEl = document.getElementById('wire-meta');
+                    const entrantsEl = document.getElementById('wire-entrants');
+                    const gridWireEl = document.getElementById('wire-grid');
+                    const tickerEl = document.getElementById('ticker-tourney');
+
+                    const resolveFighter = (uid) => {
+                        if (!uid) return '⏳ TBD';
+                        const sUid = String(uid);
+                        if (data[sUid] && data[sUid].name) {
+                            const r = data[sUid];
+                            return `${r.name} [${r.wins||0}W-${r.losses||0}L-${r.kos||0}K]`;
+                        }
+                        if (t && t.entrant_names && t.entrant_names[sUid]) {
+                            return t.entrant_names[sUid];
+                        }
+                        return 'Contender #' + sUid.slice(0, 6);
                     };
 
-                    gridWireEl.innerHTML = `
-                        <div><div class="col-title">Quarterfinals</div>${box('QF1', m.QF1)}${box('QF2', m.QF2)}${box('QF3', m.QF3)}${box('QF4', m.QF4)}</div>
-                        <div><div class="col-title">Semifinals</div>${box('SF1', m.SF1)}${box('SF2', m.SF2)}</div>
-                        <div><div class="col-title">Championship Final</div>${box('F1', m.F1)}</div>
-                    `;
-                } else {
-                    tWireStatusEl.textContent = '🟢 OPEN GYM';
-                    tickerEl.textContent = 'Open Sparring';
-                    metaEl.textContent = 'Awaiting next 8-man bracket lock-in inside #coaches-corner.';
-                    entrantsEl.innerHTML = '';
-                    gridWireEl.innerHTML = '';
-                }
-            } catch (e) {
-                document.getElementById('lb-status-text').textContent = '🔴 Feed offline — retrying...';
-            } finally {
-                isFetching = false;
-            }
-        }
+                    if (t && (t.active || (t.entrants && t.entrants.length > 0) || t.champion)) {
+                        const count = t.entrants ? t.entrants.length : 0;
+                        const tName = (t.title || '8-Man Championship').toUpperCase();
+                        titleEl.textContent = tName;
+                        tWireStatusEl.textContent = t.status === 'completed' ? '👑 COMPLETED' : `🔥 STAGE: ${(t.status || 'REGISTRATION').toUpperCase()} (${count}/8)`;
+                        tickerEl.textContent = `${tName} (${count}/8 Locked)`;
 
-        syncMainframe();
-        setInterval(syncMainframe, 15000);
-    })();
-</script>
+                        metaEl.innerHTML = `<strong>Tier:</strong> ${(t.tier || 'OPEN').toUpperCase()} &nbsp;|&nbsp; <strong>Seeds Locked:</strong> ${count}/8`;
+
+                        if (t.entrants && t.entrants.length) {
+                            entrantsEl.innerHTML = t.entrants.map((uid, idx) => 
+                                `<div class="seed-chip"><span>#${idx + 1}</span>${resolveFighter(uid)}</div>`
+                            ).join('');
+                        } else {
+                            entrantsEl.innerHTML = '';
+                        }
+
+                        const m = t.matches || {};
+                        const box = (code, obj) => {
+                            if (!obj) return '';
+                            const p1 = resolveFighter(obj.p1);
+                            const p2 = resolveFighter(obj.p2);
+                            const w = obj.winner;
+                            return `<div class="match-card ${w ? 'done' : ''}">
+                                <div class="match-meta">${code} — ${obj.label || ''}</div>
+                                <div class="slot-row ${w && w == obj.p1 ? 'win' : ''}"><span>🔴 ${p1}</span></div>
+                                <div class="slot-row ${w && w == obj.p2 ? 'win' : ''}"><span>🔵 ${p2}</span></div>
+                            </div>`;
+                        };
+
+                        gridWireEl.innerHTML = `
+                            <div><div class="col-title">Quarterfinals</div>${box('QF1', m.QF1)}${box('QF2', m.QF2)}${box('QF3', m.QF3)}${box('QF4', m.QF4)}</div>
+                            <div><div class="col-title">Semifinals</div>${box('SF1', m.SF1)}${box('SF2', m.SF2)}</div>
+                            <div><div class="col-title">Championship Final</div>${box('F1', m.F1)}</div>
+                        `;
+                    } else {
+                        tWireStatusEl.textContent = '🟢 OPEN GYM';
+                        tickerEl.textContent = 'Open Sparring';
+                        metaEl.textContent = 'Awaiting next 8-man bracket lock-in inside #coaches-corner.';
+                        entrantsEl.innerHTML = '';
+                        gridWireEl.innerHTML = '';
+                    }
+                } catch (e) {
+                    document.getElementById('lb-status-text').textContent = '🔴 Feed offline — retrying...';
+                } finally {
+                    isFetching = false;
+                }
+            }
+
+            syncMainframe();
+            setInterval(syncMainframe, 15000);
+        })();
+    </script>
+</body>
+</html>
