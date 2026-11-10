@@ -234,141 +234,84 @@
             text-transform: uppercase;
         }
 
-        /* SWIPEABLE AUDIO STORE CAROUSEL */
-        .store-carousel-wrapper {
-            position: relative;
+        /* EXCLUSIVE SINGLE ALBUM STORE CARD */
+        .store-single-wrapper {
             display: flex;
-            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
         }
-        .store-carousel-container {
-            display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
+        .store-single-card {
             width: 100%;
-            padding: 6px 4px 16px 4px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--neon-blue) var(--border-subtle);
-        }
-        .store-carousel-container::-webkit-scrollbar { height: 6px; }
-        .store-carousel-container::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
-
-        .store-carousel-card {
-            flex: 0 0 285px;
-            width: 285px;
-            scroll-snap-align: start;
+            max-width: 520px;
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-top: 3px solid var(--neon-blue);
-            border-radius: 8px;
-            padding: 16px;
+            border-top: 4px solid var(--gold);
+            border-radius: 10px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: border-color 0.2s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.45);
+            text-align: center;
         }
-        .store-carousel-card:hover { border-color: var(--neon-blue); }
-
         .store-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            font-weight: 800;
+            font-size: 20px;
+            font-weight: 900;
             color: #fff;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            letter-spacing: 0.8px;
         }
         .store-specs {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--gold);
             font-family: 'Share Tech Mono', monospace;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .cashapp-box {
+        .stripe-info-box {
             background: #0b0e17;
             border: 1px dashed var(--border-subtle);
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 12px;
-            font-size: 12px;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-size: 13px;
         }
-        .cashapp-box span { color: var(--text-secondary); display: block; margin-bottom: 4px; }
-        .cashapp-box strong { color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: 14px; }
-        
-        .buy-wav-btn {
+        .stripe-info-box span {
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .stripe-info-box strong {
+            color: var(--green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 18px;
+        }
+        .buy-stripe-btn {
             display: block;
             width: 100%;
             text-align: center;
-            background: linear-gradient(90deg, #00e5ff, #0088cc);
+            background: linear-gradient(90deg, var(--gold), #ff8800);
             color: #000;
             font-family: 'Orbitron', sans-serif;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 900;
-            padding: 10px;
+            padding: 14px 18px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             text-decoration: none;
             text-transform: uppercase;
-            box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.25);
             transition: all 0.2s ease;
         }
-        .buy-wav-btn:hover { background: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.4); }
-
-        /* STORE GUIDE & LOOKUP DRAWER */
-        .store-helper-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-left: 3px solid var(--neon-blue);
-            border-radius: 8px;
-            padding: 14px 16px;
-            margin-bottom: 18px;
+        .buy-stripe-btn:hover {
+            background: #fff;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
         }
-        .store-helper-box summary {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--neon-blue);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            cursor: pointer;
-            list-style: none;
-        }
-        .store-helper-box summary::-webkit-details-marker { display: none; }
-        .lookup-row {
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px dashed var(--border-subtle);
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .lookup-input {
-            background: #0b0e17;
-            border: 1px solid var(--border-subtle);
-            color: #fff;
-            padding: 10px 12px;
-            border-radius: 6px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 13px;
-            flex: 1;
-            min-width: 220px;
-        }
-        .lookup-btn {
-            background: var(--gold);
-            color: #000;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 11px;
-            font-weight: 900;
-            padding: 10px 16px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-        .lookup-btn:hover { background: #fff; }
 
         /* TWO-COLUMN TOP DASHBOARD */
         .dashboard-grid {
@@ -476,35 +419,6 @@
             transition: all 0.2s ease;
         }
         .sc-app-btn:hover { background: #ff5500; color: #fff; }
-
-        .support-compact {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            background: linear-gradient(90deg, #151c2e 0%, #1a1426 100%);
-            border: 1px solid var(--border-subtle);
-            padding: 16px;
-            border-radius: 8px;
-            margin-top: 14px;
-        }
-        .support-btns {
-            display: flex;
-            gap: 10px;
-            flex-shrink: 0;
-        }
-        .btn-support {
-            background: var(--neon-blue);
-            color: #000;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 11px;
-            font-weight: 900;
-            padding: 9px 14px;
-            border-radius: 5px;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-        .btn-paypal { background: var(--gold); color: #000; }
 
         /* TOURNAMENT BRACKET WIRE */
         .tourney-subbar {
@@ -732,40 +646,6 @@
             .carousel-nav-btn { display: none; }
         }
 
-        /* CASH APP / PAYPAL CHECKOUT MODAL */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-        }
-        .modal-card {
-            background: var(--bg-panel);
-            border: 2px solid var(--neon-blue);
-            border-radius: 12px;
-            max-width: 460px;
-            width: 100%;
-            padding: 22px;
-            text-align: center;
-            box-shadow: 0 0 35px rgba(0, 229, 255, 0.35);
-        }
-        .copy-pill-btn {
-            background: #1c2539;
-            border: 1px solid var(--neon-blue);
-            color: var(--neon-blue);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 6px;
-        }
-        .copy-pill-btn:hover { background: var(--neon-blue); color: #000; }
-
         footer {
             text-align: center;
             padding: 24px;
@@ -851,7 +731,7 @@
                 </div>
             </section>
 
-            <!-- RIGHT: SOUND VAULT + SUPPORT -->
+            <!-- RIGHT: SOUND VAULT -->
             <section class="panel">
                 <div class="panel-header">
                     <div class="panel-title">🎧 CGP Sound Vault</div>
@@ -882,150 +762,34 @@
                 <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" class="sc-app-btn">
                     🔊 Open in SoundCloud App (Lock-Screen Background Play)
                 </a>
-
-                <div class="support-compact">
-                    <div>
-                        <div style="font-family:'Orbitron',sans-serif; font-size:13px; font-weight:800; color:#fff;">⚡ FUEL THE MAINFRAME</div>
-                        <div style="font-size:12px; color:var(--text-secondary);">Support new tracks, prize pools & broadcasts.</div>
-                    </div>
-                    <div class="support-btns">
-                        <a href="https://ko-fi.com/clone_geek" target="_blank" class="btn-support">Ko-fi</a>
-                        <a href="https://paypal.me/clonegeek" target="_blank" class="btn-support btn-paypal">PayPal</a>
-                    </div>
-                </div>
             </section>
 
         </div>
 
-        <!-- CGP MASTER AUDIO STORE (.WAV) -->
+        <!-- CGP OFFICIAL MASTER ALBUM STORE (STRIPE EXCLUSIVE) -->
         <section class="panel">
             <div class="panel-header">
                 <div class="panel-title">
-                    <span class="tag-red">DIRECT STORE</span>
-                    <span>CGP Master Audio Store (.WAV Downloads)</span>
+                    <span class="tag-red">OFFICIAL RELEASE</span>
+                    <span>CGP Master Album Vault (.ZIP Archive)</span>
                 </div>
-                <span style="font-size:11px; color:var(--neon-blue); font-family:'Share Tech Mono',monospace;">// SWIPE OR CLICK TO BROWSE //</span>
+                <span style="font-size:11px; color:var(--neon-blue); font-family:'Share Tech Mono',monospace;">// SECURE STRIPE CHECKOUT //</span>
             </div>
 
-            <div class="store-helper-box">
-                <details>
-                    <summary>ℹ️ How to Buy & Unlock Your Instant .WAV Master Download (Click to Expand)</summary>
-                    <div style="margin-top:12px; font-size:13px; color:var(--text-secondary); line-height:1.6;">
-                        <p style="margin-bottom:6px;"><strong>Step 1:</strong> Pick your master track below and click <strong>"Buy via Cash App / PayPal ($2.00)"</strong> (your track's Note Code will automatically copy).</p>
-                        <p style="margin-bottom:6px;"><strong>Step 2:</strong> Pay via <strong>PayPal</strong> (instant checkout) or send <strong>$2.00</strong> on Cash App to <strong style="color:var(--green);">$CloneGeek</strong> with your <strong>Note Reference Code</strong> (e.g., <code style="color:var(--neon-blue);">CGP-WAV-01</code>).</p>
-                        <p><strong>Step 3:</strong> Click <strong>"I Sent Payment — Check Status"</strong> to notify Coach Steward and instantly unlock your 24-bit <code>.WAV</code> master download!</p>
+            <div class="store-single-wrapper">
+                <div class="store-single-card">
+                    <div>
+                        <div class="store-title">Night Shift Album Master (.zip)</div>
+                        <div class="store-specs">Format: Full Studio Master Archive | .ZIP</div>
+                        <div class="stripe-info-box">
+                            <span>Official CGP Master Vault Release • Instant Stripe Checkout</span>
+                            <strong>$10.00</strong>
+                        </div>
                     </div>
-                </details>
-
-                <div class="lookup-row">
-                    <input type="text" id="order-lookup-input" class="lookup-input" placeholder="Enter Order Code (e.g. CGP-WAV-01)">
-                    <button class="lookup-btn" onclick="checkOrderDownload(true)">Check Download Status</button>
+                    <a href="https://buy.stripe.com/28E6oH8vCcXU4Qy2jhejK01" target="_blank" rel="noopener noreferrer" class="buy-stripe-btn">
+                        💳 Purchase Album Master via Stripe
+                    </a>
                 </div>
-                <div id="order-lookup-result" style="margin-top:10px; font-size:12px; font-family:'Share Tech Mono',monospace;"></div>
-            </div>
-
-            <div class="store-carousel-wrapper">
-                <button class="carousel-nav-btn carousel-prev" onclick="scrollCarousel('store-carousel-track', -1)">‹</button>
-                
-                <div class="store-carousel-container" id="store-carousel-track">
-                    <!-- Track 1 -->
-                    <div class="store-carousel-card">
-                        <div>
-                            <div class="store-title">Run It Back (Clone Geek Remix)</div>
-                            <div class="store-specs">Format: 24-bit .WAV | 27.43 MB</div>
-                            <div class="cashapp-box">
-                                <span>Pay via PayPal or CashApp ($CloneGeek)</span>
-                                <span>Price: <strong>$2.00</strong></span>
-                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-01</strong></span>
-                            </div>
-                        </div>
-                        <button onclick="openCheckoutModal('CGP-WAV-01', 'Run It Back (Clone Geek Remix)')" class="buy-wav-btn">
-                            Buy Master (.WAV $2.00)
-                        </button>
-                    </div>
-
-                    <!-- Track 2 -->
-                    <div class="store-carousel-card">
-                        <div>
-                            <div class="store-title">The Clock Out Remix</div>
-                            <div class="store-specs">Format: 24-bit .WAV | 40.16 MB</div>
-                            <div class="cashapp-box">
-                                <span>Pay via PayPal or CashApp ($CloneGeek)</span>
-                                <span>Price: <strong>$2.00</strong></span>
-                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-02</strong></span>
-                            </div>
-                        </div>
-                        <button onclick="openCheckoutModal('CGP-WAV-02', 'The Clock Out Remix')" class="buy-wav-btn">
-                            Buy Master (.WAV $2.00)
-                        </button>
-                    </div>
-
-                    <!-- Track 3 -->
-                    <div class="store-carousel-card">
-                        <div>
-                            <div class="store-title">The Gilded Curtain</div>
-                            <div class="store-specs">Format: 24-bit .WAV | 39.8 MB</div>
-                            <div class="cashapp-box">
-                                <span>Pay via PayPal or CashApp ($CloneGeek)</span>
-                                <span>Price: <strong>$2.00</strong></span>
-                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-03</strong></span>
-                            </div>
-                        </div>
-                        <button onclick="openCheckoutModal('CGP-WAV-03', 'The Gilded Curtain')" class="buy-wav-btn">
-                            Buy Master (.WAV $2.00)
-                        </button>
-                    </div>
-
-                    <!-- Track 4 -->
-                    <div class="store-carousel-card">
-                        <div>
-                            <div class="store-title">The Last Registry</div>
-                            <div class="store-specs">Format: 24-bit .WAV | 40.83 MB</div>
-                            <div class="cashapp-box">
-                                <span>Pay via PayPal or CashApp ($CloneGeek)</span>
-                                <span>Price: <strong>$2.00</strong></span>
-                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-04</strong></span>
-                            </div>
-                        </div>
-                        <button onclick="openCheckoutModal('CGP-WAV-04', 'The Last Registry')" class="buy-wav-btn">
-                            Buy Master (.WAV $2.00)
-                        </button>
-                    </div>
-
-                    <!-- Track 5 -->
-                    <div class="store-carousel-card">
-                        <div>
-                            <div class="store-title">Winter Blues</div>
-                            <div class="store-specs">Format: 24-bit .WAV | Standard Master</div>
-                            <div class="cashapp-box">
-                                <span>Pay via PayPal or CashApp ($CloneGeek)</span>
-                                <span>Price: <strong>$2.00</strong></span>
-                                <span>Note Reference: <strong style="color:var(--neon-blue);">CGP-WAV-05</strong></span>
-                            </div>
-                        </div>
-                        <button onclick="openCheckoutModal('CGP-WAV-05', 'Winter Blues')" class="buy-wav-btn">
-                            Buy Master (.WAV $2.00)
-                        </button>
-                    </div>
-
-                    <!-- Track 6 (New Master Album .zip Vault Link) -->
-                    <div class="store-carousel-card" style="border-top-color: var(--gold);">
-                        <div>
-                            <div class="store-title">Night Shift Album Master (.zip)</div>
-                            <div class="store-specs">Format: Multi-GB Vault Archive | .ZIP</div>
-                            <div class="cashapp-box">
-                                <span>Direct Cloudflare R2 Vault Link</span>
-                                <span>Price: <strong>$10.00</strong></span>
-                                <span>Note Reference: <strong style="color:var(--gold);">CGP-ALBUM-MASTER</strong></span>
-                            </div>
-                        </div>
-                        <a href="https://ac4c79353727b1d87e8825b88d716d64.r2.cloudflarestorage.com/cgpmastervault/Night%20Shift%20Album.zip" target="_blank" class="buy-wav-btn" style="background: linear-gradient(90deg, #ffcc00, #ff8800);">
-                            📥 Download Album Zip
-                        </a>
-                    </div>
-                </div>
-
-                <button class="carousel-nav-btn carousel-next" onclick="scrollCarousel('store-carousel-track', 1)">›</button>
             </div>
         </section>
 
@@ -1134,127 +898,16 @@
 
     </div>
 
-    <!-- CHECKOUT MODAL (PAYPAL QR + CASH APP COPY + LIVE DISCORD PING) -->
-    <div class="modal-overlay" id="cashapp-modal" onclick="if(event.target===this)this.style.display='none'">
-        <div class="modal-card">
-            <div style="font-family:'Orbitron',sans-serif; font-size:16px; font-weight:900; color:var(--neon-blue); margin-bottom:6px;">
-                💵 INSTANT MASTER .WAV CHECKOUT
-            </div>
-            <div id="modal-track-name" style="font-size:14px; font-weight:700; color:#fff; margin-bottom:12px;"></div>
-            
-            <!-- PayPal QR Code Scanner (Points to working paypal.me/clonegeek/2) -->
-            <div style="background:#fff; padding:10px; border-radius:8px; display:inline-block; margin-bottom:12px;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https%3A%2F%2Fpaypal.me%2Fclonegeek%2F2" alt="PayPal QR" width="150" height="150" style="display:block;">
-            </div>
-
-            <div class="cashapp-box" style="text-align:left;">
-                <span>1. Scan QR above or click <strong>Pay via PayPal</strong> for instant web checkout.</span>
-                <span>2. Or send $2.00 via Cash App to <strong>$CloneGeek</strong> <button class="copy-pill-btn" onclick="copyText('$CloneGeek', this)">Copy Cashtag</button></span>
-                <span>3. Note Code: <strong id="modal-note-code" style="color:var(--neon-blue);"></strong> <button class="copy-pill-btn" onclick="copyNoteCode(this)">Copy Code</button></span>
-            </div>
-
-            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;">
-                <a href="https://paypal.me/clonegeek/2" target="_blank" class="buy-wav-btn" style="flex:1; min-width:170px; background:var(--gold); color:#000; text-align:center; padding:11px; text-decoration:none; font-weight:900;">Pay $2 via PayPal</a>
-                <a href="https://cash.app/$CloneGeek" target="_blank" class="buy-wav-btn" style="flex:1; min-width:170px; text-align:center; padding:11px; text-decoration:none;">Open Cash App</a>
-            </div>
-            <div style="display:flex; gap:8px; margin-top:8px;">
-                <button onclick="triggerPaymentNotification()" class="lookup-btn" style="flex:1; background:var(--green); color:#000;">I Sent Payment — Check Status</button>
-                <button onclick="document.getElementById('cashapp-modal').style.display='none'" class="filter-btn" style="padding:10px 14px; color:#fff;">Close</button>
-            </div>
-        </div>
-    </div>
-
     <footer>
         &copy; 2026 Clone Geek Productions (CGP) • Powered by Coach Steward & Cloudflare Pages Hub
     </footer>
 
     <script>
-        let latestStoreOrders = {};
-        let currentModalCode = '';
-
         function scrollCarousel(elementId, direction) {
             const container = document.getElementById(elementId);
             if (container) {
                 const scrollAmount = 260 * direction;
                 container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            }
-        }
-
-        function copyText(txt, btnEl) {
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(txt).catch(() => {});
-            }
-            if (btnEl) {
-                const orig = btnEl.textContent;
-                btnEl.textContent = 'Copied!';
-                setTimeout(() => { btnEl.textContent = orig; }, 1500);
-            }
-        }
-
-        function copyNoteCode(btnEl) {
-            copyText(currentModalCode, btnEl);
-        }
-
-        function openCheckoutModal(orderCode, trackTitle) {
-            currentModalCode = orderCode;
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(orderCode).catch(() => {});
-            }
-            const lookupInput = document.getElementById('order-lookup-input');
-            if (lookupInput) lookupInput.value = orderCode;
-
-            document.getElementById('modal-track-name').textContent = trackTitle + ' ($2.00 Master .WAV)';
-            document.getElementById('modal-note-code').textContent = orderCode;
-            document.getElementById('cashapp-modal').style.display = 'flex';
-            checkOrderDownload(false);
-        }
-
-        async function triggerPaymentNotification() {
-            document.getElementById('cashapp-modal').style.display = 'none';
-            const code = currentModalCode;
-            if (!code) return;
-
-            const resEl = document.getElementById('order-lookup-result');
-            if (resEl) {
-                resEl.innerHTML = `<span style="color:var(--green);">🔔 Notifying Coach Steward for Order <strong>${code}</strong>... Check your Discord #coaches-corner!</span>`;
-            }
-
-            try {
-                await fetch(`https://coach-steward-bot-1.onrender.com/api/check-order/${code}?notify=1`, { cache: 'no-store' });
-            } catch (e) {}
-
-            setTimeout(() => { checkOrderDownload(true); }, 2000);
-        }
-
-        async function checkOrderDownload(manualClick) {
-            const inputEl = document.getElementById('order-lookup-input');
-            const resEl = document.getElementById('order-lookup-result');
-            if (!inputEl || !resEl) return;
-
-            const code = inputEl.value.trim().toUpperCase();
-            if (!code) {
-                if (manualClick) resEl.innerHTML = '<span style="color:var(--espn-red);">❌ Enter your order code (e.g. CGP-WAV-01) first.</span>';
-                return;
-            }
-
-            try {
-                const res = await fetch(`https://coach-steward-bot-1.onrender.com/api/check-order/${code}`, { cache: 'no-store' });
-                const data = await res.json();
-
-                if (data.success && data.verified && data.download_url) {
-                    resEl.innerHTML = `🟢 <strong style="color:var(--green);">PAYMENT VERIFIED BY COACH STEWARD!</strong> &nbsp; <a href="${data.download_url}" target="_blank" style="background:var(--green); color:#000; padding:6px 12px; border-radius:4px; font-family:'Orbitron',sans-serif; font-weight:900; text-decoration:none; display:inline-block; margin-top:4px;">📥 DOWNLOAD 24-BIT .WAV MASTER</a>`;
-                } else if (data.success && !data.verified) {
-                    resEl.innerHTML = `<span style="color:var(--gold);">⏳ Order <strong>${code}</strong> queued — Coach Steward has been notified! As soon as payment is confirmed, this box will unlock your download.</span>`;
-                } else {
-                    resEl.innerHTML = `<span style="color:var(--espn-red);">❌ ${data.error || 'Order code not found.'}</span>`;
-                }
-            } catch (e) {
-                const orderData = latestStoreOrders[code];
-                if (orderData && orderData.verified && orderData.download_url) {
-                    resEl.innerHTML = `🟢 <strong style="color:var(--green);">PAYMENT VERIFIED BY COACH STEWARD!</strong> &nbsp; <a href="${orderData.download_url}" target="_blank" style="background:var(--green); color:#000; padding:6px 12px; border-radius:4px; font-family:'Orbitron',sans-serif; font-weight:900; text-decoration:none; display:inline-block; margin-top:4px;">📥 DOWNLOAD 24-BIT .WAV MASTER</a>`;
-                } else {
-                    resEl.innerHTML = `<span style="color:var(--gold);">⏳ Order <strong>${code}</strong> queued — awaiting verification!</span>`;
-                }
             }
         }
 
@@ -1318,11 +971,6 @@
                     const res = await fetch('https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/stats.json?t=' + bust, { cache: 'no-store' });
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     const data = await res.json();
-
-                    if (data._store_orders) {
-                        latestStoreOrders = data._store_orders;
-                        checkOrderDownload(false);
-                    }
 
                     const archive = data.video_archive || [];
                     const gridEl = document.getElementById('cgp-video-grid');
