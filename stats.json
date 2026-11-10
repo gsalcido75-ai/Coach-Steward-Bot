@@ -935,8 +935,26 @@
         "golden_tickets": 0,
         "verified": true
     },
+    "1527537783604776990": {
+        "name": "\u26b0\ud83d\udc10the \ud83c\udf83UNDERTAKER.",
+        "wins": 0,
+        "losses": 0,
+        "draws": 0,
+        "kos": 0,
+        "golden_tickets": 0,
+        "verified": true
+    },
     "1499165096998469646": {
         "name": "mugga",
+        "wins": 0,
+        "losses": 0,
+        "draws": 0,
+        "kos": 0,
+        "golden_tickets": 0,
+        "verified": true
+    },
+    "1331017630747725877": {
+        "name": "TURBO\u2604",
         "wins": 0,
         "losses": 0,
         "draws": 0,
@@ -950,24 +968,6 @@
         "losses": 0,
         "draws": 0,
         "kos": 0,
-        "golden_tickets": 0,
-        "verified": true
-    },
-    "1527537783604776990": {
-        "name": "\u26b0\ud83d\udc10the \ud83c\udf83UNDERTAKER.I.P\u26b1\ud83e\udea6",
-        "wins": 0,
-        "losses": 0,
-        "draws": 0,
-        "kos": 0,
-        "golden_tickets": 0,
-        "verified": true
-    },
-    "1546624124829302786": {
-        "name": "TURBO",
-        "wins": 4,
-        "losses": 0,
-        "draws": 0,
-        "kos": 4,
         "golden_tickets": 0,
         "verified": true
     },
@@ -1034,7 +1034,7 @@
         "history_log": [],
         "channel_id": 1565566398137114786,
         "message_id": 1569538458546995321,
-        "updated_at": "2026-11-10 12:25:59 AM CST"
+        "updated_at": "2026-11-10 12:29:27 AM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1068,6 +1068,6 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-10T00:25:59.901313-06:00",
+    "_last_synced": "2026-11-10T00:29:27.197818-06:00",
     "video_archive": []
 }
