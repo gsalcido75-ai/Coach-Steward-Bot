@@ -16,10 +16,10 @@ import discord
 from discord.ext import commands, tasks
 import google.generativeai as genai
 
-
-    import boto3
+try:
+    import boto3
 except ImportError:
-    boto3 = None
+    boto3 = None
 
 # ================= SAFE CLOUD CONFIGURATION =================
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "PASTE_TOKEN_IN_RENDER")
