@@ -62,30 +62,30 @@ STORE_ORDERS_DB = {
 }
 
 def generate_r2_download_link(filename: str, expires_in: int = 3600) -> str:
-    client = get_r2_client()
-    if client:
-        try:
-            return client.generate_presigned_url(
-                "get_object",
-                Params={"Bucket": R2_BUCKET_NAME, "Key": filename},
-                ExpiresIn=expires_in
-            )
-        except Exception as e:
-            print(f"[R2 PRESIGN ERROR]: {e}")
-    if R2_PUBLIC_URL:
-        return f"{R2_PUBLIC_URL}/{filename}"
-    return ""
+    client = get_r2_client()
+    if client:
+        try:
+            return client.generate_presigned_url(
+                "get_object",
+                Params={"Bucket": R2_BUCKET_NAME, "Key": filename},
+                ExpiresIn=expires_in
+            )
+        except Exception as e:
+            print(f"[R2 PRESIGN ERROR]: {e}")
+    if R2_PUBLIC_URL:
+        return f"{R2_PUBLIC_URL}/{filename}"
+    return ""
 
 CHAMPIONS_DATA = {
-    "Heavyweight": {"fighter": "Roy🇲🇽🇲🇽🇲🇽", "record": "14W - 0L - 0D - 0K"},
+    "Heavyweight": {"fighter": "Roy🇲🇽🇲🇽🇲🇽", "record": "7W - 0L - 0D - 7K"},
     "Cruiserweight": {"fighter": "f150-_-t", "record": "11W - 2L - 0D - 0K"},
-    "Light Heavyweight": {"fighter": "SlokeNastyTheCaptin#1🇺🇸🇲🇽", "record": "12W - 1L - 0D - 0K"},
-    "Middleweight": {"fighter": "BBK Promotions 🪪", "record": "9W - 3L - 0D - 0K"},
+    "Light Heavyweight": {"fighter": "open", "record": "0W - 0L - 0D - 0K"},
+    "Middleweight": {"fighter": "BBK Promotions 🪪", "record": "0W - 0L - 0D - 0K"},
     "Women's Welterweight": {"fighter": "DT", "record": "8W - 1L - 0D - 0K"},
     "Welterweight": {"fighter": "OPEN", "record": "0W - 0L - 0D - 0K"},
-    "Lightweight": {"fighter": "El putito", "record": "10W - 4L - 0D - 0K"},
-    "Bantamweight": {"fighter": "Roy🇲🇽🇲🇽🇲🇽 (Dual-Division King!)", "record": "14W - 0L - 0D - 0K"},
-    "Women's Lightweight": {"fighter": "TURBO", "record": "7W - 2L - 0D - 0K"}
+    "Lightweight": {"fighter": "open", "record": "0W - 0L - 0D - 0K"},
+    "Bantamweight": {"fighter": "Roy🇲🇽🇲🇽🇲🇽 (Dual-Division King!)", "record": "7W - 0L - 0D - 7K"},
+    "Women's Lightweight": {"fighter": "TURBO", "record": "4W - 0L - 0D - 4K"}
 }
 
 BOXING_HISTORY_FACTS = [
