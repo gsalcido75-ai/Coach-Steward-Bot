@@ -978,10 +978,12 @@
         "title": "SUNDAY SPAR WARS 8-MAN CHAMPIONSHIP BRACKET",
         "max_slots": 8,
         "entrants": [
-            1279476207603290197
+            1279476207603290197,
+            1487227892340621384
         ],
         "entrant_names": {
-            "1279476207603290197": "Clone_Geek"
+            "1279476207603290197": "Clone_Geek",
+            "1487227892340621384": "KnuckleUpFoo"
         },
         "matches": {
             "QF1": {
@@ -1032,7 +1034,7 @@
         "history_log": [],
         "channel_id": 1565566398137114786,
         "message_id": 1569538458546995321,
-        "updated_at": "2026-11-09 10:35:11 PM CST"
+        "updated_at": "2026-11-09 11:04:01 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1066,6 +1068,6 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-09T22:35:11.963173-06:00",
+    "_last_synced": "2026-11-09T23:04:01.135425-06:00",
     "video_archive": []
 }
