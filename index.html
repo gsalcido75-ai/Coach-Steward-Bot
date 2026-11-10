@@ -1048,9 +1048,10 @@
                         metaEl.innerHTML = `<strong>Tier:</strong> ${(t.tier || 'OPEN').toUpperCase()} &nbsp;|&nbsp; <strong>Seeds Locked:</strong> ${count}/8`;
 
                         if (t.entrants && t.entrants.length) {
-                            entrantsEl.innerHTML = t.entrants.map((uid, idx) => 
-                                `<div class="seed-chip"><span>#${idx + 1}</span>${resolveFighter(uid)}</div>`
-                            ).join('');
+                            entrantsEl.innerHTML = t.entrants.map((uid, idx) => {
+                                const rawName = resolveFighter(uid);
+                                return `<div class="seed-chip"><span>#${idx + 1}</span>${rawName}</div>`;
+                            }).join('');
                         } else {
                             entrantsEl.innerHTML = '';
                         }
