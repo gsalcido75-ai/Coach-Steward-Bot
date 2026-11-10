@@ -16,7 +16,7 @@ import discord
 from discord.ext import commands, tasks
 import google.generativeai as genai
 
-try:
+
     import boto3
 except ImportError:
     boto3 = None
