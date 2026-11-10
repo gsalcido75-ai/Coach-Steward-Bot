@@ -77,15 +77,15 @@ def generate_r2_download_link(filename: str, expires_in: int = 3600) -> str:
     return ""
 
 CHAMPIONS_DATA = {
-    "Heavyweight": {"fighter": "Roy🇲🇽🇲🇽🇲🇽", "record": "7W - 0L - 0D - 7K"},
-    "Cruiserweight": {"fighter": "f150-_-t", "record": "11W - 2L - 0D - 0K"},
-    "Light Heavyweight": {"fighter": "open", "record": "0W - 0L - 0D - 0K"},
-    "Middleweight": {"fighter": "BBK Promotions 🪪", "record": "0W - 0L - 0D - 0K"},
-    "Women's Welterweight": {"fighter": "DT", "record": "8W - 1L - 0D - 0K"},
-    "Welterweight": {"fighter": "OPEN", "record": "0W - 0L - 0D - 0K"},
-    "Lightweight": {"fighter": "open", "record": "0W - 0L - 0D - 0K"},
-    "Bantamweight": {"fighter": "Roy🇲🇽🇲🇽🇲🇽 (Dual-Division King!)", "record": "7W - 0L - 0D - 7K"},
-    "Women's Lightweight": {"fighter": "TURBO", "record": "4W - 0L - 0D - 4K"}
+    "Heavyweight": {"fighter": "Roy🇲🇽🇲🇽🇲🇽", "record": "14W - 0L - 0D - 0K"},
+    "Cruiserweight": {"fighter": "f150-_-t", "record": "11W - 2L - 0D - 0K"},
+    "Light Heavyweight": {"fighter": "SlokeNastyTheCaptin#1🇺🇸🇲🇽", "record": "12W - 1L - 0D - 0K"},
+    "Middleweight": {"fighter": "BBK Promotions 🪪", "record": "9W - 3L - 0D - 0K"},
+    "Women's Welterweight": {"fighter": "DT", "record": "8W - 1L - 0D - 0K"},
+    "Welterweight": {"fighter": "OPEN", "record": "0W - 0L - 0D - 0K"},
+    "Lightweight": {"fighter": "El putito", "record": "10W - 4L - 0D - 0K"},
+    "Bantamweight": {"fighter": "Roy🇲🇽🇲🇽🇲🇽 (Dual-Division King!)", "record": "14W - 0L - 0D - 0K"},
+    "Women's Lightweight": {"fighter": "TURBO", "record": "7W - 2L - 0D - 0K"}
 }
 
 BOXING_HISTORY_FACTS = [
