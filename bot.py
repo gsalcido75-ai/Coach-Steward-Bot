@@ -1777,7 +1777,8 @@ async def handle_online_matchmaking(channel: discord.abc.Messageable, fighter_se
             lines.append("🎮 **CURRENTLY IN THE RING (PLAYING UNDISPUTED LIVE):**")
             for m in playing_undisputed[:15]:
                 rec = FIGHTER_RECORDS.get(m.id, {"wins": 0, "losses": 0, "draws": 0, "kos": 0})
-                lines.append(f"• {m.mention} — **`[{rec.get('wins', 0)}W-{rec.get('losses', 0)}L-{rec.get('draws', 0)}D-{rec.get('kos', 0)}K]`**")
+                b_name = clean_base_name(m.display_name)
+                lines.append(f"• **{b_name}** ({m.mention}) — **`[{rec.get('wins', 0)}W-{rec.get('losses', 0)}L-{rec.get('draws', 0)}D-{rec.get('kos', 0)}K]`**")
         else:
             lines.append("🎮 **Playing Undisputed Right Now:** *No fighters showing Undisputed game status on Discord yet—check the online lobby below!*")
 
@@ -1786,9 +1787,10 @@ async def handle_online_matchmaking(channel: discord.abc.Messageable, fighter_se
             lines.append(f"\n🟢 **ONLINE IN THE GYM LOBBY (`{len(active_lobby)}` Active):**")
             for m in active_lobby[:15]:
                 rec = FIGHTER_RECORDS.get(m.id, {"wins": 0, "losses": 0, "draws": 0, "kos": 0})
+                b_name = clean_base_name(m.display_name)
                 game_str = get_member_game_label(m)
                 g_badge = f" *(Playing {game_str})*" if game_str else ""
-                lines.append(f"• {m.mention} — **`[{rec.get('wins', 0)}W-{rec.get('losses', 0)}L-{rec.get('draws', 0)}D-{rec.get('kos', 0)}K]`**{g_badge}")
+                lines.append(f"• **{b_name}** ({m.mention}) — **`[{rec.get('wins', 0)}W-{rec.get('losses', 0)}L-{rec.get('draws', 0)}D-{rec.get('kos', 0)}K]`**{g_badge}")
 
         embed = discord.Embed(
             title="📡 CGP MAINFRAME GYM LIVE RADAR SCAN 📡",
