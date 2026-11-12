@@ -83,7 +83,7 @@
     "1487227892340621384": {
         "name": "KnuckleUpFoo",
         "wins": 3,
-        "losses": 6,
+        "losses": 7,
         "kos": 3,
         "verified": true,
         "draws": 0,
@@ -595,9 +595,9 @@
     },
     "1409789020971470909": {
         "name": "Roy\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd",
-        "wins": 7,
+        "wins": 8,
         "losses": 0,
-        "kos": 7,
+        "kos": 8,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0
@@ -1034,7 +1034,7 @@
         "history_log": [],
         "channel_id": 1565566398137114786,
         "message_id": 1569538458546995321,
-        "updated_at": "2026-11-11 09:48:17 AM CST"
+        "updated_at": "2026-11-11 08:55:17 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1068,6 +1068,6 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-11T09:48:17.579393-06:00",
+    "_last_synced": "2026-11-11T20:55:17.927540-06:00",
     "video_archive": []
 }
