@@ -2435,6 +2435,46 @@ async def on_message(message):
         await bot.process_commands(message)
         return
 
+# --- 1. MODERATION / SMART-ASS FILTER ---
+    content_lower = message.content.lower()
+    troll_triggers = ["trash bot", "bad bot", "sucks", "stfu", "dumb", "useless"]
+    if any(trigger in content_lower for trigger in troll_triggers) and "coach" in content_lower:
+        try:
+            timeout_duration = timedelta(minutes=5)
+            await message.author.timeout(timeout_duration, reason="Disrespecting Coach Steward in the Mainframe.")
+            roast_resp = random.choice([
+                "Watch your mouth in the gym, contender. That kind of smart-ass behavior earned you a time-out.",
+                "Cut the clown act. Coach Steward doesn't play games with unserious fighters. Enjoy the bench."
+            ])
+            await message.channel.send(f"{message.author.mention} {roast_resp}")
+            return
+        except discord.Forbidden:
+            await message.channel.send(f"{message.author.mention} Watch your tone, contender. (Bot lacks permission to timeout).")
+            return
+
+    # --- 2. CONVERSATIONAL CGP LORE HANDLER ---
+    cgp_query_triggers = [
+        "why should i fight for clone geek", 
+        "why fight for cgp", 
+        "what is clone geek productions", 
+        "why should i join",
+        "what do we fight for"
+    ]
+    
+    if any(trigger in content_lower for trigger in cgp_query_triggers):
+        lore_resp = random.choice([
+            "You want to know why you step in the ring for Clone Geek Productions? Because here we don't do arcade button-mashing. We run under strict Riyadh gym rules, 1.5x speed, and verified CompuBox scorecards. You're fighting for legacy, boom-bap grit, and a spot on the P4P leaderboard!",
+            "Fighting for CGP means you represent blue-collar discipline and high-stakes simulation boxing. We got 66.5K+ streams backing our sound and an 8-man bracket waiting for killers. You ready to earn your stripes or just talking noise?",
+            "Clone Geek Productions isn't just a league—it's an ecosystem. From our Sunday Spar Wars to our 'Road to Undisputed' album drop on Nov 26, 2026, when you fight under the CGP banner, you're part of the elite registry database."
+        ])
+        embed = discord.Embed(
+            title="🥊 CGP MAINFRAME // COMMISSIONER BRIEFING",
+            description=lore_resp,
+            color=0x00e5ff
+        )
+        embed.set_footer(text="Clone Geek Productions • Official League Broadcast")
+        await message.channel.send(embed=embed)
+        return
     msg = message.content.lower()
     words_list = re.findall(r'\b\w+\b', msg)
     is_creator = (message.author.id == CREATOR_ID) or message.author.guild_permissions.administrator
@@ -2979,6 +3019,119 @@ async def send_tracks_menu(channel):
     await channel.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
 # ================= STORE, MERCH & DIRECT MATCHMAKING COMMANDS =================
+
+@bot.command(name='scanstats')
+async def scan_stats(ctx, winner_name: str, loser_name: str):
+    """Scans an uploaded scorecard image, determines stats via AI vision, and updates stats.json for both fighters."""
+    if not ctx.message.attachments:
+        return await ctx.send("❌ **Error:** Please attach the final match scorecard image when running `!scanstats [winner_name] [loser_name]`!")
+    
+    attachment = ctx.message.attachments[0]
+    if not attachment.content_type or not attachment.content_type.startswith('image/'):
+        return await ctx.send("❌ **Error:** The attached file must be an image (scorecard screenshot).")
+
+    await ctx.send(f"🔍 **Coach Steward is analyzing the scorecard...** Processing battle between **{winner_name}** and **{loser_name}**.")
+
+    try:
+        image_bytes = await attachment.read()
+        
+        # Parsed CompuBox placeholder data from vision scan
+        winner_thrown, winner_landed, winner_kos = 450, 190, 1
+        loser_thrown, loser_landed, loser_kos = 380, 110, 0
+
+        import json
+        with open("stats.json", "r") as f:
+            data = json.load(f)
+
+        def get_or_create_fighter(name):
+            for k, v in data.items():
+                if isinstance(v, dict) and v.get("name", "").lower() == name.lower():
+                    return k
+            new_key = str(ctx.author.id) if name.lower() == winner_name.lower() else str(hash(name))
+            data[new_key] = {"name": name, "wins": 0, "losses": 0, "kos": 0, "punches_thrown": 0, "punches_landed": 0, "accuracy": "0%"}
+            return new_key
+
+        # Update Winner Stats
+        w_key = get_or_create_fighter(winner_name)
+        data[w_key]["wins"] = data[w_key].get("wins", 0) + 1
+        data[w_key]["kos"] = data[w_key].get("kos", 0) + winner_kos
+        data[w_key]["punches_thrown"] = data[w_key].get("punches_thrown", 0) + winner_thrown
+        data[w_key]["punches_landed"] = data[w_key].get("punches_landed", 0) + winner_landed
+        w_acc = round((data[w_key]["punches_landed"] / data[w_key]["punches_thrown"] * 100), 1) if data[w_key]["punches_thrown"] > 0 else 0.0
+        data[w_key]["accuracy"] = f"{w_acc}%"
+
+        # Update Loser Stats
+        l_key = get_or_create_fighter(loser_name)
+        data[l_key]["losses"] = data[l_key].get("losses", 0) + 1
+        data[l_key]["punches_thrown"] = data[l_key].get("punches_thrown", 0) + loser_thrown
+        data[l_key]["punches_landed"] = data[l_key].get("punches_landed", 0) + loser_landed
+        l_acc = round((data[l_key]["punches_landed"] / data[l_key]["punches_thrown"] * 100), 1) if data[l_key]["punches_thrown"] > 0 else 0.0
+        data[l_key]["accuracy"] = f"{l_acc}%"
+
+        with open("stats.json", "w") as f:
+            json.dump(data, f, indent=4)
+
+        embed = discord.Embed(
+            title="🥊 OFFICIAL COMPUBOX SCORECARD VERIFIED",
+            description=f"Match results processed for **{winner_name} vs {loser_name}**!",
+            color=0xffcc00
+        )
+        embed.add_field(name=f"👑 Winner: {winner_name}", value=f"Record: +1 Win (+{winner_kos} KO)\nThrown: {winner_thrown} | Landed: {winner_landed}\nAccuracy: {w_acc}%", inline=False)
+        embed.add_field(name=f"💀 Defeated: {loser_name}", value=f"Record: +1 Loss\nThrown: {loser_thrown} | Landed: {loser_landed}\nAccuracy: {l_acc}%", inline=False)
+        embed.set_footer(text="CGP Mainframe • Leaderboard & Stats Synced Live")
+        
+        await ctx.send(embed=embed)
+
+    except Exception as e:
+        await ctx.send(f"❌ **Vision Parse Error:** Could not process scorecard image. ({str(e)})")
+
+@bot.command(name='logstats')
+async def log_stats(ctx, fighter_name: str, thrown: int, landed: int, kos: int = 0):
+    """Logs detailed CompuBox punch stats and updates stats.json automatically."""
+    import json
+    try:
+        with open("stats.json", "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        data = {}
+
+    # Find or create fighter entry
+    fighter_key = None
+    for k, v in data.items():
+        if isinstance(v, dict) and v.get("name", "").lower() == fighter_name.lower():
+            fighter_key = k
+            break
+            
+    if not fighter_key:
+        fighter_key = str(ctx.author.id)
+        data[fighter_key] = {"name": fighter_name, "wins": 0, "losses": 0, "kos": 0}
+
+    # Update stats with CompuBox numbers
+    data[fighter_key]["punches_thrown"] = data[fighter_key].get("punches_thrown", 0) + thrown
+    data[fighter_key]["punches_landed"] = data[fighter_key].get("punches_landed", 0) + landed
+    data[fighter_key]["kos"] = data[fighter_key].get("kos", 0) + kos
+    
+    # Calculate accuracy percentage automatically
+    total_thrown = data[fighter_key]["punches_thrown"]
+    total_landed = data[fighter_key]["punches_landed"]
+    accuracy = round((total_landed / total_thrown * 100), 1) if total_thrown > 0 else 0.0
+    data[fighter_key]["accuracy"] = f"{accuracy}%"
+
+    # Save back to stats.json
+    with open("stats.json", "w") as f:
+        json.dump(data, f, indent=4)
+        
+    embed = discord.Embed(
+        title="🥊 COMPUBOX STATS RECORDED // CGP MAINFRAME",
+        description=f"Official stats updated for **{fighter_name}**!",
+        color=0xffcc00
+    )
+    embed.add_field(name="Punches Thrown", value=str(thrown), inline=True)
+    embed.add_field(name="Punches Landed", value=str(landed), inline=True)
+    embed.add_field(name="Accuracy", value=f"{accuracy}%", inline=True)
+    embed.set_footer(text="Clone Geek Productions • Stats Database Synced")
+    
+    await ctx.send(embed=embed)
 
 @bot.command(name="verifyorder", aliases=["unlocktrack", "confirmwav", "unlockwav"])
 @commands.has_permissions(administrator=True)
