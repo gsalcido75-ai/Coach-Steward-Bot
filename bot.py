@@ -3020,6 +3020,27 @@ async def send_tracks_menu(channel):
 
 # ================= STORE, MERCH & DIRECT MATCHMAKING COMMANDS =================
 
+@bot.command(name='updatesoundcloud')
+@commands.has_permissions(administrator=True)
+async def update_soundcloud(ctx, new_plays: str):
+    """Updates the total SoundCloud play count in stats.json for the website tickers."""
+    import json
+    try:
+        with open("stats.json", "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        data = {}
+
+    if "_soundcloud" not in data:
+        data["_soundcloud"] = {"goal": "500K"}
+    
+    data["_soundcloud"]["total_plays"] = new_plays
+
+    with open("stats.json", "w") as f:
+        json.dump(data, f, indent=4)
+
+    await ctx.send(f"🎵 **SoundCloud stats updated!** Total plays set to **{new_plays}**. Website ticker will reflect this shortly.")
+
 @bot.command(name='scanstats')
 async def scan_stats(ctx, winner_name: str, loser_name: str):
     """Scans an uploaded scorecard image, determines stats via AI vision, and updates stats.json for both fighters."""
