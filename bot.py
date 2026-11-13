@@ -2181,6 +2181,62 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
     return True
 
 # ================= QUIET-MODE SCHEDULED TASKS & R2 VAULT WATCHER =================
+
+from discord.ext import tasks
+import datetime
+
+@tasks.loop(hours=24)
+async def album_promo_broadcast():
+    """Automatically broadcasts 'Road to Undisputed' album hype or sales promotion based on the date."""
+    # Target broadcast channel ID (Replace with your main gym or announcements channel ID)
+    CHANNEL_ID = 1443473075315413004  # <--- Put your actual Discord channel ID here!
+    channel = bot.get_channel(CHANNEL_ID)
+    if not channel:
+        return
+
+    today = datetime.date.today()
+    release_date = datetime.date(2026, 11, 26)
+    days_left = (release_date - today).days
+
+    if days_left > 0:
+        # --- COUNTDOWN HYPE MODE (Before Nov 26) ---
+        embed = discord.Embed(
+            title="🔥 ALBUM COUNTDOWN // ROAD TO UNDISPUTED",
+            description=f"Only **{days_left} days left** until the official drop of **'Road to Undisputed'** on November 26, 2026! Get your setups ready and lock in your pre-orders through the CGP Mainframe.",
+            color=0xffcc00
+        )
+        embed.add_field(name="Official Hub", value="[CGP Mainframe Hub](https://cgpmainframe.netlify.app/)", inline=False)
+        embed.set_footer(text="Clone Geek Productions • Heavyweight Sound Design")
+        await channel.send(embed=embed)
+
+    elif days_left == 0:
+        # --- RELEASE DAY DROP MODE (Nov 26) ---
+        embed = discord.Embed(
+            title="🚨 OUT NOW // ROAD TO UNDISPUTED OFFICIAL DROP!",
+            description="The wait is over! **'Road to Undisputed'** is officially live across platforms today! Support independent boom-bap and grab your copy right now.",
+            color=0xe61919
+        )
+        embed.add_field(name="Get It Now", value="[Secure Stripe Store & Mainframe](https://cgpmainframe.netlify.app/)", inline=False)
+        embed.set_footer(text="Clone Geek Productions • Stream & Support Local Hip-Hop")
+        await channel.send(embed=embed)
+
+    else:
+        # --- POST-RELEASE SALES & PROMO MODE (After Nov 26) ---
+        embed = discord.Embed(
+            title="🎧 SUPPORT CGP // ROAD TO UNDISPUTED",
+            description="Have you grabbed your copy of **'Road to Undisputed'** yet? Back the independent grind, stream the catalog, and secure the master archive directly through our hub.",
+            color=0x00e5ff
+        )
+        embed.add_field(name="Master Vault", value="[Purchase via Stripe / Mainframe Hub](https://cgpmainframe.netlify.app/)", inline=False)
+        embed.set_footer(text="Clone Geek Productions • Elite Registry Database")
+        await channel.send(embed=embed)
+
+@album_promo_broadcast.before_loop
+async def before_album_promo():
+    await bot.wait_until_ready()
+
+# Start the task when your bot boots up (place 'album_promo_broadcast.start()' inside your @bot.event async def on_ready(): function)
+
 @tasks.loop(time=datetime.time(hour=8, minute=0, tzinfo=CENTRAL_TZ))
 async def daily_morning_call():
     await bot.wait_until_ready()
