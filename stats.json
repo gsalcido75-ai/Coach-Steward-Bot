@@ -253,12 +253,19 @@
     },
     "1082406658875064400": {
         "name": "\ud81a\udd0d \ud835\udc74\ud835\udc69\ud835\udc6e \ud835\udc6a\ud835\udc93\ud835\udc86\ud835\udc98\ud835\udc86",
-        "wins": 6,
+        "wins": 7,
         "losses": 0,
-        "kos": 4,
+        "kos": 5,
         "verified": true,
         "draws": 0,
-        "golden_tickets": 0
+        "golden_tickets": 0,
+        "punches_landed": 0,
+        "punches_thrown": 0,
+        "body_landed": 0,
+        "power_landed": 0,
+        "knockdowns": 0,
+        "counters": 0,
+        "accuracy": "0%"
     },
     "1210339859496181811": {
         "name": "Deej",
@@ -659,11 +666,18 @@
     "1279476207603290197": {
         "name": "Clone_Geek",
         "wins": 5,
-        "losses": 20,
+        "losses": 21,
         "draws": 0,
         "kos": 5,
         "golden_tickets": 0,
-        "verified": true
+        "verified": true,
+        "punches_landed": 0,
+        "punches_thrown": 0,
+        "body_landed": 0,
+        "power_landed": 0,
+        "knockdowns": 0,
+        "counters": 0,
+        "accuracy": "0%"
     },
     "1438237941628538971": {
         "name": "jordan",
@@ -1037,7 +1051,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-14 01:34:17 PM CST"
+        "updated_at": "2026-11-14 03:47:24 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1071,7 +1085,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-14T13:34:17.885059-06:00",
+    "_last_synced": "2026-11-14T15:47:24.187321-06:00",
     "video_archive": [
         {
             "title": "Sneak Peak",
