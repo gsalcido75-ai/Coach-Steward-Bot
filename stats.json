@@ -1037,7 +1037,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-14 12:45:37 PM CST"
+        "updated_at": "2026-11-14 01:34:17 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1071,7 +1071,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-14T12:45:37.431725-06:00",
+    "_last_synced": "2026-11-14T13:34:17.885059-06:00",
     "video_archive": [
         {
             "title": "Sneak Peak",
