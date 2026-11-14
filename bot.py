@@ -1924,23 +1924,33 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
     global last_ai_call_time
     vision_prompt = (
         f"You are Coach Steward, the legendary Hall of Fame HBO/ESPN ringside boxing analyst for the CGP Mainframe Gym. "
-        f"Fighter '{uploader_name}' uploaded this post-fight screenshot from 'Undisputed' (Caption: '{caption}', Tagged Opponent: '{opponent_name}').\n\n"
-        "CRITICAL STEP 1 — DETERMINE WHO ACTUALLY WON:\n"
-        "Look closely at the User's Caption AND the 'WINNER' / 'VICTORY' / 'DEFEAT' banner or judge scorecards on the screenshot.\n"
-        "- If the uploader ('" + uploader_name + "') says they lost (e.g. 'I lost', 'took an L', 'he got me') OR the screenshot clearly shows the opponent won, start your response on Line 1 with: `RESULT_CODE: UPLOADER_LOSS`\n"
-        "- If it is a draw, start on Line 1 with: `RESULT_CODE: DRAW`\n"
-        "- Otherwise, if the uploader won, start on Line 1 with: `RESULT_CODE: UPLOADER_WIN`\n"
-        "- On Line 2, write `METHOD_CODE: KO` if it was a KO/TKO/Stoppage/Forfeit, or `METHOD_CODE: DECISION`.\n\n"
-        "CRITICAL STEP 2 — GENERATE THE HBO REPORT (starting on Line 3):\n"
+        f"Fighter '{uploader_name}' uploaded this post-fight CompuBox screenshot from 'Undisputed' (Caption: '{caption}', Tagged Opponent: '{opponent_name}').\n\n"
+        "CRITICAL STEP 1 — DETERMINE WHO ACTUALLY WON & EXTRACT EXACT COMPUBOX NUMBERS:\n"
+        "Look closely at the red 'MATCH WINNER' banner at the bottom, the player gamertags (left = Red Corner, right = Blue Corner), and the center CompuBox table (e.g. '166/261' means 166 landed out of 261 thrown).\n"
+        "- Line 1: `RESULT_CODE: UPLOADER_LOSS` (if uploader lost), `RESULT_CODE: DRAW`, or `RESULT_CODE: UPLOADER_WIN`\n"
+        "- Line 2: `METHOD_CODE: KO` (if KO/TKO/Stoppage/Forfeit) or `METHOD_CODE: DECISION`\n"
+        "- Line 3: `WINNER_STATS: landed=0, thrown=0, body=0, power=0, kds=0, counters=0` (replace 0s with the Winner's exact numbers from the screenshot)\n"
+        "- Line 4: `LOSER_STATS: landed=0, thrown=0, body=0, power=0, kds=0, counters=0` (replace 0s with the Loser's exact numbers from the screenshot)\n\n"
+        "CRITICAL STEP 2 — GENERATE THE HBO REPORT (starting on Line 5):\n"
         "📊 **OFFICIAL COMPUBOX & SCORECARD RECEIPTS:**\n"
-        "• **Matchup & Result:** (Identify true winner, method of victory—KO/TKO/Decision—and stats)\n"
-        "• **Total Punches, Jabs, Power Shots & Body Work:** (Summarize key numbers)\n"
-        "• **Knockdowns & Stamina:**\n\n"
+        "• **Matchup & Result:** (Identify true winner, gamertags, method of victory, and total punches landed/thrown)\n"
+        "• **Total Punches, Jabs, Power Shots & Body Work:** (Summarize key numbers & percentages)\n"
+        "• **Knockdowns, Counters & Stamina:**\n\n"
         "🎙️ **COACH STEWARD'S RINGSIDE VERDICT:**\n"
         "Write 3 gritty sentences of HBO ringside commentary explaining why the true winner took the fight and reminding everyone that numbers don't lie!"
     )
 
     image_part = {"mime_type": mime_type or "image/jpeg", "data": image_bytes}
+
+    def parse_stat_line(prefix: str, text: str) -> dict:
+        stats = {"landed": 0, "thrown": 0, "body": 0, "power": 0, "kds": 0, "counters": 0}
+        m = re.search(rf"{prefix}:\s*([^\n]+)", text, re.IGNORECASE)
+        if m:
+            for key in stats:
+                km = re.search(rf"{key}\s*=\s*(\d+)", m.group(1), re.IGNORECASE)
+                if km:
+                    stats[key] = int(km.group(1))
+        return stats
 
     async with ai_lock:
         now = asyncio.get_event_loop().time()
@@ -1963,8 +1973,13 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
                         v_outcome = "win"
                     if "METHOD_CODE: KO" in raw:
                         v_ko = True
-                    cleaned_report = re.sub(r'^(RESULT_CODE:.*|METHOD_CODE:.*)\n?', '', raw, flags=re.MULTILINE).strip()
-                    return cleaned_report, v_outcome, v_ko
+                    w_stats = parse_stat_line("WINNER_STATS", raw)
+                    l_stats = parse_stat_line("LOSER_STATS", raw)
+                    cleaned_report = re.sub(
+                        r'^(RESULT_CODE:.*|METHOD_CODE:.*|WINNER_STATS:.*|LOSER_STATS:.*)\n?',
+                        '', raw, flags=re.MULTILINE
+                    ).strip()
+                    return cleaned_report, v_outcome, v_ko, w_stats, l_stats
             except Exception as e:
                 print(f"[VISION ERROR]: {e}")
                 last_ai_call_time = asyncio.get_event_loop().time()
@@ -1975,7 +1990,8 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
         "🎙️ **COACH STEWARD'S RINGSIDE VERDICT:**\n"
         "The tape doesn't lie, contenders! Peep the attached scorecard screenshot—no excuses in the CGP Mainframe Gym!"
     )
-    return fallback_txt, None, False
+    empty_stats = {"landed": 0, "thrown": 0, "body": 0, "power": 0, "kds": 0, "counters": 0}
+    return fallback_txt, None, False, empty_stats, empty_stats
 
 # ================= GEMINI VISION CASH APP RECEIPT SCANNER (100% HANDS-FREE WORKFLOW) =================
 async def scan_cashapp_receipt_with_vision(image_bytes: bytes, mime_type: str) -> tuple:
@@ -2052,13 +2068,14 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
     )
 
     caption_intent = parse_fight_caption_intent(message.content, uploader.id, opponent.id if opponent else None)
-    report_text, vision_outcome, vision_ko = await analyze_scorecard_image_with_vision(
+    report_text, vision_outcome, vision_ko, w_stats, l_stats = await analyze_scorecard_image_with_vision(
         image_bytes=image_bytes,
         mime_type=att.content_type or "image/jpeg",
         uploader_name=uploader_base,
         caption=message.content,
         opponent_name=opponent_base
-    )
+
+    )    
     if len(report_text) > 3600:
         report_text = report_text[:3600] + "..."
 
@@ -2105,6 +2122,21 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
             l_rec = FIGHTER_RECORDS[loser_member.id]
             l_rec["losses"] = l_rec.get("losses", 0) + 1
             l_rec["verified"] = True
+
+        def apply_compubox(rec_dict, st):
+            rec_dict["punches_landed"] = rec_dict.get("punches_landed", 0) + st.get("landed", 0)
+            rec_dict["punches_thrown"] = rec_dict.get("punches_thrown", 0) + st.get("thrown", 0)
+            rec_dict["body_landed"] = rec_dict.get("body_landed", 0) + st.get("body", 0)
+            rec_dict["power_landed"] = rec_dict.get("power_landed", 0) + st.get("power", 0)
+            rec_dict["knockdowns"] = rec_dict.get("knockdowns", 0) + st.get("kds", 0)
+            rec_dict["counters"] = rec_dict.get("counters", 0) + st.get("counters", 0)
+            t_th = rec_dict["punches_thrown"]
+            t_la = rec_dict["punches_landed"]
+            rec_dict["accuracy"] = f"{round((t_la / t_th) * 100, 1)}%" if t_th > 0 else rec_dict.get("accuracy", "0%")
+
+        apply_compubox(w_rec, w_stats)
+        if loser_member:
+            apply_compubox(l_rec, l_stats)
 
         if loser_member:
             tourney_advanced, tourney_summary = advance_tournament_match(
@@ -2496,7 +2528,7 @@ async def on_message(message):
     troll_triggers = ["trash bot", "bad bot", "sucks", "stfu", "dumb", "useless"]
     if any(trigger in content_lower for trigger in troll_triggers) and "coach" in content_lower:
         try:
-            timeout_duration = timedelta(minutes=5)
+            timeout_duration = datetime.timedelta(minutes=5)
             await message.author.timeout(timeout_duration, reason="Disrespecting Coach Steward in the Mainframe.")
             roast_resp = random.choice([
                 "Watch your mouth in the gym, contender. That kind of smart-ass behavior earned you a time-out.",
@@ -2708,7 +2740,7 @@ async def on_message(message):
             await execute_roster_sync_and_announce(message.guild, message.channel, force_zero=force_z)
             return
 
-    if is_creator and (is_mentioned or "coach" in msg):
+    if is_creator and is_mentioned and len(msg) < 80:
         if any(phrase in msg for phrase in ["open bracket", "start bracket", "open tournament", "start a tournament", "recruit for tournament"]):
             answered_messages.add(message.id)
             if any(k in msg for k in ["pay2play", "pay to play", "gauntlet", "$20", "160", "cash"]):
@@ -3926,6 +3958,30 @@ async def start_web_server():
 async def main():
     await start_web_server()
     await bot.start(BOT_TOKEN)
+
+@bot.command(name="scorecardhelp", aliases=["howtoscore", "submithelp", "stathelp"])
+async def scorecardhelp(ctx):
+    """Posts a clear, step-by-step embed explaining how to upload scorecards and log stats."""
+    embed = discord.Embed(
+        title="📸 HOW TO SUBMIT SCORECARDS & LOG STATS 📸",
+        description=(
+            "🎙️ **Coach Steward:** Want your wins, losses, draws, and KOs synced to your Discord nickname and the live **CGP Mainframe Hub**? Follow these exact steps:\n\n"
+            "### 🥊 STEP 1: GO TO `#scorecard-submissions`\n"
+            "• Take a clear screenshot of the **final post-fight scorecard / CompuBox screen**.\n\n"
+            "### 🏷️ STEP 2: UPLOAD & `@TAG` YOUR OPPONENT (MANDATORY)\n"
+            "• Attach your screenshot **AND `@mention` who you fought** in the exact same message.\n"
+            "• **Examples:** `W vs @opponent`, `KO win vs @opponent`, `I lost to @opponent`, or `Draw vs @opponent`.\n"
+            "• *(⚠️ If you upload a screenshot without `@tagging` your opponent, I will block it automatically!)*\n\n"
+            "### ⚡ WHAT HAPPENS NEXT:\n"
+            "1. My AI Vision reads the CompuBox numbers and confirms the winner.\n"
+            "2. Both fighters' `[W-L-D-K]` records update automatically on Discord and `themainframe-blush.vercel.app`.\n"
+            "3. If you're in an active 8-Man Tournament bracket, the winner advances automatically!\n\n"
+            "💡 **Check Your Stats Anytime:** Type **`!mystats`** (or **`!stats`**) in chat."
+        ),
+        color=discord.Color.gold(),
+        url=MAINFRAME_HUB_URL
+    )
+    await ctx.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
 if __name__ == "__main__":
     asyncio.run(main())
