@@ -981,10 +981,10 @@
         "verified": true
     },
     "_tournament": {
-        "active": true,
+        "active": false,
         "status": "registration",
-        "tier": "pay2play",
-        "title": "8-MAN PAY-TO-PLAY GAUNTLET ($160 PURSE)",
+        "tier": "open",
+        "title": "SUNDAY SPAR WARS 8-MAN BRACKET",
         "max_slots": 8,
         "entrants": [],
         "entrant_names": {},
@@ -1035,9 +1035,9 @@
         "champion": null,
         "champion_name": null,
         "history_log": [],
-        "channel_id": 1565566398137114786,
-        "message_id": 1571203248872755291,
-        "updated_at": "2026-11-14 12:45:02 PM CST"
+        "channel_id": null,
+        "message_id": null,
+        "updated_at": "2026-11-14 12:45:37 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1071,7 +1071,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-14T12:45:02.591919-06:00",
+    "_last_synced": "2026-11-14T12:45:37.431725-06:00",
     "video_archive": [
         {
             "title": "Sneak Peak",
