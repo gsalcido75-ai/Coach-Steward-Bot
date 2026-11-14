@@ -1102,6 +1102,8 @@ def write_records_to_disk():
                 existing_data = json.load(f)
                 if "video_archive" in existing_data:
                     export_payload["video_archive"] = existing_data["video_archive"]
+                if "_soundcloud" in existing_data:
+                    export_payload["_soundcloud"] = existing_data["_soundcloud"]
         except Exception:
             pass
 
@@ -2503,7 +2505,9 @@ async def on_member_remove(member):
     base_name = clean_base_name(member.display_name)
     if member.id in ACTIVE_TOURNAMENT.get("entrants", []) and ACTIVE_TOURNAMENT.get("status") == "registration":
         ACTIVE_TOURNAMENT["entrants"].remove(member.id)
-        await save_and_sync_records()
+    if member.id in FIGHTER_RECORDS:
+        FIGHTER_RECORDS.pop(member.id, None)
+    await save_and_sync_records()
     roast_msg = random.choice(MEMBER_LEAVE_ROASTS).format(name=base_name)
     target_ch = get_coaches_corner_channel(member.guild)
     if target_ch:
@@ -3126,7 +3130,7 @@ async def update_soundcloud(ctx, new_plays: str):
 
     with open("stats.json", "w") as f:
         json.dump(data, f, indent=4)
-
+    await push_stats_to_github()
     await ctx.send(f"🎵 **SoundCloud stats updated!** Total plays set to **{new_plays}**. Website ticker will reflect this shortly.")
 
 @bot.command(name='scanstats')

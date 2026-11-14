@@ -64,7 +64,7 @@
         .ticker-stat { color: var(--text-secondary); flex-shrink: 0; }
         .ticker-stat strong { color: var(--gold); margin-left: 5px; }
 
-        /* 2. PROFESSIONAL HERO HEADER + MOBILE SCALING */
+        /* 2. HERO HEADER */
         .site-header {
             background: linear-gradient(180deg, #121726 0%, var(--bg-base) 100%);
             border-bottom: 1px solid var(--border-subtle);
@@ -85,28 +85,28 @@
                 justify-items: center; 
                 padding: 10px;
             }
-            .brand-overview h1 {
-                font-size: 22px;
-            }
-            .brand-bio {
-                font-size: 13px;
-                padding: 0 10px;
-            }
+            .brand-overview h1 { font-size: 22px; }
+            .brand-bio { font-size: 13px; padding: 0 10px; }
         }
 
         .logo-ring {
-            width: 128px;
-            height: 128px;
+            width: 132px;
+            height: 132px;
             border-radius: 50%;
             padding: 4px;
             background: linear-gradient(135deg, var(--neon-blue), var(--espn-red));
-            box-shadow: 0 0 25px rgba(0, 229, 255, 0.35);
+            box-shadow: 0 0 28px rgba(0, 229, 255, 0.45);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             position: relative;
             overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .logo-ring:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 36px rgba(255, 204, 0, 0.55);
         }
         .logo-ring img {
             width: 100%;
@@ -180,11 +180,28 @@
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             border-left: 3px solid var(--gold);
-            padding: 5px 12px;
-            border-radius: 4px;
+            padding: 7px 14px;
+            border-radius: 6px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .proto-badge:hover {
+            background: #1f273d;
+            border-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.2);
+        }
+        .proto-badge .pill-hint {
+            font-size: 10px;
+            color: var(--neon-blue);
+            font-family: 'Share Tech Mono', monospace;
         }
 
         /* 3. MAIN BROADCAST CONTAINER */
@@ -244,6 +261,55 @@
             padding: 4px 12px;
             border-radius: 20px;
             text-transform: uppercase;
+        }
+
+        /* INTERACTIVE COMPUBOX ACTIVE STAT VAULT BUBBLE */
+        .compubox-vault-bubble {
+            background: linear-gradient(135deg, #161d31 0%, #0d121f 100%);
+            border: 1px solid rgba(0, 229, 255, 0.45);
+            border-left: 4px solid var(--neon-blue);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.22s ease;
+            box-shadow: 0 6px 20px rgba(0, 229, 255, 0.08);
+        }
+        .compubox-vault-bubble:hover {
+            transform: translateY(-2px);
+            border-color: var(--gold);
+            box-shadow: 0 8px 25px rgba(0, 229, 255, 0.22);
+        }
+        .cb-bubble-left h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            color: var(--neon-blue);
+            margin-bottom: 4px;
+            letter-spacing: 0.6px;
+        }
+        .cb-bubble-left p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        .cb-bubble-cta {
+            background: rgba(0, 229, 255, 0.14);
+            border: 1px solid var(--neon-blue);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 8px 14px;
+            border-radius: 20px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        @media (max-width: 600px) {
+            .compubox-vault-bubble { flex-direction: column; align-items: flex-start; }
         }
 
         /* EXCLUSIVE SINGLE ALBUM STORE CARD */
@@ -356,7 +422,6 @@
         }
         .filter-btn:hover { background: #1f273d; }
 
-        /* MOBILE TABLE SCROLL FIX */
         .leaderboard-scroll-box {
             width: 100%;
             max-height: 380px;
@@ -401,10 +466,7 @@
         table.lb-table tr:hover { background: rgba(255,255,255,0.03); }
 
         @media (max-width: 768px) {
-            table.lb-table th, table.lb-table td {
-                padding: 6px 8px;
-                font-size: 11px;
-            }
+            table.lb-table th, table.lb-table td { padding: 6px 8px; font-size: 11px; }
         }
 
         .vault-grid {
@@ -456,11 +518,7 @@
             font-size: 13px;
             color: var(--text-secondary);
         }
-        .entrants-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+        .entrants-chips { display: flex; flex-wrap: wrap; gap: 8px; }
         .seed-chip {
             background: #0d111a;
             border: 1px solid var(--border-subtle);
@@ -477,9 +535,7 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 16px;
         }
-        @media (max-width: 900px) {
-            .bracket-columns { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 900px) { .bracket-columns { grid-template-columns: 1fr; } }
         .col-title {
             font-size: 12px;
             font-weight: 800;
@@ -517,7 +573,7 @@
         .slot-row.win { color: var(--green); font-weight: 800; }
 
         /* NETWORK CAROUSEL */
-        .network-carousel-wrapper {
+        .network-carousel-wrapper, .carousel-wrapper {
             position: relative;
             display: flex;
             align-items: center;
@@ -588,12 +644,7 @@
             letter-spacing: 1px;
             margin-bottom: 4px;
         }
-        .net-desc {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            line-height: 1.3;
-        }
+        .net-desc { font-size: 11px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.3; }
         .net-preview-pill {
             background: rgba(0, 229, 255, 0.08);
             border: 1px solid rgba(0, 229, 255, 0.2);
@@ -608,11 +659,6 @@
         }
 
         /* REEL VAULT CAROUSEL */
-        .carousel-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
         .carousel-container {
             display: flex;
             gap: 16px;
@@ -666,8 +712,95 @@
         .carousel-nav-btn:hover { background: var(--neon-blue); color: #000; }
         .carousel-prev { left: -20px; }
         .carousel-next { right: -20px; }
-        @media (max-width: 768px) {
-            .carousel-nav-btn { display: none; }
+        @media (max-width: 768px) { .carousel-nav-btn { display: none; } }
+
+        /* INTERACTIVE MODAL OVERLAY */
+        .cgp-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 6, 12, 0.86);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .cgp-modal-backdrop.open { display: flex; }
+        .cgp-modal-box {
+            background: #111624;
+            border: 2px solid var(--neon-blue);
+            border-radius: 14px;
+            max-width: 820px;
+            width: 100%;
+            max-height: 86vh;
+            overflow-y: auto;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.85), 0 0 30px rgba(0, 229, 255, 0.25);
+            animation: modalPop 0.2s ease-out;
+        }
+        @keyframes modalPop {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .cgp-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .cgp-modal-header h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+        .cgp-modal-close {
+            background: var(--espn-red);
+            color: #fff;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .cgp-modal-body { font-size: 14px; color: var(--text-primary); line-height: 1.6; }
+        .modal-rule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin: 14px 0;
+        }
+        .modal-rule-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-top: 3px solid var(--gold);
+            border-radius: 8px;
+            padding: 14px;
+        }
+        .modal-rule-card h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            color: var(--neon-blue);
+            margin-bottom: 6px;
+        }
+        .modal-action-btn {
+            display: inline-block;
+            margin-top: 12px;
+            background: linear-gradient(90deg, var(--neon-blue), #0099ff);
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 900;
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
         }
 
         footer {
@@ -686,7 +819,7 @@
     <!-- 1. ESPN-STYLE TOP BROADCAST TICKER -->
     <div class="broadcast-ticker">
         <span class="ticker-tag">CGP NETWORK</span>
-        <div class="ticker-stat">Active Bracket: <strong id="ticker-tourney">Entry Welterweight (7/8 Locked)</strong></div>
+        <div class="ticker-stat">Active Bracket: <strong id="ticker-tourney">Open Sparring</strong></div>
         <div class="ticker-stat">SoundCloud Catalog: <strong id="ticker-soundcloud">66,576+ Plays (Goal: 500K)</strong></div>
         <div class="ticker-stat">Commission Rules: <strong>Riyadh Gym • 1.5x Speed • Strict Ref</strong></div>
         <div class="ticker-stat">Sunday Spar Wars: <strong>Sundays @ 6 PM CT</strong></div>
@@ -695,24 +828,32 @@
     <!-- 2. HERO HEADER -->
     <header class="site-header">
         <div class="header-inner">
-            <div class="logo-ring">
+            <div class="logo-ring" title="Clone Geek Productions — CGP Mainframe">
                 <div class="logo-fallback">
                     <strong>CGP</strong>
                     <span>MAINFRAME</span>
                 </div>
-                <img id="cgp-brand-logo" src="https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/CGP.jpg" alt="Clone Geek Productions" onerror="this.style.display='none'">
+                <img id="cgp-brand-logo" src="CGP.jpg" alt="Clone Geek Productions">
             </div>
             <div class="brand-overview">
                 <h1>Clone Geek Productions</h1>
                 <div class="brand-subtitle">// Official CGP Mainframe Broadcast & Esports Hub //</div>
                 <p class="brand-bio">
-                    Welcome to the <strong>CGP Mainframe</strong>—where raw boom-bap production meets high-stakes virtual boxing. Built on blue-collar discipline, strict winner-take-all brackets, and verified CompuBox scorecards.
+                    Welcome to the <strong>CGP Mainframe</strong>—where raw boom-bap production meets high-stakes virtual boxing. Built on blue-collar discipline, strict winner-take-all brackets, and verified CompuBox scorecards. <strong>Click any protocol badge below to explore how the Mainframe works:</strong>
                 </p>
                 <div class="protocol-pills">
-                    <div class="proto-badge">🏆 Winner-Takes-All 8-Man Brackets</div>
-                    <div class="proto-badge">🥊 Sunday Spar Wars (6 PM CT)</div>
-                    <div class="proto-badge">📊 AI-Verified [W-L-D-K] Records</div>
-                    <div class="proto-badge" id="badge-soundcloud">🎵 66.5K+ SoundCloud Streams</div>
+                    <button type="button" class="proto-badge" onclick="openInfoModal('brackets')">
+                        🏆 Winner-Takes-All 8-Man Brackets <span class="pill-hint">[INFO]</span>
+                    </button>
+                    <button type="button" class="proto-badge" onclick="openInfoModal('sparwars')">
+                        🥊 Sunday Spar Wars (6 PM CT) <span class="pill-hint">[INFO]</span>
+                    </button>
+                    <button type="button" class="proto-badge" onclick="openInfoModal('compubox')">
+                        📊 AI-Verified [W-L-D-K] Records <span class="pill-hint">[INFO]</span>
+                    </button>
+                    <button type="button" class="proto-badge" id="badge-soundcloud" onclick="openInfoModal('soundcloud')">
+                        🎵 66,576+ SoundCloud Streams <span class="pill-hint">[LIVE]</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -724,11 +865,22 @@
         <!-- TWO-COLUMN TOP DASHBOARD: LEADERBOARD & SOUND VAULT -->
         <div class="dashboard-grid">
 
-            <!-- LEFT: LEADERBOARD -->
+            <!-- LEFT: LEADERBOARD + DEDICATED ACTIVE COMPUBOX BUBBLE -->
             <section class="panel">
                 <div class="panel-header">
                     <div class="panel-title">📊 Official P4P Leaderboard</div>
                     <button class="filter-btn" id="toggle-active-btn">Show Active Fighters Only</button>
+                </div>
+
+                <!-- DEDICATED CLICKABLE BUBBLE FOR ACTIVE COMPUBOX PUNCH STATS (SEPARATE FROM MAIN BOARD) -->
+                <div class="compubox-vault-bubble" onclick="openActiveCompuBoxModal()" role="button" tabindex="0">
+                    <div class="cb-bubble-left">
+                        <h4>🥊 ACTIVE FIGHTER COMPUBOX STAT ARCHIVE</h4>
+                        <p id="cb-bubble-summary">
+                            Loading registered roster vs. verified CompuBox punch stat profiles...
+                        </p>
+                    </div>
+                    <div class="cb-bubble-cta" id="cb-bubble-btn">Inspect Punch Stats &rarr;</div>
                 </div>
 
                 <div class="lb-controls">
@@ -863,7 +1015,7 @@
                     <a href="https://soundcloud.com/gerardo-salcido-230608914" target="_blank" class="network-bubble soundcloud">
                         <div class="net-icon-ring">🎵</div>
                         <div class="net-name">SoundCloud</div>
-                        <div class="net-desc">66.5K+ Boom-Bap Plays</div>
+                        <div class="net-desc" id="net-sc-desc">66,576+ Boom-Bap Plays</div>
                         <div class="net-preview-pill">Audio Vault &rarr;</div>
                     </a>
 
@@ -926,6 +1078,17 @@
 
     </div>
 
+    <!-- INTERACTIVE EXPLAINER & COMPUBOX ARCHIVE MODAL -->
+    <div class="cgp-modal-backdrop" id="cgp-modal" onclick="if(event.target === this) closeCGPModal()">
+        <div class="cgp-modal-box">
+            <div class="cgp-modal-header">
+                <h3 id="cgp-modal-title">CGP MAINFRAME BRIEFING</h3>
+                <button class="cgp-modal-close" onclick="closeCGPModal()">✕</button>
+            </div>
+            <div class="cgp-modal-body" id="cgp-modal-body"></div>
+        </div>
+    </div>
+
     <footer>
         &copy; 2026 Clone Geek Productions (CGP) • Powered by Coach Steward & Cloudflare Pages Hub
     </footer>
@@ -934,9 +1097,166 @@
         function scrollCarousel(elementId, direction) {
             const container = document.getElementById(elementId);
             if (container) {
-                const scrollAmount = 260 * direction;
-                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                container.scrollBy({ left: 260 * direction, behavior: 'smooth' });
             }
+        }
+
+        // Smart Logo Loader: checks local root + GitHub for CGP.jpg / CGP.png
+        (function initCGPLogo() {
+            const img = document.getElementById('cgp-brand-logo');
+            if (!img) return;
+            const candidates = [
+                'CGP.jpg',
+                'CGP.png',
+                'cgp.png',
+                'https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/CGP.jpg',
+                'https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/CGP.png'
+            ];
+            let idx = 0;
+            img.onerror = function() {
+                idx++;
+                if (idx < candidates.length) {
+                    img.src = candidates[idx];
+                } else {
+                    img.style.display = 'none';
+                }
+            };
+        })();
+
+        let allFighters = [];
+        let liveScPlays = '66,576+';
+        let liveScGoal = '500K';
+
+        function closeCGPModal() {
+            document.getElementById('cgp-modal').classList.remove('open');
+        }
+
+        function openInfoModal(topic) {
+            const modal = document.getElementById('cgp-modal');
+            const titleEl = document.getElementById('cgp-modal-title');
+            const bodyEl = document.getElementById('cgp-modal-body');
+
+            if (topic === 'brackets') {
+                titleEl.textContent = '🏆 HOW WINNER-TAKES-ALL 8-MAN BRACKETS WORK';
+                bodyEl.innerHTML = `
+                    <p>The <strong>CGP Mainframe</strong> runs strict single-elimination 8-Man Tournaments managed live by <strong>Coach Steward</strong> inside Discord and synced in real time to the Live Wire below.</p>
+                    <div class="modal-rule-grid">
+                        <div class="modal-rule-card">
+                            <h4>💰 Pay-to-Play Gauntlets</h4>
+                            <p>$20 entry locks your seed. <strong>$160.00 Winner-Takes-All cash purse</strong> with 0% promoter cut. 10 Rounds (12 in Finals).</p>
+                        </div>
+                        <div class="modal-rule-card">
+                            <h4>🎫 Golden Ticket Qualifiers</h4>
+                            <p>Free-entry 8-man brackets where the champion earns a <strong>$20.00 Golden Ticket credit</strong> for free entry into the next cash bracket.</p>
+                        </div>
+                        <div class="modal-rule-card">
+                            <h4>⚖️ House Ring Settings</h4>
+                            <p>Riyadh Indoor Gym • <strong>1.5x Speed</strong> • <strong>Ref Strictness 7</strong> • Character DNA-Locked for the entire bracket (no mirror matches).</p>
+                        </div>
+                    </div>
+                    <button class="modal-action-btn" onclick="closeCGPModal(); document.getElementById('espn-tourney-wire').scrollIntoView({behavior:'smooth'});">Jump to Live Bracket Wire &darr;</button>
+                `;
+            } else if (topic === 'sparwars') {
+                titleEl.textContent = '🥊 SUNDAY SPAR WARS (SUNDAYS @ 6:00 PM CT)';
+                bodyEl.innerHTML = `
+                    <p>Every Sunday at <strong>6:00 PM Central Time</strong>, the Mainframe Gym opens for live community matchmaking, amateur title defenses, and bracket seeding.</p>
+                    <div class="modal-rule-grid">
+                        <div class="modal-rule-card">
+                            <h4>📡 Live Matchmaking</h4>
+                            <p>Use <code>!whoson</code> or <code>!findfight</code> in Discord to pair up with active fighters and generate an official Tale of the Tape.</p>
+                        </div>
+                        <div class="modal-rule-card">
+                            <h4>📺 Live Broadcasts</h4>
+                            <p>Featured bouts stream live on <strong>Twitch</strong> and <strong>Kick</strong> with ringside commentary and CGP instrumentals.</p>
+                        </div>
+                    </div>
+                    <a href="https://discord.gg/yrpgBB7sJp" target="_blank" class="modal-action-btn">Join CGP Discord Locker Room &rarr;</a>
+                `;
+            } else if (topic === 'compubox') {
+                titleEl.textContent = '📊 AI-VERIFIED COMPUBOX & [W-L-D-K] SYSTEM';
+                bodyEl.innerHTML = `
+                    <p>No inflated records or fake claims. Every fighter registered in the Discord server is tracked in our live database, and stats only update when verified proof is submitted.</p>
+                    <div class="modal-rule-grid">
+                        <div class="modal-rule-card">
+                            <h4>📸 How Stats Register</h4>
+                            <p>Upload your post-fight scorecard screenshot in <code>#scorecard-submissions</code> and <strong>@tag your opponent</strong>. Coach Steward's AI Vision reads the exact punch stats automatically.</p>
+                        </div>
+                        <div class="modal-rule-card">
+                            <h4>📈 Cumulative Career Totals</h4>
+                            <p>Every upload adds to your career <strong>Punches Thrown, Landed, Body Shots, Power Shots, Knockdowns, Counters, and Accuracy %</strong>.</p>
+                        </div>
+                    </div>
+                    <button class="modal-action-btn" onclick="openActiveCompuBoxModal()">Open Active CompuBox Stat Archive &rarr;</button>
+                `;
+            } else if (topic === 'soundcloud') {
+                titleEl.textContent = '🎵 CLONE GEEK PRODUCTIONS — SOUNDCLOUD CATALOG';
+                bodyEl.innerHTML = `
+                    <p>Every fight card and promo reel in the CGP Mainframe is powered by original boom-bap, orchestral trap, and West Coast production from <strong>Clone Geek Productions</strong>.</p>
+                    <div class="modal-rule-grid">
+                        <div class="modal-rule-card">
+                            <h4>🔥 Live Catalog Milestone</h4>
+                            <p>Currently at <strong>${liveScPlays}</strong> total plays on the road to <strong>${liveScGoal}</strong> streams—including <em>Road to Undisputed</em> (dropping Nov 26, 2026).</p>
+                        </div>
+                        <div class="modal-rule-card">
+                            <h4>💿 Studio Masters</h4>
+                            <p>Support independent production by streaming the official playlist or grabbing the uncompressed master archive in the store.</p>
+                        </div>
+                    </div>
+                    <a href="https://soundcloud.com/gerardo-salcido-230608914/sets/cgp-playlist" target="_blank" class="modal-action-btn">Stream Official CGP Playlist &rarr;</a>
+                `;
+            }
+            modal.classList.add('open');
+        }
+
+        function openActiveCompuBoxModal() {
+            const modal = document.getElementById('cgp-modal');
+            const titleEl = document.getElementById('cgp-modal-title');
+            const bodyEl = document.getElementById('cgp-modal-body');
+
+            const activeUploaders = allFighters.filter(f =>
+                (f.punches_thrown > 0 || f.punches_landed > 0 || (f.wins + f.losses + f.draws) > 0)
+            );
+
+            titleEl.textContent = `🥊 ACTIVE COMPUBOX STAT ARCHIVE (${activeUploaders.length} VERIFIED / ${allFighters.length} ROSTER)`;
+
+            const rowsHtml = activeUploaders.length ? activeUploaders.map((f, idx) => `
+                <tr>
+                    <td>#${idx + 1}</td>
+                    <td><strong>${f.name}</strong></td>
+                    <td class="num">${f.wins}-${f.losses}-${f.draws} (${f.kos} KO)</td>
+                    <td class="num">${f.punches_landed} / ${f.punches_thrown}</td>
+                    <td class="num" style="color:var(--green);font-weight:800;">${f.accuracy}</td>
+                    <td class="num">${f.body_landed}</td>
+                    <td class="num">${f.power_landed}</td>
+                    <td class="num">${f.knockdowns}</td>
+                    <td class="num">${f.counters}</td>
+                </tr>
+            `).join('') : `<tr><td colspan="9" style="text-align:center;padding:18px;color:#94a3b8;">No scorecards uploaded yet—drop your first fight screenshot in #scorecard-submissions!</td></tr>`;
+
+            bodyEl.innerHTML = `
+                <p style="margin-bottom:12px;color:var(--text-secondary);">
+                    This dedicated archive tracks the <strong>${activeUploaders.length} active contenders</strong> (out of <strong>${allFighters.length}</strong> registered server members) who have uploaded verified scorecards. Every new upload adds directly to their cumulative career CompuBox totals without altering the main leaderboard structure:
+                </p>
+                <div class="leaderboard-scroll-box" style="max-height:360px;">
+                    <table class="lb-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Fighter</th>
+                                <th class="num">Record</th>
+                                <th class="num">Landed / Thrown</th>
+                                <th class="num">Accuracy</th>
+                                <th class="num">Body</th>
+                                <th class="num">Power</th>
+                                <th class="num">KDs</th>
+                                <th class="num">Counters</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                </div>
+            `;
+            modal.classList.add('open');
         }
 
         (function () {
@@ -952,7 +1272,6 @@
                 }, 600);
             });
 
-            let allFighters = [];
             let filterActiveOnly = false;
             let isFetching = false;
             let hasRenderedArchive = false; 
@@ -971,7 +1290,7 @@
                     ? allFighters.filter(f => (f.wins + f.losses + f.draws + f.kos) > 0)
                     : allFighters;
 
-                countEl.textContent = `Showing ${list.length} of ${allFighters.length} fighters`;
+                countEl.textContent = `Showing ${list.length} of ${allFighters.length} registered fighters`;
 
                 if (!list.length) {
                     tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:20px; color:#94a3b8;">No matching fighters found.</td></tr>';
@@ -1048,20 +1367,45 @@
                             kos: Number(v.kos ?? v.ko ?? 0),
                             punches_thrown: Number(v.punches_thrown ?? 0),
                             punches_landed: Number(v.punches_landed ?? 0),
+                            body_landed: Number(v.body_landed ?? 0),
+                            power_landed: Number(v.power_landed ?? 0),
+                            knockdowns: Number(v.knockdowns ?? 0),
+                            counters: Number(v.counters ?? 0),
                             accuracy: v.accuracy || '0%'
                         }))
                         .sort((a, b) => b.wins - a.wins || b.kos - a.kos || a.losses - b.losses);
 
+                    // Update Dedicated Active CompuBox Stat Bubble Summary
+                    const activeStatFighters = allFighters.filter(f =>
+                        (f.punches_thrown > 0 || f.punches_landed > 0 || (f.wins + f.losses + f.draws) > 0)
+                    );
+                    const totalPunchesLanded = activeStatFighters.reduce((sum, f) => sum + f.punches_landed, 0);
+                    const cbSummaryEl = document.getElementById('cb-bubble-summary');
+                    const cbBtnEl = document.getElementById('cb-bubble-btn');
+                    if (cbSummaryEl) {
+                        cbSummaryEl.innerHTML = `<strong style="color:#fff;">${allFighters.length} Registered Fighters</strong> on roster • <strong style="color:var(--green);">${activeStatFighters.length} Active Stat Profiles</strong> logging cumulative CompuBox punch totals (${totalPunchesLanded.toLocaleString()} total landed punches tracked).`;
+                    }
+                    if (cbBtnEl) {
+                        cbBtnEl.textContent = `View ${activeStatFighters.length} Active Profiles →`;
+                    }
+
                     renderLeaderboard();
                     document.getElementById('lb-status-text').textContent = '🟢 LIVE // Updated ' + new Date().toLocaleTimeString();
 
+                    // Live SoundCloud Total Plays Sync
                     const sc = data._soundcloud;
                     if (sc && sc.total_plays) {
-                        const scText = sc.total_plays + ' Plays (Goal: ' + (sc.goal || '500K') + ')';
+                        liveScPlays = sc.total_plays;
+                        liveScGoal = sc.goal || '500K';
+                        const scText = liveScPlays + ' Plays (Goal: ' + liveScGoal + ')';
                         const tickerSc = document.getElementById('ticker-soundcloud');
                         if (tickerSc) tickerSc.textContent = scText;
                         const badgeSc = document.getElementById('badge-soundcloud');
-                        if (badgeSc) badgeSc.textContent = '🎵 ' + scText;
+                        if (badgeSc) badgeSc.innerHTML = `🎵 ${liveScPlays} SoundCloud Streams <span class="pill-hint">[LIVE]</span>`;
+                        const vaultGoal = document.getElementById('vault-goal-text');
+                        if (vaultGoal) vaultGoal.textContent = `${liveScPlays} / ${liveScGoal} Plays`;
+                        const netSc = document.getElementById('net-sc-desc');
+                        if (netSc) netSc.textContent = `${liveScPlays} Boom-Bap Plays`;
                     }
 
                     const t = data._tournament;
@@ -1160,87 +1504,5 @@
             setInterval(syncMainframe, 15000);
         })();
     </script>
-
-
-<!-- CGP_ESPN_TOURNAMENT_WIRE_START -->
-<section id="cgp-espn-tourney-wire" style="max-width:1100px;margin:28px auto;padding:22px;background:linear-gradient(145deg,#0d0d11,#161822);border:2px solid #d4af37;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.75);color:#f5f5f7;font-family:system-ui,-apple-system,sans-serif;">
-  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;border-bottom:2px solid #2b2f42;padding-bottom:12px;margin-bottom:16px;">
-    <div>
-      <span style="background:#e62429;color:#fff;font-weight:800;font-size:12px;padding:4px 10px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;">🥊 LIVE ESPN COMPUBOX TOURNAMENT WIRE</span>
-      <h2 id="cgp-tourney-title" style="margin:8px 0 0 0;font-size:24px;color:#ffd700;text-transform:uppercase;letter-spacing:0.5px;">CGP MAINFRAME GYM 8-MAN BRACKET</h2>
-    </div>
-    <div id="cgp-tourney-status-badge" style="background:#1f2437;border:1px solid #d4af37;padding:8px 14px;border-radius:8px;font-weight:700;font-size:14px;color:#00ff88;">
-      Scanning Mainframe Bracket...
-    </div>
-  </div>
-  <div id="cgp-tourney-meta" style="font-size:14px;color:#b8c0d4;margin-bottom:18px;"></div>
-  <div id="cgp-tourney-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;"></div>
-</section>
-<script>
-(async function loadCGPTourneyWire(){
-  async function fetchFreshStats() {
-    const bust = Date.now();
-    const urls = [
-      'https://raw.githubusercontent.com/gsalcido75-ai/Coach-Steward-Bot/main/stats.json?t=' + bust,
-      'stats.json?t=' + bust
-    ];
-    for (const u of urls) {
-      try {
-        const r = await fetch(u, { cache: 'no-store' });
-        if (r.ok) return await r.json();
-      } catch (e) {}
-    }
-    return null;
-  }
-  try {
-    const data = await fetchFreshStats();
-    if (!data) return;
-    const t = data._tournament;
-    const titleEl = document.getElementById('cgp-tourney-title');
-    const badgeEl = document.getElementById('cgp-tourney-status-badge');
-    const metaEl = document.getElementById('cgp-tourney-meta');
-    const gridEl = document.getElementById('cgp-tourney-grid');
-    if (!t || (!t.active && (!t.entrants || t.entrants.length === 0) && !t.champion)) {
-      titleEl.textContent = 'CGP MAINFRAME GYM — OPEN GYM & VERIFIED SPARRING';
-      badgeEl.textContent = '🟢 STANDBY FOR NEXT 8-MAN BRACKET';
-      metaEl.textContent = 'All verified scorecards uploaded in #scorecard-submissions count toward official [W-L-D-K] rankings.';
-      gridEl.innerHTML = '';
-      return;
-    }
-    titleEl.textContent = '🏆 ' + (t.title || '8-MAN CHAMPIONSHIP BRACKET');
-    badgeEl.textContent = t.status === 'completed' ? '👑 TOURNAMENT COMPLETED' : ('🔥 STAGE: ' + (t.status || 'ACTIVE').toUpperCase());
-    const resolveName = (uid) => {
-      if (!uid) return 'TBD';
-      const rec = data[String(uid)];
-      if (rec && rec.name) return rec.name + ' [' + (rec.wins||0) + 'W-' + (rec.losses||0) + 'L-' + (rec.draws||0) + 'D-' + (rec.kos||0) + 'K]';
-      if (t.entrant_names && t.entrant_names[String(uid)]) return t.entrant_names[String(uid)];
-      return 'Fighter #' + uid;
-    };
-    metaEl.innerHTML = '<strong>Tier:</strong> ' + (t.tier || 'open').toUpperCase() + ' &nbsp;|&nbsp; <strong>Seeds Locked:</strong> ' + ((t.entrants||[]).length) + '/8' + (t.champion ? ' &nbsp;|&nbsp; 👑 <strong>Champion:</strong> ' + resolveName(t.champion) : '');
-    const m = t.matches || {};
-    const renderCard = (code, obj) => {
-      if (!obj) return '';
-      const p1 = resolveName(obj.p1);
-      const p2 = resolveName(obj.p2);
-      const w = obj.winner ? resolveName(obj.winner) : null;
-      return '<div style="background:#1d2233;border-left:4px solid ' + (w ? '#00ff88' : '#ffd700') + ';padding:10px 12px;border-radius:6px;margin-bottom:10px;">' +
-        '<div style="font-size:11px;color:#9aa4bf;font-weight:700;text-transform:uppercase;">' + code + ' — ' + (obj.label || '') + '</div>' +
-        '<div style="margin-top:6px;font-size:14px;">🔴 ' + p1 + '</div>' +
-        '<div style="margin-top:4px;font-size:14px;">🔵 ' + p2 + '</div>' +
-        (w ? '<div style="margin-top:6px;font-size:12px;color:#00ff88;font-weight:700;">✅ Winner: ' + w + '</div>' : '') +
-      '</div>';
-    };
-    gridEl.innerHTML =
-      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">QUARTERFINALS</h3>' +
-      renderCard('QF1', m.QF1) + renderCard('QF2', m.QF2) + renderCard('QF3', m.QF3) + renderCard('QF4', m.QF4) + '</div>' +
-      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">SEMIFINALS</h3>' +
-      renderCard('SF1', m.SF1) + renderCard('SF2', m.SF2) + '</div>' +
-      '<div><h3 style="color:#ffd700;font-size:15px;border-bottom:1px solid #2e344d;padding-bottom:6px;">CHAMPIONSHIP FINALS</h3>' +
-      renderCard('F1', m.F1) + '</div>';
-  } catch (e) { console.warn('CGP Tourney Wire:', e); }
-})();
-</script>
-<!-- CGP_ESPN_TOURNAMENT_WIRE_END -->
-
 </body>
 </html>
