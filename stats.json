@@ -254,7 +254,7 @@
     "1082406658875064400": {
         "name": "\ud81a\udd0d \ud835\udc74\ud835\udc69\ud835\udc6e \ud835\udc6a\ud835\udc93\ud835\udc86\ud835\udc98\ud835\udc86",
         "wins": 8,
-        "losses": 1,
+        "losses": 2,
         "kos": 5,
         "verified": true,
         "draws": 0,
@@ -602,12 +602,19 @@
     },
     "1409789020971470909": {
         "name": "Roy\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd",
-        "wins": 8,
+        "wins": 9,
         "losses": 0,
-        "kos": 8,
+        "kos": 9,
         "verified": true,
         "draws": 0,
-        "golden_tickets": 0
+        "golden_tickets": 0,
+        "punches_landed": 0,
+        "punches_thrown": 0,
+        "body_landed": 0,
+        "power_landed": 0,
+        "knockdowns": 0,
+        "counters": 0,
+        "accuracy": "0%"
     },
     "800046370782314577": {
         "name": "GRiiiM",
@@ -1042,7 +1049,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-15 01:29:50 AM CST"
+        "updated_at": "2026-11-15 01:10:15 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1076,7 +1083,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-15T01:29:50.989685-06:00",
+    "_last_synced": "2026-11-15T13:10:15.994817-06:00",
     "video_archive": [
         {
             "title": "Sneak Peak",
