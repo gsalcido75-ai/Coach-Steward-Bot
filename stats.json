@@ -82,9 +82,9 @@
     },
     "1487227892340621384": {
         "name": "KnuckleUpFoo",
-        "wins": 7,
+        "wins": 8,
         "losses": 10,
-        "kos": 6,
+        "kos": 7,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0,
@@ -680,7 +680,7 @@
     "1279476207603290197": {
         "name": "Clone_Geek",
         "wins": 7,
-        "losses": 23,
+        "losses": 24,
         "draws": 0,
         "kos": 5,
         "golden_tickets": 0,
@@ -1063,7 +1063,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-15 03:20:29 PM CST"
+        "updated_at": "2026-11-15 04:07:57 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1097,7 +1097,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-15T15:20:29.857996-06:00",
+    "_last_synced": "2026-11-15T16:07:57.096302-06:00",
     "video_archive": [
         {
             "title": "Sneak Peak",
