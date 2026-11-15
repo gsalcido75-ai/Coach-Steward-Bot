@@ -638,9 +638,9 @@
     },
     "552991053276381195": {
         "name": "\u3125\u4e47\u5c3a\u3116\u311a \u4e43\u5c3a\u3116\u5c71\u51e0",
-        "wins": 0,
-        "losses": 0,
-        "kos": 0,
+        "wins": 1,
+        "losses": 1,
+        "kos": 1,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0
@@ -1042,7 +1042,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-14 06:09:45 PM CST"
+        "updated_at": "2026-11-14 09:55:41 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1076,7 +1076,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-14T18:09:45.056548-06:00",
+    "_last_synced": "2026-11-14T21:55:41.018646-06:00",
     "video_archive": [
         {
             "title": "Sneak Peak",
