@@ -82,12 +82,19 @@
     },
     "1487227892340621384": {
         "name": "KnuckleUpFoo",
-        "wins": 6,
+        "wins": 7,
         "losses": 10,
-        "kos": 5,
+        "kos": 6,
         "verified": true,
         "draws": 0,
-        "golden_tickets": 0
+        "golden_tickets": 0,
+        "punches_landed": 0,
+        "punches_thrown": 0,
+        "body_landed": 0,
+        "power_landed": 0,
+        "knockdowns": 0,
+        "counters": 0,
+        "accuracy": "0%"
     },
     "98222580665696256": {
         "name": "ducejuicetv",
@@ -673,7 +680,7 @@
     "1279476207603290197": {
         "name": "Clone_Geek",
         "wins": 6,
-        "losses": 21,
+        "losses": 22,
         "draws": 0,
         "kos": 5,
         "golden_tickets": 0,
@@ -1049,7 +1056,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-15 01:35:27 PM CST"
+        "updated_at": "2026-11-15 01:58:38 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1083,7 +1090,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-15T13:35:27.899989-06:00",
+    "_last_synced": "2026-11-15T13:58:38.935569-06:00",
     "video_archive": [
         {
             "title": "Sneak Peak",
