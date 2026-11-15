@@ -3891,26 +3891,92 @@ async def drop(ctx, track_url: str, *, track_title: str):
     embed = discord.Embed(title=f"🚨 NEW CGP MAINFRAME GYM TRANSMISSION: {track_title.upper()} 🚨", description=f"**{track_title}** is LIVE on SoundCloud & available in 24-bit `.WAV` in the R2 Vault (`!store`)!\n\n*Stream full track to beat the algorithm!*", color=discord.Color.red(), url=track_url)
     await channel.send(content="@everyone Tap in! 👇", embed=embed, view=PromoButtons(track_url))
 
-# ================= SIMPLE SOLO ONLINE COMMANDS (CREATOR & COACH ONLY) =================
+# ================= SIMPLE SOLO ONLINE COMMANDS (CREATOR & COACH ONLY + AI COMPUBOX SCAN) =================
 def is_commissioner_or_coach(ctx):
     return ctx.author.id in (CREATOR_ID, bot.user.id)
+
+async def extract_solo_compubox_from_attachments(attachments, uploader_base: str, caption: str, opponent_name: str, is_win: bool = True):
+    """Scans attached screenshots via Gemini Vision until it finds the CompuBox punch table and extracts stats."""
+    best_stats = {"landed": 0, "thrown": 0, "body": 0, "power": 0, "kds": 0, "counters": 0}
+    best_report = ""
+    detected_ko = False
+    primary_img_url = attachments[0].url if attachments else None
+
+    for att in attachments[:4]:
+        if not ((att.content_type and "image" in att.content_type) or att.filename.lower().endswith((".png", ".jpg", ".jpeg", ".webp"))):
+            continue
+        try:
+            img_bytes = await att.read()
+            report_text, v_outcome, v_ko, w_stats, l_stats = await analyze_scorecard_image_with_vision(
+                image_bytes=img_bytes,
+                mime_type=att.content_type or "image/jpeg",
+                uploader_name=uploader_base,
+                caption=caption,
+                opponent_name=opponent_name
+            )
+            if v_ko:
+                detected_ko = True
+
+            # Pick the uploader's stat line (if w_stats has numbers, or fallback if AI swapped corners)
+            cand_stats = w_stats if is_win else l_stats
+            if cand_stats.get("thrown", 0) == 0 and (w_stats.get("thrown", 0) > 0 or l_stats.get("thrown", 0) > 0):
+                cand_stats = w_stats if w_stats.get("thrown", 0) >= l_stats.get("thrown", 0) else l_stats
+
+            if cand_stats.get("thrown", 0) > best_stats.get("thrown", 0):
+                best_stats = cand_stats
+                best_report = report_text
+                primary_img_url = att.url
+                break  # Found the main CompuBox full-fight table!
+            elif not best_report and report_text:
+                best_report = report_text
+        except Exception as e:
+            print(f"[SOLO COMPUBOX SCAN ERROR]: {e}")
+
+    return best_stats, best_report, detected_ko, primary_img_url
+
+def apply_solo_compubox_to_record(rec_dict: dict, st: dict):
+    """Adds scanned CompuBox numbers directly to the fighter's cumulative stats.json profile for the website."""
+    if st.get("thrown", 0) <= 0 and st.get("landed", 0) <= 0:
+        return False
+    rec_dict["punches_landed"] = rec_dict.get("punches_landed", 0) + st.get("landed", 0)
+    rec_dict["punches_thrown"] = rec_dict.get("punches_thrown", 0) + st.get("thrown", 0)
+    rec_dict["body_landed"] = rec_dict.get("body_landed", 0) + st.get("body", 0)
+    rec_dict["power_landed"] = rec_dict.get("power_landed", 0) + st.get("power", 0)
+    rec_dict["knockdowns"] = rec_dict.get("knockdowns", 0) + st.get("kds", 0)
+    rec_dict["counters"] = rec_dict.get("counters", 0) + st.get("counters", 0)
+    t_th = rec_dict["punches_thrown"]
+    t_la = rec_dict["punches_landed"]
+    rec_dict["accuracy"] = f"{round((t_la / t_th) * 100, 1)}%" if t_th > 0 else rec_dict.get("accuracy", "0%")
+    return True
+
 
 @bot.command(name="mywin", aliases=["solowin", "onlinewin", "w"])
 @commands.check(is_commissioner_or_coach)
 async def mywin_cmd(ctx, *, details: str = ""):
-    """Type !mywin, !mywin KO, !mywin RandomGuy, or !mywin KO RandomGuy — any order works!"""
+    """Type !mywin, !mywin KO, !mywin RandomGuy, or !mywin KO RandomGuy — scans attached scorecard for CompuBox stats!"""
     uid = ctx.author.id
     base_name = clean_base_name(ctx.author.display_name)
-    
-    # Check if KO/TKO appears anywhere in what you typed
+
     ko_words = ["ko", "tko", "flash", "stoppage", "quit", "forfeit"]
     words = re.findall(r'\b\w+\b', details.lower())
     is_ko = any(w in ko_words for w in words)
-    
-    # Strip out KO keywords so whatever is left is the random's gamertag
-    opponent_name = re.sub(r'\b(ko|tko|flash|stoppage|quit|forfeit|dec|ud|sd)\b', '', details, flags=re.IGNORECASE).strip(' "-')
+
+    opponent_name = re.sub(r'\b(ko|tko|flash|stoppage|quit|forfeit|dec|ud|sd|vs|versus)\b', '', details, flags=re.IGNORECASE).strip(' "-')
     if not opponent_name:
         opponent_name = "Online Challenger"
+
+    status_msg = None
+    scanned_stats = {"landed": 0, "thrown": 0, "body": 0, "power": 0, "kds": 0, "counters": 0}
+    ai_report = ""
+    img_url = None
+
+    if ctx.message.attachments:
+        status_msg = await ctx.send(f"🎙️ **Coach Steward:** 📸 **Scanning attached scorecard(s) to extract your CompuBox punch stats vs `{opponent_name}`...**")
+        scanned_stats, ai_report, vision_ko, img_url = await extract_solo_compubox_from_attachments(
+            ctx.message.attachments, base_name, details, opponent_name, is_win=True
+        )
+        if vision_ko:
+            is_ko = True
 
     if uid not in FIGHTER_RECORDS:
         FIGHTER_RECORDS[uid] = {"name": base_name, "wins": 0, "losses": 0, "draws": 0, "kos": 0, "golden_tickets": 0, "verified": True}
@@ -3922,8 +3988,9 @@ async def mywin_cmd(ctx, *, details: str = ""):
         rec["kos"] = rec.get("kos", 0) + 1
     rec["verified"] = True
 
+    stats_added = apply_solo_compubox_to_record(rec, scanned_stats)
     deduplicate_fighter_records(uid, base_name)
-    await save_and_sync_records()
+    synced_ok = await save_and_sync_records()
 
     try:
         new_nick = format_record_nick(base_name, rec["wins"], rec["losses"], rec.get("draws", 0), rec.get("kos", 0))
@@ -3933,29 +4000,53 @@ async def mywin_cmd(ctx, *, details: str = ""):
         pass
 
     badge = "💥 **KO**" if is_ko else "📋 **WIN**"
+    compubox_line = (
+        f"🥊 **Match CompuBox Added:** `{scanned_stats['landed']} / {scanned_stats['thrown']}` Landed | "
+        f"Body: `{scanned_stats['body']}` | Power: `{scanned_stats['power']}` | KDs: `{scanned_stats['kds']}`\n"
+        f"📈 **Career CompuBox Totals:** `{rec.get('punches_landed', 0)} / {rec.get('punches_thrown', 0)}` (`{rec.get('accuracy', '0%')}`)\n"
+    ) if stats_added else "⚠️ *No CompuBox punch numbers detected in image (or no screenshot attached).*\n"
+
     embed = discord.Embed(
-        title=f"🥊 SOLO ONLINE {badge} LOGGED",
+        title=f"🥊 SOLO ONLINE {badge} & COMPUBOX STATS SYNCED",
         description=(
             f"👑 **Winner:** {ctx.author.mention}\n"
-            f"💀 **Scrubbed Opponent:** `{opponent_name}`\n"
-            f"📊 **New Record:** **`[{rec['wins']}W-{rec['losses']}L-{rec.get('draws', 0)}D-{rec.get('kos', 0)}K]`**"
+            f"💀 **Scrubbed Opponent:** `{opponent_name}` *(Not added to CGP Roster)*\n"
+            f"📊 **New Record:** **`[{rec['wins']}W-{rec['losses']}L-{rec.get('draws', 0)}D-{rec.get('kos', 0)}K]`**\n"
+            f"{compubox_line}"
+            f"🌐 **Website Sync:** {'`LIVE ON MAINFRAME HUB`' if synced_ok else '`SAVED LOCALLY`'}"
+            + (f"\n\n{ai_report[:1200]}" if ai_report else "")
         ),
         color=discord.Color.green(),
         url=MAINFRAME_HUB_URL
     )
-    if ctx.message.attachments:
-        embed.set_image(url=ctx.message.attachments[0].url)
+    if img_url:
+        embed.set_image(url=img_url)
 
-    await ctx.send(embed=embed)
+    if status_msg:
+        try:
+            await status_msg.delete()
+        except Exception:
+            pass
+    await ctx.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
 
 @bot.command(name="myloss", aliases=["sololoss", "onlineloss", "l"])
 @commands.check(is_commissioner_or_coach)
 async def myloss_cmd(ctx, *, opponent_name: str = "Online Challenger"):
-    """Type !myloss or !myloss RandomGuy — updates only your losses."""
+    """Type !myloss or !myloss RandomGuy — updates your losses + scans attached CompuBox stats!"""
     uid = ctx.author.id
     base_name = clean_base_name(ctx.author.display_name)
-    opponent_name = opponent_name.strip(' "-') or "Online Challenger"
+    opponent_name = re.sub(r'\b(vs|versus)\b', '', opponent_name, flags=re.IGNORECASE).strip(' "-') or "Online Challenger"
+
+    status_msg = None
+    scanned_stats = {"landed": 0, "thrown": 0, "body": 0, "power": 0, "kds": 0, "counters": 0}
+    img_url = None
+
+    if ctx.message.attachments:
+        status_msg = await ctx.send(f"🎙️ **Coach Steward:** 📸 **Scanning attached scorecard(s) for your CompuBox punch stats...**")
+        scanned_stats, _, _, img_url = await extract_solo_compubox_from_attachments(
+            ctx.message.attachments, base_name, opponent_name, opponent_name, is_win=False
+        )
 
     if uid not in FIGHTER_RECORDS:
         FIGHTER_RECORDS[uid] = {"name": base_name, "wins": 0, "losses": 0, "draws": 0, "kos": 0, "golden_tickets": 0, "verified": True}
@@ -3965,8 +4056,9 @@ async def myloss_cmd(ctx, *, opponent_name: str = "Online Challenger"):
     rec["losses"] = rec.get("losses", 0) + 1
     rec["verified"] = True
 
+    stats_added = apply_solo_compubox_to_record(rec, scanned_stats)
     deduplicate_fighter_records(uid, base_name)
-    await save_and_sync_records()
+    synced_ok = await save_and_sync_records()
 
     try:
         new_nick = format_record_nick(base_name, rec["wins"], rec["losses"], rec.get("draws", 0), rec.get("kos", 0))
@@ -3975,20 +4067,32 @@ async def myloss_cmd(ctx, *, opponent_name: str = "Online Challenger"):
     except Exception:
         pass
 
+    compubox_line = (
+        f"🥊 **Match CompuBox Added:** `{scanned_stats['landed']} / {scanned_stats['thrown']}` Landed | "
+        f"Career Accuracy: `{rec.get('accuracy', '0%')}`\n"
+    ) if stats_added else ""
+
     embed = discord.Embed(
-        title="📉 SOLO ONLINE LOSS LOGGED",
+        title="📉 SOLO ONLINE LOSS & COMPUBOX LOGGED",
         description=(
             f"🥊 **Fighter:** {ctx.author.mention}\n"
-            f"🆚 **Scrubbed Opponent:** `{opponent_name}`\n"
-            f"📊 **New Record:** **`[{rec['wins']}W-{rec['losses']}L-{rec.get('draws', 0)}D-{rec.get('kos', 0)}K]`**"
+            f"🆚 **Scrubbed Opponent:** `{opponent_name}` *(Not added to CGP Roster)*\n"
+            f"📊 **New Record:** **`[{rec['wins']}W-{rec['losses']}L-{rec.get('draws', 0)}D-{rec.get('kos', 0)}K]`**\n"
+            f"{compubox_line}"
+            f"🌐 **Website Sync:** {'`LIVE ON MAINFRAME HUB`' if synced_ok else '`SAVED LOCALLY`'}"
         ),
         color=discord.Color.orange(),
         url=MAINFRAME_HUB_URL
     )
-    if ctx.message.attachments:
-        embed.set_image(url=ctx.message.attachments[0].url)
+    if img_url:
+        embed.set_image(url=img_url)
 
-    await ctx.send(embed=embed)
+    if status_msg:
+        try:
+            await status_msg.delete()
+        except Exception:
+            pass
+    await ctx.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
 # ================= AIOHTTP WEB SERVER + LIVE ORDER VERIFICATION API =================
 CORS_HEADERS = {
