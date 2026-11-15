@@ -3891,6 +3891,105 @@ async def drop(ctx, track_url: str, *, track_title: str):
     embed = discord.Embed(title=f"🚨 NEW CGP MAINFRAME GYM TRANSMISSION: {track_title.upper()} 🚨", description=f"**{track_title}** is LIVE on SoundCloud & available in 24-bit `.WAV` in the R2 Vault (`!store`)!\n\n*Stream full track to beat the algorithm!*", color=discord.Color.red(), url=track_url)
     await channel.send(content="@everyone Tap in! 👇", embed=embed, view=PromoButtons(track_url))
 
+# ================= SIMPLE SOLO ONLINE COMMANDS (CREATOR & COACH ONLY) =================
+def is_commissioner_or_coach(ctx):
+    return ctx.author.id in (CREATOR_ID, bot.user.id)
+
+@bot.command(name="mywin", aliases=["solowin", "onlinewin", "w"])
+@commands.check(is_commissioner_or_coach)
+async def mywin_cmd(ctx, *, details: str = ""):
+    """Type !mywin, !mywin KO, !mywin RandomGuy, or !mywin KO RandomGuy — any order works!"""
+    uid = ctx.author.id
+    base_name = clean_base_name(ctx.author.display_name)
+    
+    # Check if KO/TKO appears anywhere in what you typed
+    ko_words = ["ko", "tko", "flash", "stoppage", "quit", "forfeit"]
+    words = re.findall(r'\b\w+\b', details.lower())
+    is_ko = any(w in ko_words for w in words)
+    
+    # Strip out KO keywords so whatever is left is the random's gamertag
+    opponent_name = re.sub(r'\b(ko|tko|flash|stoppage|quit|forfeit|dec|ud|sd)\b', '', details, flags=re.IGNORECASE).strip(' "-')
+    if not opponent_name:
+        opponent_name = "Online Challenger"
+
+    if uid not in FIGHTER_RECORDS:
+        FIGHTER_RECORDS[uid] = {"name": base_name, "wins": 0, "losses": 0, "draws": 0, "kos": 0, "golden_tickets": 0, "verified": True}
+
+    rec = FIGHTER_RECORDS[uid]
+    rec["name"] = base_name
+    rec["wins"] = rec.get("wins", 0) + 1
+    if is_ko:
+        rec["kos"] = rec.get("kos", 0) + 1
+    rec["verified"] = True
+
+    deduplicate_fighter_records(uid, base_name)
+    await save_and_sync_records()
+
+    try:
+        new_nick = format_record_nick(base_name, rec["wins"], rec["losses"], rec.get("draws", 0), rec.get("kos", 0))
+        if ctx.author.display_name != new_nick:
+            await ctx.author.edit(nick=new_nick)
+    except Exception:
+        pass
+
+    badge = "💥 **KO**" if is_ko else "📋 **WIN**"
+    embed = discord.Embed(
+        title=f"🥊 SOLO ONLINE {badge} LOGGED",
+        description=(
+            f"👑 **Winner:** {ctx.author.mention}\n"
+            f"💀 **Scrubbed Opponent:** `{opponent_name}`\n"
+            f"📊 **New Record:** **`[{rec['wins']}W-{rec['losses']}L-{rec.get('draws', 0)}D-{rec.get('kos', 0)}K]`**"
+        ),
+        color=discord.Color.green(),
+        url=MAINFRAME_HUB_URL
+    )
+    if ctx.message.attachments:
+        embed.set_image(url=ctx.message.attachments[0].url)
+
+    await ctx.send(embed=embed)
+
+
+@bot.command(name="myloss", aliases=["sololoss", "onlineloss", "l"])
+@commands.check(is_commissioner_or_coach)
+async def myloss_cmd(ctx, *, opponent_name: str = "Online Challenger"):
+    """Type !myloss or !myloss RandomGuy — updates only your losses."""
+    uid = ctx.author.id
+    base_name = clean_base_name(ctx.author.display_name)
+    opponent_name = opponent_name.strip(' "-') or "Online Challenger"
+
+    if uid not in FIGHTER_RECORDS:
+        FIGHTER_RECORDS[uid] = {"name": base_name, "wins": 0, "losses": 0, "draws": 0, "kos": 0, "golden_tickets": 0, "verified": True}
+
+    rec = FIGHTER_RECORDS[uid]
+    rec["name"] = base_name
+    rec["losses"] = rec.get("losses", 0) + 1
+    rec["verified"] = True
+
+    deduplicate_fighter_records(uid, base_name)
+    await save_and_sync_records()
+
+    try:
+        new_nick = format_record_nick(base_name, rec["wins"], rec["losses"], rec.get("draws", 0), rec.get("kos", 0))
+        if ctx.author.display_name != new_nick:
+            await ctx.author.edit(nick=new_nick)
+    except Exception:
+        pass
+
+    embed = discord.Embed(
+        title="📉 SOLO ONLINE LOSS LOGGED",
+        description=(
+            f"🥊 **Fighter:** {ctx.author.mention}\n"
+            f"🆚 **Scrubbed Opponent:** `{opponent_name}`\n"
+            f"📊 **New Record:** **`[{rec['wins']}W-{rec['losses']}L-{rec.get('draws', 0)}D-{rec.get('kos', 0)}K]`**"
+        ),
+        color=discord.Color.orange(),
+        url=MAINFRAME_HUB_URL
+    )
+    if ctx.message.attachments:
+        embed.set_image(url=ctx.message.attachments[0].url)
+
+    await ctx.send(embed=embed)
+
 # ================= AIOHTTP WEB SERVER + LIVE ORDER VERIFICATION API =================
 CORS_HEADERS = {
     "Access-Control-Allow-Origin": "*",
