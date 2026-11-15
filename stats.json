@@ -254,7 +254,7 @@
     "1082406658875064400": {
         "name": "\ud81a\udd0d \ud835\udc74\ud835\udc69\ud835\udc6e \ud835\udc6a\ud835\udc93\ud835\udc86\ud835\udc98\ud835\udc86",
         "wins": 8,
-        "losses": 2,
+        "losses": 3,
         "kos": 5,
         "verified": true,
         "draws": 0,
@@ -602,9 +602,9 @@
     },
     "1409789020971470909": {
         "name": "Roy\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd",
-        "wins": 9,
+        "wins": 10,
         "losses": 0,
-        "kos": 9,
+        "kos": 10,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0,
@@ -1049,7 +1049,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-15 01:10:15 PM CST"
+        "updated_at": "2026-11-15 01:24:11 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1083,7 +1083,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-15T13:10:15.994817-06:00",
+    "_last_synced": "2026-11-15T13:24:11.051169-06:00",
     "video_archive": [
         {
             "title": "Sneak Peak",
