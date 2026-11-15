@@ -1153,6 +1153,13 @@ def load_records():
                         v.setdefault("draws", 0)
                         v.setdefault("kos", 0)
                         v.setdefault("golden_tickets", 0)
+                        v.setdefault("punches_landed", 0)
+                        v.setdefault("punches_thrown", 0)
+                        v.setdefault("body_landed", 0)
+                        v.setdefault("power_landed", 0)
+                        v.setdefault("knockdowns", 0)
+                        v.setdefault("counters", 0)
+                        v.setdefault("accuracy", "0%")
                         if "name" in v:
                             v["name"] = clean_base_name(v["name"])
                         records[int(k)] = v
@@ -1927,12 +1934,13 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
     vision_prompt = (
         f"You are Coach Steward, the legendary Hall of Fame HBO/ESPN ringside boxing analyst for the CGP Mainframe Gym. "
         f"Fighter '{uploader_name}' uploaded this post-fight CompuBox screenshot from 'Undisputed' (Caption: '{caption}', Tagged Opponent: '{opponent_name}').\n\n"
-        "CRITICAL STEP 1 — DETERMINE WHO ACTUALLY WON & EXTRACT EXACT COMPUBOX NUMBERS:\n"
-        "Look closely at the red 'MATCH WINNER' banner at the bottom, the player gamertags (left = Red Corner, right = Blue Corner), and the center CompuBox table (e.g. '166/261' means 166 landed out of 261 thrown).\n"
-        "- Line 1: `RESULT_CODE: UPLOADER_LOSS` (if uploader lost), `RESULT_CODE: DRAW`, or `RESULT_CODE: UPLOADER_WIN`\n"
-        "- Line 2: `METHOD_CODE: KO` (if KO/TKO/Stoppage/Forfeit) or `METHOD_CODE: DECISION`\n"
-        "- Line 3: `WINNER_STATS: landed=0, thrown=0, body=0, power=0, kds=0, counters=0` (replace 0s with the Winner's exact numbers from the screenshot)\n"
-        "- Line 4: `LOSER_STATS: landed=0, thrown=0, body=0, power=0, kds=0, counters=0` (replace 0s with the Loser's exact numbers from the screenshot)\n\n"
+        "CRITICAL STEP 1 — OUTPUT RAW DATA LINES FIRST (NO MARKDOWN OR ASTERISKS ON LINES 1-4):\n"
+        "Look closely at the red 'MATCH WINNER' banner, the player gamertags (left = Red Corner, right = Blue Corner), and the center CompuBox table (e.g. '166 / 261' or '166/261' means landed=166, thrown=261). If this image is just a fighter pose or judge card without punch stats, output 0s.\n"
+        "Line 1: RESULT_CODE: UPLOADER_WIN (or UPLOADER_LOSS or DRAW)\n"
+        "Line 2: METHOD_CODE: KO (if KO/TKO/Stoppage/Forfeit/Quit) or METHOD_CODE: DECISION\n"
+        "Line 3: WINNER_STATS: landed=0, thrown=0, body=0, power=0, kds=0, counters=0\n"
+        "Line 4: LOSER_STATS: landed=0, thrown=0, body=0, power=0, kds=0, counters=0\n"
+        "(Replace the 0s on Lines 3 and 4 with the actual integer numbers from the CompuBox screen!)\n\n"
         "CRITICAL STEP 2 — GENERATE THE HBO REPORT (starting on Line 5):\n"
         "📊 **OFFICIAL COMPUBOX & SCORECARD RECEIPTS:**\n"
         "• **Matchup & Result:** (Identify true winner, gamertags, method of victory, and total punches landed/thrown)\n"
@@ -1946,12 +1954,24 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
 
     def parse_stat_line(prefix: str, text: str) -> dict:
         stats = {"landed": 0, "thrown": 0, "body": 0, "power": 0, "kds": 0, "counters": 0}
-        m = re.search(rf"{prefix}:\s*([^\n]+)", text, re.IGNORECASE)
+        # Strip markdown bolding/backticks so Gemini formatting never breaks parsing
+        clean_t = re.sub(r'[*`_]', '', text)
+        m = re.search(rf"{prefix}\s*:\s*([^\n]+)", clean_t, re.IGNORECASE)
         if m:
+            line_body = m.group(1)
             for key in stats:
-                km = re.search(rf"{key}\s*=\s*(\d+)", m.group(1), re.IGNORECASE)
+                km = re.search(rf"{key}\s*[=:]\s*(\d+)", line_body, re.IGNORECASE)
                 if km:
                     stats[key] = int(km.group(1))
+        # Fallback: if AI wrote "166/261" in the report but missed WINNER_STATS
+        if stats["thrown"] == 0 and prefix == "WINNER_STATS":
+            slash_matches = re.findall(r'\b(\d{1,3})\s*/\s*(\d{2,4})\b', clean_t)
+            for l_val, t_val in slash_matches:
+                l_int, t_int = int(l_val), int(t_val)
+                if 15 <= t_int <= 1500 and l_int <= t_int:
+                    stats["landed"] = l_int
+                    stats["thrown"] = t_int
+                    break
         return stats
 
     async with ai_lock:
@@ -1965,21 +1985,22 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
                 last_ai_call_time = asyncio.get_event_loop().time()
                 if response and response.text:
                     raw = response.text.strip()
+                    clean_raw = re.sub(r'[*`_]', '', raw)
                     v_outcome = None
                     v_ko = False
-                    if "RESULT_CODE: UPLOADER_LOSS" in raw:
+                    if "RESULT_CODE: UPLOADER_LOSS" in clean_raw:
                         v_outcome = "loss"
-                    elif "RESULT_CODE: DRAW" in raw:
+                    elif "RESULT_CODE: DRAW" in clean_raw:
                         v_outcome = "draw"
-                    elif "RESULT_CODE: UPLOADER_WIN" in raw:
+                    elif "RESULT_CODE: UPLOADER_WIN" in clean_raw:
                         v_outcome = "win"
-                    if "METHOD_CODE: KO" in raw:
+                    if "METHOD_CODE: KO" in clean_raw:
                         v_ko = True
                     w_stats = parse_stat_line("WINNER_STATS", raw)
                     l_stats = parse_stat_line("LOSER_STATS", raw)
                     cleaned_report = re.sub(
-                        r'^(RESULT_CODE:.*|METHOD_CODE:.*|WINNER_STATS:.*|LOSER_STATS:.*)\n?',
-                        '', raw, flags=re.MULTILINE
+                        r'^[*`_]*(RESULT_CODE:.*|METHOD_CODE:.*|WINNER_STATS:.*|LOSER_STATS:.*)\n?',
+                        '', raw, flags=re.MULTILINE | re.IGNORECASE
                     ).strip()
                     return cleaned_report, v_outcome, v_ko, w_stats, l_stats
             except Exception as e:
@@ -1994,6 +2015,57 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
     )
     empty_stats = {"landed": 0, "thrown": 0, "body": 0, "power": 0, "kds": 0, "counters": 0}
     return fallback_txt, None, False, empty_stats, empty_stats
+
+
+async def scan_all_scorecard_attachments(image_attachments: list, uploader_base: str, caption: str = "", opponent_base: str = "Opponent") -> tuple:
+    """
+    Loops through ALL attached screenshots in a message (up to 4) so if a fighter uploads
+    the KO pose first and the CompuBox table 2nd or 3rd, we still capture the full CompuBox stats!
+    """
+    best_report = ""
+    best_outcome = None
+    best_ko = False
+    best_w_stats = {"landed": 0, "thrown": 0, "body": 0, "power": 0, "kds": 0, "counters": 0}
+    best_l_stats = {"landed": 0, "thrown": 0, "body": 0, "power": 0, "kds": 0, "counters": 0}
+    best_att = image_attachments[0]
+
+    for att in image_attachments[:4]:
+        try:
+            image_bytes = await att.read()
+        except Exception:
+            continue
+
+        report_text, v_outcome, v_ko, w_stats, l_stats = await analyze_scorecard_image_with_vision(
+            image_bytes=image_bytes,
+            mime_type=att.content_type or "image/jpeg",
+            uploader_name=uploader_base,
+            caption=caption,
+            opponent_name=opponent_base
+        )
+
+        if v_ko:
+            best_ko = True
+        if v_outcome and not best_outcome:
+            best_outcome = v_outcome
+        if not best_report and report_text:
+            best_report = report_text
+
+        # Check if this image had actual CompuBox punch numbers!
+        total_p = w_stats.get("thrown", 0) + l_stats.get("thrown", 0) + w_stats.get("landed", 0) + l_stats.get("landed", 0)
+        best_total_p = best_w_stats.get("thrown", 0) + best_l_stats.get("thrown", 0) + best_w_stats.get("landed", 0) + best_l_stats.get("landed", 0)
+
+        if total_p > best_total_p:
+            best_w_stats = w_stats
+            best_l_stats = l_stats
+            best_report = report_text
+            best_att = att
+            if v_outcome:
+                best_outcome = v_outcome
+            # Once we found the full CompuBox table with punch stats, we don't need to waste AI calls on remaining images
+            if w_stats.get("thrown", 0) > 10 and l_stats.get("thrown", 0) > 10:
+                break
+
+    return best_report, best_outcome, best_ko, best_w_stats, best_l_stats, best_att
 
 # ================= GEMINI VISION CASH APP RECEIPT SCANNER (100% HANDS-FREE WORKFLOW) =================
 async def scan_cashapp_receipt_with_vision(image_bytes: bytes, mime_type: str) -> tuple:
@@ -2056,27 +2128,19 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
         )
         return True
 
-    att = image_attachments[0]
-    try:
-        image_bytes = await att.read()
-    except Exception:
-        return False
-
     opponent_base = clean_base_name(opponent.display_name) if opponent else "Opponent"
 
     status_msg = await message.reply(
-        f"🎙️ **Coach Steward:** 📸 **SCANNING SCORECARD & VERIFYING MATCHUP...**\n"
-        f"Reading CompuBox numbers for {uploader.mention}" + (f" vs. {opponent.mention}!" if opponent else "!")
+        f"🎙️ **Coach Steward:** 📸 **SCANNING {len(image_attachments)} SCORECARD IMAGE(S) & VERIFYING COMPUBOX NUMBERS...**\n"
+        f"Reading CompuBox stats for {uploader.mention}" + (f" vs. {opponent.mention}!" if opponent else "!")
     )
 
     caption_intent = parse_fight_caption_intent(message.content, uploader.id, opponent.id if opponent else None)
-    report_text, vision_outcome, vision_ko, w_stats, l_stats = await analyze_scorecard_image_with_vision(
-        image_bytes=image_bytes,
-        mime_type=att.content_type or "image/jpeg",
-        uploader_name=uploader_base,
+    report_text, vision_outcome, vision_ko, w_stats, l_stats, att = await scan_all_scorecard_attachments(
+        image_attachments=image_attachments,
+        uploader_base=uploader_base,
         caption=message.content,
-        opponent_name=opponent_base
-
+        opponent_base=opponent_base
     )    
     if len(report_text) > 3600:
         report_text = report_text[:3600] + "..."
