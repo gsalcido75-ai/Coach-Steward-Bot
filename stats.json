@@ -1199,22 +1199,6 @@
         "counters": 0,
         "accuracy": "0%"
     },
-    "767233344634486804": {
-        "name": "Rafa",
-        "wins": 0,
-        "losses": 0,
-        "kos": 0,
-        "verified": true,
-        "draws": 0,
-        "golden_tickets": 0,
-        "punches_landed": 0,
-        "punches_thrown": 0,
-        "body_landed": 0,
-        "power_landed": 0,
-        "knockdowns": 0,
-        "counters": 0,
-        "accuracy": "0%"
-    },
     "1345511145838088242": {
         "name": "ThaMenace3",
         "wins": 0,
@@ -1784,7 +1768,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-15 08:02:04 PM CST"
+        "updated_at": "2026-11-15 08:03:31 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1818,7 +1802,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-15T20:02:04.480692-06:00",
+    "_last_synced": "2026-11-15T20:03:31.055714-06:00",
     "video_archive": [
         {
             "title": "Sneak Peak",
