@@ -1204,6 +1204,13 @@ async def fetch_state_from_github_if_needed():
                                 v.setdefault("draws", 0)
                                 v.setdefault("kos", 0)
                                 v.setdefault("golden_tickets", 0)
+                                v.setdefault("punches_landed", 0)
+                                v.setdefault("punches_thrown", 0)
+                                v.setdefault("body_landed", 0)
+                                v.setdefault("power_landed", 0)
+                                v.setdefault("knockdowns", 0)
+                                v.setdefault("counters", 0)
+                                v.setdefault("accuracy", "0%")
                                 if "name" in v:
                                     v["name"] = clean_base_name(v["name"])
                                 FIGHTER_RECORDS[int(k)] = v
@@ -1929,49 +1936,68 @@ async def execute_roster_sync_and_announce(guild: discord.Guild, origin_channel:
     )
 
 # ================= AI VISION SCORECARD & AUTOMATIC RECORD + BRACKET UPDATER =================
+vision_scanner_model = genai.GenerativeModel(
+    model_name="gemini-2.5-flash",
+    generation_config={"temperature": 0.1, "max_output_tokens": 2048}
+)
+vision_fallback_model = genai.GenerativeModel(
+    model_name="gemini-2.0-flash",
+    generation_config={"temperature": 0.1, "max_output_tokens": 2048}
+)
+
 async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str, uploader_name: str, caption: str = "", opponent_name: str = "") -> tuple:
     global last_ai_call_time
     vision_prompt = (
-        f"You are Coach Steward, the legendary Hall of Fame HBO/ESPN ringside boxing analyst for the CGP Mainframe Gym. "
-        f"Fighter '{uploader_name}' uploaded this post-fight CompuBox screenshot from 'Undisputed' (Caption: '{caption}', Tagged Opponent: '{opponent_name}').\n\n"
-        "CRITICAL STEP 1 — OUTPUT RAW DATA LINES FIRST (NO MARKDOWN OR ASTERISKS ON LINES 1-4):\n"
-        "Look closely at the red 'MATCH WINNER' banner, the player gamertags (left = Red Corner, right = Blue Corner), and the center CompuBox table (e.g. '166 / 261' or '166/261' means landed=166, thrown=261). If this image is just a fighter pose or judge card without punch stats, output 0s.\n"
-        "Line 1: RESULT_CODE: UPLOADER_WIN (or UPLOADER_LOSS or DRAW)\n"
-        "Line 2: METHOD_CODE: KO (if KO/TKO/Stoppage/Forfeit/Quit) or METHOD_CODE: DECISION\n"
-        "Line 3: WINNER_STATS: landed=0, thrown=0, body=0, power=0, kds=0, counters=0\n"
-        "Line 4: LOSER_STATS: landed=0, thrown=0, body=0, power=0, kds=0, counters=0\n"
-        "(Replace the 0s on Lines 3 and 4 with the actual integer numbers from the CompuBox screen!)\n\n"
-        "CRITICAL STEP 2 — GENERATE THE HBO REPORT (starting on Line 5):\n"
+        f"You are analyzing a post-fight screenshot from the 'Undisputed' boxing video game.\n"
+        f"Uploader name: '{uploader_name}' | Opponent name: '{opponent_name}' | User caption: '{caption}'.\n\n"
+        "HOW TO READ THE UNDISPUTED COMPUBOX / MATCH STATS SCREEN:\n"
+        "- The Left side is the Red Corner fighter; the Right side is the Blue Corner fighter.\n"
+        "- Look at the red 'WINNER' or 'MATCH WINNER' banner (or higher points/KO banner) to see whether the Left fighter or Right fighter won.\n"
+        "- In the center stats table, each row shows Left Fighter vs Right Fighter stats, often formatted like '166 / 261 (63%)' or '166/261' or single integers for Knockdowns, Counters, Body Punches, and Power Punches.\n"
+        "- In '166 / 261', 166 is punches LANDED and 261 is punches THROWN.\n"
+        "- If this screenshot is only a victory pose or a 3-judge scorecard with NO punch stats visible, set landed=0 and thrown=0.\n\n"
+        "MANDATORY: YOUR FIRST 4 LINES MUST FOLLOW THIS EXACT FORMAT (NO ASTERISKS, NO MARKDOWN, INTEGERS ONLY):\n"
+        "RESULT_CODE: UPLOADER_WIN (or UPLOADER_LOSS or DRAW)\n"
+        "METHOD_CODE: KO (if KO, TKO, Flash KO, Stoppage, Quit, or Forfeit) or METHOD_CODE: DECISION\n"
+        "WINNER_STATS: landed=0, thrown=0, body=0, power=0, kds=0, counters=0\n"
+        "LOSER_STATS: landed=0, thrown=0, body=0, power=0, kds=0, counters=0\n\n"
+        "Starting on Line 5, write Coach Steward's ringside breakdown:\n"
         "📊 **OFFICIAL COMPUBOX & SCORECARD RECEIPTS:**\n"
-        "• **Matchup & Result:** (Identify true winner, gamertags, method of victory, and total punches landed/thrown)\n"
-        "• **Total Punches, Jabs, Power Shots & Body Work:** (Summarize key numbers & percentages)\n"
+        "• **Matchup & Result:** (Identify winner, fighter names/gamertags, method of victory, and total punches landed/thrown)\n"
+        "• **Total Punches, Jabs, Power Shots & Body Work:** (Summarize exact numbers & percentages for both corners)\n"
         "• **Knockdowns, Counters & Stamina:**\n\n"
         "🎙️ **COACH STEWARD'S RINGSIDE VERDICT:**\n"
-        "Write 3 gritty sentences of HBO ringside commentary explaining why the true winner took the fight and reminding everyone that numbers don't lie!"
+        "Write 3 gritty sentences of Hall of Fame HBO ringside commentary explaining why the winner took the fight!"
     )
 
     image_part = {"mime_type": mime_type or "image/jpeg", "data": image_bytes}
 
-    def parse_stat_line(prefix: str, text: str) -> dict:
+    def parse_stat_line(prefix: str, text: str, is_winner: bool = True) -> dict:
         stats = {"landed": 0, "thrown": 0, "body": 0, "power": 0, "kds": 0, "counters": 0}
-        # Strip markdown bolding/backticks so Gemini formatting never breaks parsing
         clean_t = re.sub(r'[*`_]', '', text)
         m = re.search(rf"{prefix}\s*:\s*([^\n]+)", clean_t, re.IGNORECASE)
         if m:
             line_body = m.group(1)
             for key in stats:
-                km = re.search(rf"{key}\s*[=:]\s*(\d+)", line_body, re.IGNORECASE)
+                # Handle both "landed=166" and accidental "landed=166/261"
+                km = re.search(rf"{key}\s*[=:]\s*(\d+)(?:\s*/\s*(\d+))?", line_body, re.IGNORECASE)
                 if km:
                     stats[key] = int(km.group(1))
-        # Fallback: if AI wrote "166/261" in the report but missed WINNER_STATS
-        if stats["thrown"] == 0 and prefix == "WINNER_STATS":
-            slash_matches = re.findall(r'\b(\d{1,3})\s*/\s*(\d{2,4})\b', clean_t)
+                    if key == "landed" and km.group(2) and stats["thrown"] == 0:
+                        stats["thrown"] = int(km.group(2))
+
+        # Fallback: extract "166 / 261" or "166 of 261" pairs from the text body if line 3/4 had 0s
+        if stats["thrown"] == 0:
+            slash_matches = re.findall(r'\b(\d{1,3})\s*(?:/|of)\s*(\d{2,4})\b', clean_t, re.IGNORECASE)
+            valid_pairs = []
             for l_val, t_val in slash_matches:
                 l_int, t_int = int(l_val), int(t_val)
-                if 15 <= t_int <= 1500 and l_int <= t_int:
-                    stats["landed"] = l_int
-                    stats["thrown"] = t_int
-                    break
+                if 12 <= t_int <= 1800 and 0 < l_int <= t_int and not (l_int <= 12 and t_int == 12):
+                    valid_pairs.append((l_int, t_int))
+            if valid_pairs:
+                idx = 0 if is_winner else (1 if len(valid_pairs) > 1 else 0)
+                if idx < len(valid_pairs):
+                    stats["landed"], stats["thrown"] = valid_pairs[idx]
         return stats
 
     async with ai_lock:
@@ -1979,25 +2005,26 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
         elapsed = now - last_ai_call_time
         if elapsed < 2.2:
             await asyncio.sleep(2.2 - elapsed)
-        for model in (primary_model, fallback_model):
+        for model in (vision_scanner_model, vision_fallback_model, primary_model):
             try:
                 response = await model.generate_content_async([vision_prompt, image_part])
                 last_ai_call_time = asyncio.get_event_loop().time()
                 if response and response.text:
                     raw = response.text.strip()
+                    print(f"[VISION RAW PREVIEW]: {raw[:260]}")
                     clean_raw = re.sub(r'[*`_]', '', raw)
                     v_outcome = None
                     v_ko = False
-                    if "RESULT_CODE: UPLOADER_LOSS" in clean_raw:
+                    if "RESULT_CODE: UPLOADER_LOSS" in clean_raw.upper():
                         v_outcome = "loss"
-                    elif "RESULT_CODE: DRAW" in clean_raw:
+                    elif "RESULT_CODE: DRAW" in clean_raw.upper():
                         v_outcome = "draw"
-                    elif "RESULT_CODE: UPLOADER_WIN" in clean_raw:
+                    elif "RESULT_CODE: UPLOADER_WIN" in clean_raw.upper():
                         v_outcome = "win"
-                    if "METHOD_CODE: KO" in clean_raw:
+                    if "METHOD_CODE: KO" in clean_raw.upper():
                         v_ko = True
-                    w_stats = parse_stat_line("WINNER_STATS", raw)
-                    l_stats = parse_stat_line("LOSER_STATS", raw)
+                    w_stats = parse_stat_line("WINNER_STATS", raw, is_winner=True)
+                    l_stats = parse_stat_line("LOSER_STATS", raw, is_winner=False)
                     cleaned_report = re.sub(
                         r'^[*`_]*(RESULT_CODE:.*|METHOD_CODE:.*|WINNER_STATS:.*|LOSER_STATS:.*)\n?',
                         '', raw, flags=re.MULTILINE | re.IGNORECASE
@@ -2050,7 +2077,6 @@ async def scan_all_scorecard_attachments(image_attachments: list, uploader_base:
         if not best_report and report_text:
             best_report = report_text
 
-        # Check if this image had actual CompuBox punch numbers!
         total_p = w_stats.get("thrown", 0) + l_stats.get("thrown", 0) + w_stats.get("landed", 0) + l_stats.get("landed", 0)
         best_total_p = best_w_stats.get("thrown", 0) + best_l_stats.get("thrown", 0) + best_w_stats.get("landed", 0) + best_l_stats.get("landed", 0)
 
@@ -2061,7 +2087,6 @@ async def scan_all_scorecard_attachments(image_attachments: list, uploader_base:
             best_att = att
             if v_outcome:
                 best_outcome = v_outcome
-            # Once we found the full CompuBox table with punch stats, we don't need to waste AI calls on remaining images
             if w_stats.get("thrown", 0) > 10 and l_stats.get("thrown", 0) > 10:
                 break
 
@@ -2141,12 +2166,16 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
         uploader_base=uploader_base,
         caption=message.content,
         opponent_base=opponent_base
-    )    
-    if len(report_text) > 3600:
-        report_text = report_text[:3600] + "..."
+    )
+    if len(report_text) > 3400:
+        report_text = report_text[:3400] + "..."
 
     final_outcome = caption_intent["outcome"] or vision_outcome or "win"
     is_ko = caption_intent["is_ko"] or vision_ko
+
+    # If the user caption overrode the AI's winner/loser side, make sure the higher landed/thrown stays with the right fighter
+    if caption_intent["outcome"] and vision_outcome and caption_intent["outcome"] != vision_outcome:
+        w_stats, l_stats = l_stats, w_stats
 
     if uploader.id not in FIGHTER_RECORDS:
         FIGHTER_RECORDS[uploader.id] = {"name": uploader_base, "wins": 0, "losses": 0, "draws": 0, "kos": 0, "golden_tickets": 0, "verified": True}
@@ -2177,39 +2206,40 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
         winner_member = uploader
         loser_member = opponent
 
+    def apply_compubox(rec_dict, st):
+        rec_dict["punches_landed"] = rec_dict.get("punches_landed", 0) + st.get("landed", 0)
+        rec_dict["punches_thrown"] = rec_dict.get("punches_thrown", 0) + st.get("thrown", 0)
+        rec_dict["body_landed"] = rec_dict.get("body_landed", 0) + st.get("body", 0)
+        rec_dict["power_landed"] = rec_dict.get("power_landed", 0) + st.get("power", 0)
+        rec_dict["knockdowns"] = rec_dict.get("knockdowns", 0) + st.get("kds", 0)
+        rec_dict["counters"] = rec_dict.get("counters", 0) + st.get("counters", 0)
+        t_th = rec_dict["punches_thrown"]
+        t_la = rec_dict["punches_landed"]
+        rec_dict["accuracy"] = f"{round((t_la / t_th) * 100, 1)}%" if t_th > 0 else rec_dict.get("accuracy", "0%")
+
     if winner_member:
         w_rec = FIGHTER_RECORDS[winner_member.id]
         w_rec["wins"] = w_rec.get("wins", 0) + 1
         if is_ko:
             w_rec["kos"] = w_rec.get("kos", 0) + 1
         w_rec["verified"] = True
+        apply_compubox(w_rec, w_stats)
 
         if loser_member:
             l_rec = FIGHTER_RECORDS[loser_member.id]
             l_rec["losses"] = l_rec.get("losses", 0) + 1
             l_rec["verified"] = True
-
-        def apply_compubox(rec_dict, st):
-            rec_dict["punches_landed"] = rec_dict.get("punches_landed", 0) + st.get("landed", 0)
-            rec_dict["punches_thrown"] = rec_dict.get("punches_thrown", 0) + st.get("thrown", 0)
-            rec_dict["body_landed"] = rec_dict.get("body_landed", 0) + st.get("body", 0)
-            rec_dict["power_landed"] = rec_dict.get("power_landed", 0) + st.get("power", 0)
-            rec_dict["knockdowns"] = rec_dict.get("knockdowns", 0) + st.get("kds", 0)
-            rec_dict["counters"] = rec_dict.get("counters", 0) + st.get("counters", 0)
-            t_th = rec_dict["punches_thrown"]
-            t_la = rec_dict["punches_landed"]
-            rec_dict["accuracy"] = f"{round((t_la / t_th) * 100, 1)}%" if t_th > 0 else rec_dict.get("accuracy", "0%")
-
-        apply_compubox(w_rec, w_stats)
-        if loser_member:
             apply_compubox(l_rec, l_stats)
 
-        if loser_member:
             tourney_advanced, tourney_summary = advance_tournament_match(
                 winner_id=winner_member.id,
                 loser_id=loser_member.id,
                 is_ko=is_ko
             )
+    else:
+        apply_compubox(FIGHTER_RECORDS[uploader.id], w_stats)
+        if opponent:
+            apply_compubox(FIGHTER_RECORDS[opponent.id], l_stats)
 
     await save_and_sync_records()
 
@@ -2240,9 +2270,24 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
         w_d = FIGHTER_RECORDS[winner_member.id]
         l_d = FIGHTER_RECORDS[loser_member.id] if loser_member else None
         method_str = " *(by KO/Stoppage 💥)*" if is_ko else " *(by Decision 📋)*"
+        w_cb_str = (
+            f"   ┗ 📈 **CompuBox Added:** `{w_stats['landed']}/{w_stats['thrown']}` | Body: `{w_stats['body']}` | Power: `{w_stats['power']}` | Career: `{w_d.get('punches_landed',0)}/{w_d.get('punches_thrown',0)}` (`{w_d.get('accuracy','0%')}`)\n"
+            if w_stats.get("thrown", 0) > 0 else
+            f"   ┗ ⚠️ *Scorecard/KO photo had no CompuBox punch table attached (Career: `{w_d.get('punches_landed',0)}/{w_d.get('punches_thrown',0)}`)*\n"
+        )
+        l_cb_str = ""
+        if loser_member and l_d:
+            l_cb_str = (
+                f"🥊 **Opponent:** {loser_member.mention} (`[{l_d['wins']}W-{l_d['losses']}L-{l_d.get('draws',0)}D-{l_d.get('kos',0)}K]`)\n"
+                + (
+                    f"   ┗ 📈 **CompuBox Added:** `{l_stats['landed']}/{l_stats['thrown']}` | Body: `{l_stats['body']}` | Power: `{l_stats['power']}` | Career: `{l_d.get('punches_landed',0)}/{l_d.get('punches_thrown',0)}` (`{l_d.get('accuracy','0%')}`)\n"
+                    if l_stats.get("thrown", 0) > 0 else ""
+                )
+            )
         result_header = (
             f"🥊 **Winner:** {winner_member.mention} (`[{w_d['wins']}W-{w_d['losses']}L-{w_d.get('draws',0)}D-{w_d.get('kos',0)}K]`){method_str}\n"
-            + (f"🥊 **Opponent:** {loser_member.mention} (`[{l_d['wins']}W-{l_d['losses']}L-{l_d.get('draws',0)}D-{l_d.get('kos',0)}K]`)\n" if loser_member else "")
+            f"{w_cb_str}"
+            f"{l_cb_str}"
         )
 
     embed = discord.Embed(
@@ -2271,7 +2316,7 @@ async def process_and_broadcast_scorecard(message: discord.Message, require_tag:
 
     try:
         await status_msg.edit(
-            content=f"🎙️ **Coach Steward:** ✅ **Scorecard verified, unified `[W-L-D-K]` records synced live to the Mainframe Hub" + (", tournament bracket advanced," if tourney_advanced else " (Open Gym bout — bracket unchanged),") + f" and HBO Report posted in {corner_ch.mention}!**",
+            content=f"🎙️ **Coach Steward:** ✅ **Scorecard verified, unified `[W-L-D-K]` & CompuBox stats synced live to the Mainframe Hub" + (", tournament bracket advanced," if tourney_advanced else " (Open Gym bout — bracket unchanged),") + f" and HBO Report posted in {corner_ch.mention}!**",
             view=PromoButtons(DEFAULT_SOUNDCLOUD_URL)
         )
     except Exception:
@@ -2739,7 +2784,8 @@ async def on_message(message):
                         member_obj = None
 
                 base_name = clean_base_name(member_obj.display_name) if member_obj else FIGHTER_RECORDS.get(target_id, {}).get("name", f"Fighter {target_id}")
-                FIGHTER_RECORDS[target_id] = {
+                existing_rec = FIGHTER_RECORDS.get(target_id, {})
+                existing_rec.update({
                     "name": base_name,
                     "wins": w,
                     "losses": l,
@@ -2747,7 +2793,8 @@ async def on_message(message):
                     "kos": k,
                     "golden_tickets": gt,
                     "verified": True
-                }
+                })
+                FIGHTER_RECORDS[target_id] = existing_rec
                 deduplicate_fighter_records(target_id, base_name)
                 if member_obj:
                     try:
@@ -3198,118 +3245,74 @@ async def update_soundcloud(ctx, new_plays: str):
     await ctx.send(f"🎵 **SoundCloud stats updated!** Total plays set to **{new_plays}**. Website ticker will reflect this shortly.")
 
 @bot.command(name='scanstats')
-async def scan_stats(ctx, winner_name: str, loser_name: str):
-    """Scans an uploaded scorecard image, determines stats via AI vision, and updates stats.json for both fighters."""
+async def scan_stats(ctx, winner: discord.Member = None, loser: discord.Member = None):
+    """Scans attached scorecard image(s) via real AI vision and updates FIGHTER_RECORDS + GitHub for both fighters."""
     if not ctx.message.attachments:
-        return await ctx.send("❌ **Error:** Please attach the final match scorecard image when running `!scanstats [winner_name] [loser_name]`!")
-    
-    attachment = ctx.message.attachments[0]
-    if not attachment.content_type or not attachment.content_type.startswith('image/'):
-        return await ctx.send("❌ **Error:** The attached file must be an image (scorecard screenshot).")
+        return await ctx.send("❌ **Error:** Attach your post-fight CompuBox screenshot(s) when running `!scanstats @Winner @Loser`!")
+    if not winner:
+        winner = ctx.author
 
-    await ctx.send(f"🔍 **Coach Steward is analyzing the scorecard...** Processing battle between **{winner_name}** and **{loser_name}**.")
+    w_base = clean_base_name(winner.display_name)
+    l_base = clean_base_name(loser.display_name) if loser else "Opponent"
+    await ctx.send(f"🔍 **Coach Steward is scanning {len(ctx.message.attachments)} image(s) for CompuBox punch stats:** **{w_base}** vs **{l_base}**...")
 
-    try:
-        image_bytes = await attachment.read()
-        
-        # Parsed CompuBox placeholder data from vision scan
-        winner_thrown, winner_landed, winner_kos = 450, 190, 1
-        loser_thrown, loser_landed, loser_kos = 380, 110, 0
-
-        import json
-        with open("stats.json", "r") as f:
-            data = json.load(f)
-
-        def get_or_create_fighter(name):
-            for k, v in data.items():
-                if isinstance(v, dict) and v.get("name", "").lower() == name.lower():
-                    return k
-            new_key = str(ctx.author.id) if name.lower() == winner_name.lower() else str(hash(name))
-            data[new_key] = {"name": name, "wins": 0, "losses": 0, "kos": 0, "punches_thrown": 0, "punches_landed": 0, "accuracy": "0%"}
-            return new_key
-
-        # Update Winner Stats
-        w_key = get_or_create_fighter(winner_name)
-        data[w_key]["wins"] = data[w_key].get("wins", 0) + 1
-        data[w_key]["kos"] = data[w_key].get("kos", 0) + winner_kos
-        data[w_key]["punches_thrown"] = data[w_key].get("punches_thrown", 0) + winner_thrown
-        data[w_key]["punches_landed"] = data[w_key].get("punches_landed", 0) + winner_landed
-        w_acc = round((data[w_key]["punches_landed"] / data[w_key]["punches_thrown"] * 100), 1) if data[w_key]["punches_thrown"] > 0 else 0.0
-        data[w_key]["accuracy"] = f"{w_acc}%"
-
-        # Update Loser Stats
-        l_key = get_or_create_fighter(loser_name)
-        data[l_key]["losses"] = data[l_key].get("losses", 0) + 1
-        data[l_key]["punches_thrown"] = data[l_key].get("punches_thrown", 0) + loser_thrown
-        data[l_key]["punches_landed"] = data[l_key].get("punches_landed", 0) + loser_landed
-        l_acc = round((data[l_key]["punches_landed"] / data[l_key]["punches_thrown"] * 100), 1) if data[l_key]["punches_thrown"] > 0 else 0.0
-        data[l_key]["accuracy"] = f"{l_acc}%"
-
-        with open("stats.json", "w") as f:
-            json.dump(data, f, indent=4)
-
-        embed = discord.Embed(
-            title="🥊 OFFICIAL COMPUBOX SCORECARD VERIFIED",
-            description=f"Match results processed for **{winner_name} vs {loser_name}**!",
-            color=0xffcc00
-        )
-        embed.add_field(name=f"👑 Winner: {winner_name}", value=f"Record: +1 Win (+{winner_kos} KO)\nThrown: {winner_thrown} | Landed: {winner_landed}\nAccuracy: {w_acc}%", inline=False)
-        embed.add_field(name=f"💀 Defeated: {loser_name}", value=f"Record: +1 Loss\nThrown: {loser_thrown} | Landed: {loser_landed}\nAccuracy: {l_acc}%", inline=False)
-        embed.set_footer(text="CGP Mainframe • Leaderboard & Stats Synced Live")
-        
-        await ctx.send(embed=embed)
-
-    except Exception as e:
-        await ctx.send(f"❌ **Vision Parse Error:** Could not process scorecard image. ({str(e)})")
-
-@bot.command(name='logstats')
-async def log_stats(ctx, fighter_name: str, thrown: int, landed: int, kos: int = 0):
-    """Logs detailed CompuBox punch stats and updates stats.json automatically."""
-    import json
-    try:
-        with open("stats.json", "r") as f:
-            data = json.load(f)
-    except FileNotFoundError:
-        data = {}
-
-    # Find or create fighter entry
-    fighter_key = None
-    for k, v in data.items():
-        if isinstance(v, dict) and v.get("name", "").lower() == fighter_name.lower():
-            fighter_key = k
-            break
-            
-    if not fighter_key:
-        fighter_key = str(ctx.author.id)
-        data[fighter_key] = {"name": fighter_name, "wins": 0, "losses": 0, "kos": 0}
-
-    # Update stats with CompuBox numbers
-    data[fighter_key]["punches_thrown"] = data[fighter_key].get("punches_thrown", 0) + thrown
-    data[fighter_key]["punches_landed"] = data[fighter_key].get("punches_landed", 0) + landed
-    data[fighter_key]["kos"] = data[fighter_key].get("kos", 0) + kos
-    
-    # Calculate accuracy percentage automatically
-    total_thrown = data[fighter_key]["punches_thrown"]
-    total_landed = data[fighter_key]["punches_landed"]
-    accuracy = round((total_landed / total_thrown * 100), 1) if total_thrown > 0 else 0.0
-    data[fighter_key]["accuracy"] = f"{accuracy}%"
-
-    # Save back to stats.json
-    with open("stats.json", "w") as f:
-        json.dump(data, f, indent=4)
-        
-    embed = discord.Embed(
-        title="🥊 COMPUBOX STATS RECORDED // CGP MAINFRAME",
-        description=f"Official stats updated for **{fighter_name}**!",
-        color=0xffcc00
+    report_text, v_outcome, v_ko, w_stats, l_stats, best_att = await scan_all_scorecard_attachments(
+        image_attachments=ctx.message.attachments,
+        uploader_base=w_base,
+        caption=ctx.message.content,
+        opponent_base=l_base
     )
-    embed.add_field(name="Punches Thrown", value=str(thrown), inline=True)
-    embed.add_field(name="Punches Landed", value=str(landed), inline=True)
-    embed.add_field(name="Accuracy", value=f"{accuracy}%", inline=True)
-    embed.set_footer(text="Clone Geek Productions • Stats Database Synced")
-    
+
+    if winner.id not in FIGHTER_RECORDS:
+        FIGHTER_RECORDS[winner.id] = {"name": w_base, "wins": 0, "losses": 0, "draws": 0, "kos": 0, "golden_tickets": 0, "verified": True}
+    apply_solo_compubox_to_record(FIGHTER_RECORDS[winner.id], w_stats)
+
+    if loser:
+        if loser.id not in FIGHTER_RECORDS:
+            FIGHTER_RECORDS[loser.id] = {"name": l_base, "wins": 0, "losses": 0, "draws": 0, "kos": 0, "golden_tickets": 0, "verified": True}
+        apply_solo_compubox_to_record(FIGHTER_RECORDS[loser.id], l_stats)
+
+    synced_ok = await save_and_sync_records()
+    w_rec = FIGHTER_RECORDS[winner.id]
+
+    embed = discord.Embed(
+        title="🥊 OFFICIAL COMPUBOX PUNCH STATS SCANNED & SYNCED",
+        description=(
+            f"👑 **Fighter:** {winner.mention}\n"
+            f"🥊 **Match CompuBox Added:** `{w_stats['landed']} / {w_stats['thrown']}` Landed | Body: `{w_stats['body']}` | Power: `{w_stats['power']}` | KDs: `{w_stats['kds']}`\n"
+            f"📈 **Career CompuBox Totals:** `{w_rec.get('punches_landed', 0)} / {w_rec.get('punches_thrown', 0)}` (`{w_rec.get('accuracy', '0%')}`)\n"
+            f"🌐 **Website Sync:** {'`LIVE ON MAINFRAME HUB`' if synced_ok else '`SAVED LOCALLY`'}"
+        ),
+        color=0xffcc00,
+        url=MAINFRAME_HUB_URL
+    )
+    embed.set_image(url=best_att.url)
     await ctx.send(embed=embed)
 
+@bot.command(name='logstats')
+async def log_stats(ctx, member: discord.Member, thrown: int, landed: int, body: int = 0, power: int = 0, kds: int = 0):
+    """Manually logs CompuBox punch stats into FIGHTER_RECORDS and syncs straight to GitHub/Website."""
+    uid = member.id
+    base_name = clean_base_name(member.display_name)
+    if uid not in FIGHTER_RECORDS:
+        FIGHTER_RECORDS[uid] = {"name": base_name, "wins": 0, "losses": 0, "draws": 0, "kos": 0, "golden_tickets": 0, "verified": True}
+
+    st = {"thrown": thrown, "landed": landed, "body": body, "power": power, "kds": kds, "counters": 0}
+    apply_solo_compubox_to_record(FIGHTER_RECORDS[uid], st)
+    synced_ok = await save_and_sync_records()
+    rec = FIGHTER_RECORDS[uid]
+
+    embed = discord.Embed(
+        title="🥊 COMPUBOX STATS RECORDED // CGP MAINFRAME",
+        description=f"Official career CompuBox stats updated & synced to website for {member.mention}!",
+        color=0xffcc00,
+        url=MAINFRAME_HUB_URL
+    )
+    embed.add_field(name="Match Landed / Thrown", value=f"`{landed} / {thrown}`", inline=True)
+    embed.add_field(name="Career Landed / Thrown", value=f"`{rec.get('punches_landed', 0)} / {rec.get('punches_thrown', 0)}`", inline=True)
+    embed.add_field(name="Career Accuracy", value=f"`{rec.get('accuracy', '0%')}`", inline=True)
+    embed.set_footer(text=f"GitHub / Website Sync: {'LIVE' if synced_ok else 'LOCAL'}")
+    await ctx.send(embed=embed)
 @bot.command(name="verifyorder", aliases=["unlocktrack", "confirmwav", "unlockwav"])
 @commands.has_permissions(administrator=True)
 async def verifyorder_cmd(ctx, order_code: str = None):
@@ -3663,7 +3666,8 @@ async def record(ctx, wins: int = None, losses: int = None, draws: int = 0, kos:
     base_name = clean_base_name(ctx.author.display_name)
     is_admin = (ctx.author.id == CREATOR_ID) or ctx.author.guild_permissions.administrator
     gt = FIGHTER_RECORDS.get(ctx.author.id, {}).get("golden_tickets", 0)
-    FIGHTER_RECORDS[ctx.author.id] = {
+    existing_rec = FIGHTER_RECORDS.get(ctx.author.id, {})
+    existing_rec.update({
         "name": base_name,
         "wins": wins,
         "losses": losses,
@@ -3671,7 +3675,8 @@ async def record(ctx, wins: int = None, losses: int = None, draws: int = 0, kos:
         "kos": kos,
         "golden_tickets": gt,
         "verified": is_admin
-    }
+    })
+    FIGHTER_RECORDS[ctx.author.id] = existing_rec
     deduplicate_fighter_records(ctx.author.id, base_name)
     await save_and_sync_records()
     if is_admin:
