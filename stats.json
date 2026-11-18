@@ -1727,6 +1727,15 @@
         "counters": 0,
         "accuracy": "0%"
     },
+    "1527537783604776990": {
+        "name": "\ud83c\udf83\u26b0\ud83d\udc10the UNDERTAKER.I.P\u26b1\ud83e\udea6",
+        "wins": 0,
+        "losses": 0,
+        "draws": 0,
+        "kos": 0,
+        "golden_tickets": 0,
+        "verified": true
+    },
     "_tournament": {
         "active": false,
         "status": "registration",
@@ -1784,7 +1793,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-18 01:07:40 AM CST"
+        "updated_at": "2026-11-18 03:40:19 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1818,7 +1827,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-18T01:07:40.129737-06:00",
+    "_last_synced": "2026-11-18T15:40:19.603750-06:00",
     "_soundcloud": {
         "total_plays": "66.5K+",
         "goal": "500K",
