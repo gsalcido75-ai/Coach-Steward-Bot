@@ -276,19 +276,33 @@ CONFUSED_SLANG_RESPONSES = [
 ]
 
 CREW_BANTER = {
-    "undertaker": [
-        "🎙️ **Coach Steward:** Hold up, let me talk real slow so **Undertaker** can keep up... Lace. Up. Your. Gloves. And. Tap. The. SoundCloud. Link. Below! 😂🥊",
-        "🎙️ **Coach Steward:** Look out, **Undertaker** is in the building moving at 0.5x speed! Somebody pour some cold water on his neck and get him in the Riyadh ring!"
+    "f150": [
+        "🎙️ **Coach Steward:** **f-150** rolling heavy into the gym like a truckload of championship belts! Keep that engine purring and hands up in the Riyadh ring!",
+        "🎙️ **Coach Steward:** Heavy horsepower in the building! **f-150** is locked in—who's brave enough to step in front of that freight train today?!"
     ],
-    "hymas": [
-        "🎙️ **Coach Steward:** Oh look, **Hymas** is lurking in the gym! Welcome back from probation—now stop spamming the locker room and go defend your name in the Riyadh Indoor Gym!",
-        "🎙️ **Coach Steward:** I see you **Hymas**! Don't think you can sneak past the corner without putting in rounds today. Keep the chat clean and lace 'em up!"
+    "f-150": [
+        "🎙️ **Coach Steward:** **f-150** rolling heavy into the gym like a truckload of championship belts! Keep that engine purring and hands up in the Riyadh ring!",
+        "🎙️ **Coach Steward:** Heavy horsepower in the building! **f-150** is locked in—who's brave enough to step in front of that freight train today?!"
+    ],
+    "ivan": [
+        "🎙️ **Coach Steward:** **Ivan2faded22** in the building! Multi-division royalty—keep that jab snapping and stay ready to defend the throne!",
+        "🎙️ **Coach Steward:** Look who just stepped on the canvas—**Ivan2faded22**! Sharp footwork, heavy counters, and pure Mainframe pedigree!"
     ],
     "knuckle": [
-        "🎙️ **Coach Steward:** **KnuckleUpFoo** always ready for war from ringside! You already know how we rock in the **CGP Mainframe Gym**—keep keeping these contenders on their toes!"
+        "🎙️ **Coach Steward:** **KnuckleUp** always ready for war from ringside! You already know how we rock in the **CGP Mainframe Gym**—keep keeping these contenders on their toes!",
+        "🎙️ **Coach Steward:** **KnuckleUp** laced up and ready to trade leather! Somebody step up and test that chin!"
     ],
-    "f150": [
-        "🎙️ **Coach Steward:** **f150** rolling heavy into the gym like a truckload of championship belts! Keep that engine purring and hands up in the Riyadh ring!"
+    "crewe": [
+        "🎙️ **Coach Steward:** **Crewe** checked into the **CGP Mainframe Gym**! Wraps are tight, bell is ready—who wants smoke today?!",
+        "🎙️ **Coach Steward:** Salute to **Crewe** holding it down in the locker room! Step in the Riyadh ring and put in some rounds!"
+    ],
+    "bigboss": [
+        "🎙️ **Coach Steward:** **BigBoss** walked through the ropes! Heavyweight presence in the **CGP Mainframe Gym**—let's see who steps up to the challenge!",
+        "🎙️ **Coach Steward:** **BigBoss** is in the building! Time to put these contenders through championship conditioning!"
+    ],
+    "junebugz": [
+        "🎙️ **Coach Steward:** **Junebugz** in the gym ready to sting like a bee and hit like a Mack truck! Lace 'em up and let's get active!",
+        "🎙️ **Coach Steward:** Watch that speed—**Junebugz** just stepped into the **CGP Mainframe Gym**! Who wants to spar?!"
     ]
 }
 
@@ -739,6 +753,7 @@ def get_default_tournament_state() -> dict:
 
 ACTIVE_TOURNAMENT = get_default_tournament_state()
 FIGHTER_RECORDS = {}
+SOUNDCLOUD_STATE = {"total_plays": "66.5K+", "goal": "500K", "latest_track": "Road to Undisputed", "last_checked": ""}
 
 def deduplicate_fighter_records(preferred_uid: int = None, preferred_name: str = None):
     if CREATOR_ID in FIGHTER_RECORDS:
@@ -1096,14 +1111,17 @@ def write_records_to_disk():
     export_payload["_store_orders"] = STORE_ORDERS_DB
     export_payload["_last_synced"] = datetime.datetime.now(CENTRAL_TZ).isoformat()
     
+    export_payload["_soundcloud"] = dict(SOUNDCLOUD_STATE)
     if os.path.exists(file_path):
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 existing_data = json.load(f)
                 if "video_archive" in existing_data:
                     export_payload["video_archive"] = existing_data["video_archive"]
-                if "_soundcloud" in existing_data:
-                    export_payload["_soundcloud"] = existing_data["_soundcloud"]
+                if "_soundcloud" in existing_data and isinstance(existing_data["_soundcloud"], dict):
+                    merged_sc = dict(existing_data["_soundcloud"])
+                    merged_sc.update(SOUNDCLOUD_STATE)
+                    export_payload["_soundcloud"] = merged_sc
         except Exception:
             pass
 
@@ -1130,7 +1148,7 @@ async def save_and_sync_records() -> bool:
         return False
 
 def load_records():
-    global ACTIVE_TOURNAMENT, STORE_ORDERS_DB
+    global ACTIVE_TOURNAMENT, STORE_ORDERS_DB, SOUNDCLOUD_STATE
     file_path = os.path.join(os.path.dirname(__file__), DATA_FILE)
     if os.path.exists(file_path):
         try:
@@ -1142,6 +1160,8 @@ def load_records():
                     default_t.update(data["_tournament"])
                     default_t["entrants"] = [int(x) for x in default_t.get("entrants", [])]
                     ACTIVE_TOURNAMENT = default_t
+                if "_soundcloud" in data and isinstance(data["_soundcloud"], dict):
+                    SOUNDCLOUD_STATE.update(data["_soundcloud"])
                 if "_store_orders" in data and isinstance(data["_store_orders"], dict):
                     for k, v in data["_store_orders"].items():
                         if k in STORE_ORDERS_DB and isinstance(v, dict):
@@ -1170,7 +1190,7 @@ def load_records():
     return {}
 
 async def fetch_state_from_github_if_needed():
-    global FIGHTER_RECORDS, ACTIVE_TOURNAMENT, STORE_ORDERS_DB
+    global FIGHTER_RECORDS, ACTIVE_TOURNAMENT, STORE_ORDERS_DB, SOUNDCLOUD_STATE
     if not GITHUB_TOKEN or not GITHUB_REPO:
         return
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{DATA_FILE}"
@@ -1193,6 +1213,8 @@ async def fetch_state_from_github_if_needed():
                             default_t.update(data["_tournament"])
                             default_t["entrants"] = [int(x) for x in default_t.get("entrants", [])]
                             ACTIVE_TOURNAMENT = default_t
+                        if "_soundcloud" in data and isinstance(data["_soundcloud"], dict):
+                            SOUNDCLOUD_STATE.update(data["_soundcloud"])
                         if "_store_orders" in data and isinstance(data["_store_orders"], dict):
                             for k, v in data["_store_orders"].items():
                                 if k in STORE_ORDERS_DB and isinstance(v, dict):
@@ -1605,7 +1627,8 @@ SYSTEM_PROMPT = (
     "5. THE BOSS (CLONE GEEK): Clone Geek is the Founder, Commissioner, music producer (Registry Records / CGP on SoundCloud & Cloudflare R2 Vault), and machinist/fabricator by day. Always back him up like a loyal right-hand man and execute whatever he asks, including matching up fighters on command (`!match`).\n"
     "6. UNDISPUTED GAME META: You know everything about the Undisputed boxing game by Steel City Interactive—stamina conservation, loose footwork, diagonal lunges, slipping the jab, body-jab counters, weave timing, and avoiding power-punch spam.\n"
     "7. REAL BOXING PURIST: You know all about upcoming boxing schedules, champions, and historic legends (Hearns, Hagler, Duran, Leonard, Ali, Chavez, Whitaker, Pryor, Toney). You HATE UFC/MMA and call it pajama floor-hugging garbage.\n"
-    "8. KEEP IT PUNCHY: Keep responses around 2 to 5 strong sentences unless asked for a deep breakdown or big announcement."
+    "8. NATURAL CONVERSATIONAL FLOW & GYM ENGAGEMENT: You can hold a real, intelligent, back-and-forth conversation on ANY topic—life, mindset, gaming, music, work, or deep boxing strategy—just like a sharp, charismatic human mentor and cornerman. Whenever natural, weave in boxing analogies, remind fighters how they can use your commands (`!guide`, `!findfight`, `!callout`, `!store`, or uploading scorecards with `@opponent` in `#scorecard-submissions`), or challenge contenders in the chat to lace up their gloves and get active in the ring!\n"
+    "9. YOUR INNER CIRCLE CREW: The Boss is Clone Geek (Gerardo), and his trusted inner-circle crew are f-150, Ivan2faded22 (his son), KnuckleUp, Crewe, BigBoss, and Junebugz. Show them real respect when they speak, while still challenging them to stay sharp in the gym."
 )
 
 genai.configure(api_key=GEMINI_API_KEY)
@@ -1953,8 +1976,8 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
         "HOW TO READ THE UNDISPUTED COMPUBOX / MATCH STATS SCREEN:\n"
         "- The Left side is the Red Corner fighter; the Right side is the Blue Corner fighter.\n"
         "- Look at the red 'WINNER' or 'MATCH WINNER' banner (or higher points/KO banner) to see whether the Left fighter or Right fighter won.\n"
-        "- In the center stats table, each row shows Left Fighter vs Right Fighter stats, often formatted like '166 / 261 (63%)' or '166/261' or single integers for Knockdowns, Counters, Body Punches, and Power Punches.\n"
-        "- In '166 / 261', 166 is punches LANDED and 261 is punches THROWN.\n"
+        "- In the center stats table, each row shows Left Fighter vs Right Fighter stats. Undisputed displays punches EITHER as '166 / 261 (63%)' OR on two separate rows: 'Total Punches Landed: 166' and 'Total Punches Thrown: 261'.\n"
+        "- ALWAYS extract both landed AND thrown integers for BOTH the Winner and the Loser! Do NOT leave thrown=0 if punches landed > 0.\n"
         "- If this screenshot is only a victory pose or a 3-judge scorecard with NO punch stats visible, set landed=0 and thrown=0.\n\n"
         "MANDATORY: YOUR FIRST 4 LINES MUST FOLLOW THIS EXACT FORMAT (NO ASTERISKS, NO MARKDOWN, INTEGERS ONLY):\n"
         "RESULT_CODE: UPLOADER_WIN (or UPLOADER_LOSS or DRAW)\n"
@@ -1986,7 +2009,7 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
                     if key == "landed" and km.group(2) and stats["thrown"] == 0:
                         stats["thrown"] = int(km.group(2))
 
-        # Fallback: extract "166 / 261" or "166 of 261" pairs from the text body if line 3/4 had 0s
+        # Fallback 1: extract "166 / 261" or "166 of 261" pairs from the text body if line 3/4 had 0s
         if stats["thrown"] == 0:
             slash_matches = re.findall(r'\b(\d{1,3})\s*(?:/|of)\s*(\d{2,4})\b', clean_t, re.IGNORECASE)
             valid_pairs = []
@@ -1998,6 +2021,18 @@ async def analyze_scorecard_image_with_vision(image_bytes: bytes, mime_type: str
                 idx = 0 if is_winner else (1 if len(valid_pairs) > 1 else 0)
                 if idx < len(valid_pairs):
                     stats["landed"], stats["thrown"] = valid_pairs[idx]
+
+        # Fallback 2: separate "Punches Landed: 166" and "Punches Thrown: 261" rows
+        if stats["thrown"] == 0:
+            landed_hits = [int(x) for x in re.findall(r'punches\s+landed[^0-9]{0,15}(\d{1,4})', clean_t, re.IGNORECASE)]
+            thrown_hits = [int(x) for x in re.findall(r'punches\s+thrown[^0-9]{0,15}(\d{1,4})', clean_t, re.IGNORECASE)]
+            idx = 0 if is_winner else 1
+            if idx < len(landed_hits) and idx < len(thrown_hits) and thrown_hits[idx] >= landed_hits[idx]:
+                stats["landed"] = landed_hits[idx]
+                stats["thrown"] = thrown_hits[idx]
+
+        if stats["thrown"] > 0 and stats["landed"] > stats["thrown"]:
+            stats["landed"], stats["thrown"] = stats["thrown"], stats["landed"]
         return stats
 
     async with ai_lock:
@@ -2425,9 +2460,89 @@ async def periodic_boxing_history():
             await channel.send(f"🥊 **CGP Mainframe Gym Ringside History Vault:**\n{get_next_boxing_fact()}")
         break
 
+
+# ================= LIVE BOXINGSCENE.COM & SOUNDCLOUD RSS FETCHERS =================
+SOUNDCLOUD_RSS_URL = "https://feeds.soundcloud.com/users/soundcloud:users:230608914/sounds.rss"
+BOXINGSCENE_RSS_URLS = [
+    "https://www.boxingscene.com/rss/news.xml",
+    "https://www.boxingscene.com/rss"
+]
+
+async def fetch_live_boxingscene_headlines(limit: int = 5) -> list:
+    """Fetches real-time boxing headlines and links directly from BoxingScene.com."""
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        "Accept": "application/rss+xml, application/xml, text/xml, text/html"
+    }
+    headlines = []
+    async with aiohttp.ClientSession(headers=headers) as session:
+        for feed_url in BOXINGSCENE_RSS_URLS:
+            try:
+                async with session.get(feed_url, timeout=10) as resp:
+                    if resp.status == 200:
+                        xml_text = await resp.text()
+                        items = re.findall(r'<item>(.*?)</item>', xml_text, re.DOTALL | re.IGNORECASE)
+                        for item in items[:limit]:
+                            t_m = re.search(r'<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>', item, re.DOTALL | re.IGNORECASE)
+                            l_m = re.search(r'<link>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</link>', item, re.DOTALL | re.IGNORECASE)
+                            if t_m:
+                                clean_title = re.sub(r'<[^>]+>', '', t_m.group(1)).strip()
+                                clean_title = clean_title.replace("&amp;", "&").replace("&#039;", "'").replace("&quot;", '"')
+                                clean_link = l_m.group(1).strip() if l_m else "https://www.boxingscene.com/"
+                                if clean_title:
+                                    headlines.append((clean_title, clean_link))
+                        if headlines:
+                            return headlines
+            except Exception as e:
+                print(f"[BOXINGSCENE RSS NOTICE]: {e}")
+
+        # HTML fallback if RSS endpoint is temporarily throttled
+        try:
+            async with session.get("https://www.boxingscene.com/", timeout=10) as resp:
+                if resp.status == 200:
+                    html = await resp.text()
+                    links = re.findall(r'<a[^>]+href="(https://www\.boxingscene\.com/[^"#?]+--\d+)"[^>]*>(.*?)</a>', html, re.DOTALL | re.IGNORECASE)
+                    seen = set()
+                    for href, raw_t in links:
+                        clean_t = re.sub(r'<[^>]+>', '', raw_t).strip()
+                        if len(clean_t) > 20 and clean_t not in seen:
+                            seen.add(clean_t)
+                            headlines.append((clean_t, href))
+                            if len(headlines) >= limit:
+                                break
+        except Exception as e:
+            print(f"[BOXINGSCENE HTML NOTICE]: {e}")
+    return headlines
+
+async def sync_soundcloud_catalog_feed() -> dict:
+    """Scans Clone Geek's SoundCloud RSS feed for track count & latest release and syncs to stats.json."""
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    }
+    info = {}
+    try:
+        async with aiohttp.ClientSession(headers=headers) as session:
+            async with session.get(SOUNDCLOUD_RSS_URL, timeout=12) as resp:
+                if resp.status == 200:
+                    xml_text = await resp.text()
+                    items = re.findall(r'<item>(.*?)</item>', xml_text, re.DOTALL | re.IGNORECASE)
+                    if items:
+                        info["track_count"] = len(items)
+                        t_m = re.search(r'<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>', items[0], re.DOTALL | re.IGNORECASE)
+                        if t_m:
+                            info["latest_track"] = re.sub(r'<[^>]+>', '', t_m.group(1)).strip()
+    except Exception as e:
+        print(f"[SOUNDCLOUD RSS SYNC NOTICE]: {e}")
+    return info
+
 @tasks.loop(hours=6)
 async def periodic_soundcloud_promo():
     await bot.wait_until_ready()
+    sc_info = await sync_soundcloud_catalog_feed()
+    if sc_info:
+        SOUNDCLOUD_STATE.update(sc_info)
+        SOUNDCLOUD_STATE["last_checked"] = datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d %I:%M %p CST")
+        await save_and_sync_records()
     if periodic_soundcloud_promo.current_loop == 0:
         return
     for guild in bot.guilds:
@@ -2482,7 +2597,40 @@ async def r2_vault_new_drop_watcher():
                 )
             break
 
-@tasks.loop(hours=4)
+def build_live_fighter_callout(guild: discord.Guild) -> str:
+    """Picks real human fighters from the Discord server to shout out, test, or pair up for sparring/fights."""
+    human_members = [m for m in guild.members if not m.bot]
+    if not human_members:
+        return get_next_hype_quote()
+
+    online_humans = [m for m in human_members if getattr(m, "status", discord.Status.offline) != discord.Status.offline]
+    pool = online_humans if len(online_humans) >= 2 else human_members
+
+    f1 = random.choice(pool)
+    r1 = FIGHTER_RECORDS.get(f1.id, {"wins": 0, "losses": 0, "draws": 0, "kos": 0})
+    rec1_str = f"`[{r1.get('wins',0)}W-{r1.get('losses',0)}L-{r1.get('draws',0)}D-{r1.get('kos',0)}K]`"
+
+    others = [m for m in pool if m.id != f1.id]
+    if others and random.random() < 0.65:
+        f2 = random.choice(others)
+        r2 = FIGHTER_RECORDS.get(f2.id, {"wins": 0, "losses": 0, "draws": 0, "kos": 0})
+        rec2_str = f"`[{r2.get('wins',0)}W-{r2.get('losses',0)}L-{r2.get('draws',0)}D-{r2.get('kos',0)}K]`"
+        sparring_prompts = [
+            f"🎙️ **Coach Steward:** 🔔 **GYM CHECK-IN & SPARRING CALL!** Shoutout to {f1.mention} ({rec1_str}) and {f2.mention} ({rec2_str})! The Riyadh Indoor Gym canvas is open—y'all gonna lace 'em up for 8 rounds or let the heavy bag collect dust?! Drop a `!callout` or upload your scorecard with `@opponent` in `#scorecard-submissions`!",
+            f"🎙️ **Coach Steward:** 👀 **RINGSIDE MATCHMAKER RADAR:** Looking at {f1.mention} ({rec1_str}) vs {f2.mention} ({rec2_str})—that's a Stylistic War waiting to happen! Who's stepping through the ropes first today? Type `!fight {f1.mention} {f2.mention}` for the Tale of the Tape or `!guide` to see all my corner commands!",
+            f"🎙️ **Coach Steward:** 🥊 **LOCKER ROOM ROLL CALL!** {f1.mention} and {f2.mention}, don't get comfortable on the bench! Step into the ring, test your stamina at 1.5x speed, and drop the CompuBox receipt in `#scorecard-submissions` so I can update the Mainframe Hub!",
+            f"🎙️ **Coach Steward:** 🔥 **SHOUTOUT TO THE CONTENDERS:** Respect to {f1.mention} ({rec1_str}) holding it down in the **CGP Mainframe Gym**! Who in here—maybe {f2.mention} ({rec2_str})—has the heart to test that chin today? Tag me anytime (`@Coach Steward`) to line up a match or talk boxing!"
+        ]
+        return random.choice(sparring_prompts)
+
+    solo_prompts = [
+        f"🎙️ **Coach Steward:** 📣 **FIGHTER SHOUTOUT & GYM TEST:** Yo {f1.mention} ({rec1_str})! Your cornerman is checking in—you ready to lace up the gloves and defend your name in the Riyadh ring today, or are we just shadowboxing?! Type `!findfight` to let me pair you up!",
+        f"🎙️ **Coach Steward:** 🥊 **CGP MAINFRAME GYM CHECK-IN:** Big salute to {f1.mention} ({rec1_str})! Remember, every verified fight you post in `#scorecard-submissions` with an `@opponent` tag updates your live record on the website. Who wants smoke today?!",
+        f"🎙️ **Coach Steward:** ⚡ **CORNER REMINDER FOR THE GYM:** Shoutout to {f1.mention}! Need a sparring partner, a Tale of the Tape, or a breakdown on how to beat pressure fighters in *Undisputed*? Just `@tag` me (`@Coach Steward`) or type `!guide`!"
+    ]
+    return random.choice(solo_prompts)
+
+@tasks.loop(hours=3)
 async def autonomous_server_hype():
     await bot.wait_until_ready()
     if autonomous_server_hype.current_loop == 0:
@@ -2506,8 +2654,28 @@ async def autonomous_server_hype():
                         view=TournamentBracketView()
                     )
                     break
-            await channel.send(get_next_hype_quote(), view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+            await channel.send(build_live_fighter_callout(guild), view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
         break
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        return
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send(f"🎙️ **Coach Steward:** Hold up {ctx.author.mention}—only **Commissioner Clone Geek** or an Admin can call that play!")
+        return
+    if isinstance(error, commands.CheckFailure):
+        await ctx.send(f"🎙️ **Coach Steward:** That command is locked to **Commissioner Clone Geek** only, champ!")
+        return
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"🎙️ **Coach Steward:** Missing info on that command (`{error.param.name}`). Type `!guide` to see the exact command format!")
+        return
+    if isinstance(error, commands.MemberNotFound):
+        await ctx.send("🎙️ **Coach Steward:** Couldn't find that fighter in the server—make sure you `@tag` them properly!")
+        return
+    print(f"[COMMAND ERROR in {ctx.command}]: {error}")
+    await ctx.send(f"🎙️ **Coach Steward:** Corner hit a snag running `!{ctx.command}`: `{error}`")
 
 @bot.event
 async def on_ready():
@@ -3056,14 +3224,25 @@ async def on_message(message):
             sender_rec = FIGHTER_RECORDS.get(message.author.id, {"wins": 0, "losses": 0, "draws": 0, "kos": 0})
             role_note = "Clone Geek (Gerardo — YOUR CREATOR, HOMIE, AND SUPREME COMMISSIONER OF CGP MAINFRAME GYM)" if is_creator else f"{message.author.display_name} (Fighter in the gym, Record: {sender_rec['wins']}W-{sender_rec['losses']}L-{sender_rec.get('draws', 0)}D-{sender_rec.get('kos', 0)}K)"
 
+            live_news_block = ""
+            if any(nw in msg for nw in ["news", "boxingscene", "boxing scene", "headline", "upcoming fight", "who is fighting", "fight card", "title fight"]):
+                hl = await fetch_live_boxingscene_headlines(limit=4)
+                if hl:
+                    live_news_block = "LIVE BOXINGSCENE.COM HEADLINES RIGHT NOW:\n" + "\n".join([f"- {t}" for t, _ in hl]) + "\n\n"
+
+            online_fighters = [clean_base_name(m.display_name) for m in message.guild.members if not m.bot and getattr(m, "status", discord.Status.offline) != discord.Status.offline][:8]
+            online_str = ", ".join(online_fighters) if online_fighters else "Open Lobby"
             full_ai_prompt = (
+                f"{live_news_block}"
                 f"RECENT CHANNEL CONVERSATION:\n{recent_chat}\n\n"
+                f"CURRENTLY ONLINE IN SERVER: {online_str}\n"
                 f"PERSON TALKING TO YOU NOW: {role_note}\n"
-                f"THEIR EXACT MESSAGE (may contain typos, slang, or shorthand—interpret their true intent charitably!): \"{clean_prompt}\"\n\n"
+                f"THEIR EXACT MESSAGE: \"{clean_prompt}\"\n\n"
                 "INSTRUCTIONS FOR YOUR REPLY:\n"
-                "1. Respond directly and specifically to what they meant, even if their spelling or grammar is messy!\n"
-                "2. If they mention music, the website, or merch, flex Clone Geek Productions on SoundCloud AND our new Cloudflare R2 `.WAV` Master Store & Mainframe Hub!\n"
-                "3. Start your message with '🎙️ **Coach Steward:** '"
+                "1. Hold a natural, sharp, human-sounding conversation—answer their actual question or thought thoroughly and authentically, just like a real boxing coach and collaborator.\n"
+                "2. If the conversation touches on boxing, fighting, boredom, or gym activity, hype them up to spar/fight, mention an online fighter if relevant, or remind them they can use `!findfight`, `!callout @fighter`, `!store`, or `!guide`.\n"
+                "3. If they mention music, the website, or merch, flex Clone Geek Productions on SoundCloud AND our Cloudflare R2 `.WAV` Master Store & Mainframe Hub!\n"
+                "4. Start your message with '🎙️ **Coach Steward:** '"
             )
 
             ai_reply = await ask_coach_fast(full_ai_prompt, is_creator=is_creator)
@@ -3133,20 +3312,37 @@ async def on_message(message):
         if random.random() < 0.12:
             last_organic_chime = now_t
             answered_messages.add(message.id)
-            await message.reply(get_next_organic_interjection())
+            if random.random() < 0.5 and message.guild:
+                await message.channel.send(build_live_fighter_callout(message.guild), view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+            else:
+                await message.reply(get_next_organic_interjection())
             return
 
 async def send_coach_guide(channel, reply_to=None):
-    embed = discord.Embed(
-        title="📖 OFFICIAL CGP MAINFRAME GYM & COACH STEWARD PLAYBOOK 📖",
-        description=COACH_PLAYBOOK_TEXT,
+    # Split into 2 clean embeds so it never hits Discord's 4096-character embed cap and silently fail!
+    parts = COACH_PLAYBOOK_TEXT.split("### 📋 FIGHTER COMMAND PLAYBOOK:")
+    part1 = parts[0].strip()
+    part2 = ("### 📋 FIGHTER COMMAND PLAYBOOK:" + parts[1]).strip() if len(parts) > 1 else ""
+
+    embed1 = discord.Embed(
+        title="📖 OFFICIAL CGP MAINFRAME GYM & COACH STEWARD PLAYBOOK (1/2) 📖",
+        description=part1[:4000],
         color=discord.Color.gold(),
         url=MAINFRAME_HUB_URL
     )
     if reply_to:
-        await reply_to.reply(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+        await reply_to.reply(embed=embed1)
     else:
-        await channel.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
+        await channel.send(embed=embed1)
+
+    if part2:
+        embed2 = discord.Embed(
+            title="🥊 FIGHTER & COMMISSIONER COMMAND LIST (2/2) 🥊",
+            description=part2[:4000],
+            color=discord.Color.red(),
+            url=MAINFRAME_HUB_URL
+        )
+        await channel.send(embed=embed2, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
 async def send_scheduled_events_info(channel, reply_to=None):
     guild = channel.guild
@@ -3223,26 +3419,23 @@ async def send_tracks_menu(channel):
 
 # ================= STORE, MERCH & DIRECT MATCHMAKING COMMANDS =================
 
-@bot.command(name='updatesoundcloud')
+@bot.command(name='updatesoundcloud', aliases=['scplays', 'syncsc'])
 @commands.has_permissions(administrator=True)
-async def update_soundcloud(ctx, new_plays: str):
-    """Updates the total SoundCloud play count in stats.json for the website tickers."""
-    import json
-    try:
-        with open("stats.json", "r") as f:
-            data = json.load(f)
-    except FileNotFoundError:
-        data = {}
-
-    if "_soundcloud" not in data:
-        data["_soundcloud"] = {"goal": "500K"}
-    
-    data["_soundcloud"]["total_plays"] = new_plays
-
-    with open("stats.json", "w") as f:
-        json.dump(data, f, indent=4)
-    await push_stats_to_github()
-    await ctx.send(f"🎵 **SoundCloud stats updated!** Total plays set to **{new_plays}**. Website ticker will reflect this shortly.")
+async def update_soundcloud(ctx, new_plays: str = None):
+    """Updates the total SoundCloud play count in stats.json & syncs SoundCloud RSS feed to GitHub/Website."""
+    sc_info = await sync_soundcloud_catalog_feed()
+    if sc_info:
+        SOUNDCLOUD_STATE.update(sc_info)
+    if new_plays:
+        SOUNDCLOUD_STATE["total_plays"] = new_plays.strip()
+    SOUNDCLOUD_STATE["last_checked"] = datetime.datetime.now(CENTRAL_TZ).strftime("%Y-%m-%d %I:%M %p CST")
+    synced_ok = await save_and_sync_records()
+    await ctx.send(
+        f"🎵 **SoundCloud Stats & Catalog Synced!**\n"
+        f"• **Total Plays:** `{SOUNDCLOUD_STATE.get('total_plays', '66.5K+')}` (Goal: `{SOUNDCLOUD_STATE.get('goal', '500K')}`)\n"
+        f"• **Latest Track Detected:** `{SOUNDCLOUD_STATE.get('latest_track', 'Road to Undisputed')}`\n"
+        f"• **GitHub / Website Ticker Push:** {'`LIVE ON MAINFRAME HUB`' if synced_ok else '`SAVED LOCALLY`'}"
+    )
 
 @bot.command(name='scanstats')
 async def scan_stats(ctx, winner: discord.Member = None, loser: discord.Member = None):
@@ -3459,7 +3652,7 @@ async def removereel(ctx, index: int):
     else:
         await ctx.send("❌ Invalid index! Check current reels on your website and try again.")
 
-@bot.command(aliases=["howto", "playbook", "commands", "manual", "about", "whoareyou", "helpme"])
+@bot.command(aliases=["howto", "playbook", "command", "commands", "manual", "about", "whoareyou", "helpme"])
 async def guide(ctx):
     await send_coach_guide(ctx.channel)
 
@@ -3897,12 +4090,25 @@ async def purge(ctx, amount: int = 10):
 @bot.command(aliases=["boxingnews", "espn", "boxingscene"])
 async def news(ctx):
     async with ctx.typing():
+        headlines = await fetch_live_boxingscene_headlines(limit=5)
+        if headlines:
+            news_lines = [f"🥊 **[{title}]({link})**" for title, link in headlines]
+            desc = (
+                "🎙️ **Coach Steward:** Pulled straight off the live **BoxingScene.com** wire! Here is what's shaking in real-world championship boxing right now:\n\n"
+                + "\n\n".join(news_lines)
+            )
+        else:
+            desc = (
+                "🎙️ **Coach Steward:** BoxingScene's wire is moving fast—tap the link below to check the latest title cards, "
+                "or ask me about any division or fighter right here!"
+            )
         embed = discord.Embed(
-            title="📰 CGP MAINFRAME GYM WIRE: CHAMPIONSHIP REPORT 📰",
-            description="🎙️ **Coach Steward:** All major title fights, pound-for-pound rankings, and upcoming cards from ESPN and BoxingScene are locked into my corner memory. Ask me about any fighter or upcoming card!",
+            title="📰 CGP MAINFRAME GYM WIRE: LIVE BOXINGSCENE REPORT 📰",
+            description=desc,
             color=discord.Color.gold(),
             url="https://www.boxingscene.com/"
         )
+        embed.set_footer(text="Live Feed via BoxingScene.com • CGP Mainframe Gym")
         await ctx.send(embed=embed, view=PromoButtons(DEFAULT_SOUNDCLOUD_URL))
 
 @bot.command(aliases=["to"])
