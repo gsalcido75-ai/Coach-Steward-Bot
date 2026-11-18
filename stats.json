@@ -1718,7 +1718,14 @@
         "draws": 0,
         "kos": 0,
         "golden_tickets": 0,
-        "verified": true
+        "verified": true,
+        "punches_landed": 0,
+        "punches_thrown": 0,
+        "body_landed": 0,
+        "power_landed": 0,
+        "knockdowns": 0,
+        "counters": 0,
+        "accuracy": "0%"
     },
     "_tournament": {
         "active": false,
@@ -1777,7 +1784,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-17 10:27:29 PM CST"
+        "updated_at": "2026-11-18 01:07:40 AM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1811,7 +1818,13 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-17T22:27:29.477322-06:00",
+    "_last_synced": "2026-11-18T01:07:40.129737-06:00",
+    "_soundcloud": {
+        "total_plays": "66.5K+",
+        "goal": "500K",
+        "latest_track": "Road to Undisputed",
+        "last_checked": ""
+    },
     "video_archive": [
         {
             "title": "Winter Blues (Official Video)",
