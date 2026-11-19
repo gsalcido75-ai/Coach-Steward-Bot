@@ -1057,9 +1057,9 @@
     },
     "1409789020971470909": {
         "name": "Roy\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd",
-        "wins": 10,
+        "wins": 11,
         "losses": 0,
-        "kos": 10,
+        "kos": 11,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0,
@@ -1506,7 +1506,7 @@
     "1512134371732226252": {
         "name": "Hoodie007",
         "wins": 2,
-        "losses": 0,
+        "losses": 1,
         "kos": 2,
         "verified": true,
         "draws": 0,
@@ -1793,7 +1793,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-18 03:40:19 PM CST"
+        "updated_at": "2026-11-18 09:20:54 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1827,7 +1827,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-18T15:40:19.603750-06:00",
+    "_last_synced": "2026-11-18T21:20:54.863058-06:00",
     "_soundcloud": {
         "total_plays": "66.5K+",
         "goal": "500K",
