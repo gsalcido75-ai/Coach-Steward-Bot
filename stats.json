@@ -1057,9 +1057,9 @@
     },
     "1409789020971470909": {
         "name": "Roy\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd\ud83c\uddf2\ud83c\uddfd",
-        "wins": 11,
+        "wins": 12,
         "losses": 0,
-        "kos": 11,
+        "kos": 12,
         "verified": true,
         "draws": 0,
         "golden_tickets": 0,
@@ -1170,7 +1170,7 @@
     "1279476207603290197": {
         "name": "Clone_Geek",
         "wins": 7,
-        "losses": 24,
+        "losses": 25,
         "draws": 0,
         "kos": 5,
         "golden_tickets": 0,
@@ -1793,7 +1793,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-18 09:20:54 PM CST"
+        "updated_at": "2026-11-18 10:38:27 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1827,7 +1827,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-18T21:20:54.863058-06:00",
+    "_last_synced": "2026-11-18T22:38:27.239800-06:00",
     "_soundcloud": {
         "total_plays": "66.5K+",
         "goal": "500K",
