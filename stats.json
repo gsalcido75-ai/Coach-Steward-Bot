@@ -1736,6 +1736,15 @@
         "golden_tickets": 0,
         "verified": true
     },
+    "767233344634486804": {
+        "name": "Rafa",
+        "wins": 0,
+        "losses": 0,
+        "draws": 0,
+        "kos": 0,
+        "golden_tickets": 0,
+        "verified": true
+    },
     "_tournament": {
         "active": false,
         "status": "registration",
@@ -1793,7 +1802,7 @@
         "history_log": [],
         "channel_id": null,
         "message_id": null,
-        "updated_at": "2026-11-18 10:38:27 PM CST"
+        "updated_at": "2026-11-25 09:04:10 PM CST"
     },
     "_store_orders": {
         "CGP-WAV-01": {
@@ -1827,7 +1836,7 @@
             "download_url": ""
         }
     },
-    "_last_synced": "2026-11-18T22:38:27.239800-06:00",
+    "_last_synced": "2026-11-25T21:04:10.202675-06:00",
     "_soundcloud": {
         "total_plays": "66.5K+",
         "goal": "500K",
